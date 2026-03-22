@@ -149,3 +149,29 @@ form input[type="submit"] {
 form input[type="submit"]:hover {
   background-color: #1abc9c;
 }
+
+/* Centered footer content and matched theme with header */
+/* Footer is styled to be consistent with the header, providing a cohesive look to the portfolio */
+footer {
+  text-align: center;
+  background-color: #2c3e50;
+  color: rgb(187, 172, 172);
+  padding: 20px;
+  margin-top: 40px;
+}
+
+/* Footer links styling */
+footer a {
+  color: #1abc9c;   /* normal color */
+  text-decoration: none;
+  font-weight: bold;
+}
+
+/* Hover effect */
+footer a:hover {
+  color: #f39c12;   /*  color changes on hover */
+  text-decoration: underline;
+}
+footer a:visited {
+  color: #9b59b6;
+}
