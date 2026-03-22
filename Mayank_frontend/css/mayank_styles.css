@@ -3,6 +3,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+ 
 }
 
 /* Body Styling */
@@ -13,6 +14,7 @@ body {
   line-height: 1.6;
 }
 
+/* I centered everything in header to make it look like a proper profile section */
 header {
   text-align: center;
   background-color: #2c3e50;
@@ -20,13 +22,50 @@ header {
   padding: 20px;
 }
 
+/* Bigger font for name so it stands out */
 header h1 {
   font-size: 2.5rem;
 }
 
+/* Made image circular because it looks more like a profile picture */
 header img {
-  width: 120px;
-  height: 120px;
   border-radius: 50%;
-  margin-top: 10px;
+  width: 120px;
+}
+
+/* Used flexbox to align menu items in a row */
+nav ul {
+  display: flex;
+  justify-content: center;
+  list-style: none;
+}
+
+/* Spacing between menu items */
+nav ul li {
+  margin: 10px;
+}
+
+/* Removed underline and styled links */
+nav ul li a {
+  text-decoration: none;
+  color: white;
+}
+
+/* Added hover effect to improve user interaction */
+nav ul li a:hover {
+  background-color: #1abc9c;
+}
+
+/* Added spacing and shadow so each section looks like a separate card */
+section {
+  margin: 40px auto;
+  padding: 30px;
+  max-width: 900px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+section:target {
+  border: 2px solid #1abc9c;
 }
