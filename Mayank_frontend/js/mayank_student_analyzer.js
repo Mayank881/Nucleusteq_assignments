@@ -46,6 +46,8 @@ function getTotalMarks(student) {
 
   return total;
 }
+
+console.log("Total Marks:");
 students.forEach(s => {
   console.log(`${s.name} Total Marks: ${getTotalMarks(s)}`);
 });
@@ -66,3 +68,28 @@ console.log("\nAverage Marks:");
 students.forEach(s => {
   console.log(s.name + " Average:", getAverageMarks(s).toFixed(2));
 });
+
+
+console.log(" \nHighest Scorers in each Subject:");
+// This function finds highest scorer in each subject
+function getHighestBySubject() {
+  let subjects = ["Math", "English", "Science", "History", "Computer"];
+
+  for (let sub of subjects) {
+    let maxScore = 0;
+    let topper = "";
+
+    for (let student of students) {
+      for (let mark of student.marks) {
+        if (mark.subject === sub && mark.score > maxScore) {
+          maxScore = mark.score;
+          topper = student.name;
+        }
+      }
+    }
+
+    console.log(`Highest in ${sub}: ${topper} (${maxScore})`);
+  }
+}
+
+getHighestBySubject();
