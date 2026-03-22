@@ -104,3 +104,18 @@ table th {
 table tr:nth-child(even) {
   background-color: #f2f2f2;
 }
+
+/* Styled the projects list to make it more visually appealing */
+#projects ol li {
+  margin-bottom: 25px;
+}
+
+#projects a {
+  color: #3498db;
+  text-decoration: none;
+  font-weight: bold;
+}
+/* Added hover effect to project links to enhance user interaction */
+#projects a:hover {
+  color: #e74c3c;
+}
