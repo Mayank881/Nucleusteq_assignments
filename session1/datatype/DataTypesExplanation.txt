@@ -1,0 +1,52 @@
+Primitive vs Reference Data Types
+
+Primitive Data Types:
+These are basic data types provided by Java.
+They directly store values in memory.
+
+Examples:
+int num = 10;
+
+double prices = 99.99;
+
+char grade = 'c';
+boolean isValid = true;
+
+Key Points of Primitive data type:
+->> Stores actual value
+->> Fixed size
+->> Faster access
+->> Stored in stack memory
+
+
+
+# Reference Data Types:
+These types store the reference (address) of the object, not the actual value.
+
+Examples:
+String name = "Mayank";
+int[] arr = {1, 2, 3};
+
+class Student {
+    int marks = 90;
+}
+
+Key Points of Reference data types:
+--> Stored in heap memory
+--> Can store complex data like objects and arrays
+--> Stores reference (address)
+--> More flexible than primitive types
+
+
+
+Difference between primitive and reference data type:
+
+Primitive:
+- Stores actual value
+- Fixed size
+- Faster
+
+Reference:
+- Stores address
+- Dynamic size
+- Used for objects and complex data
