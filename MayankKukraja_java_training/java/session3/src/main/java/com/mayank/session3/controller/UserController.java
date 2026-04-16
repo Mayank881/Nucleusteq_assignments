@@ -29,10 +29,11 @@ public class UserController {
         return service.searchUsers(name, age, role);
     }
 
-    // SUBMIT API
+    
+    // Submit API for creating user
    // updates the submitUser method to include validation checks for the user's name, age, and role.
    // If any of these fields are invalid (e.g., name is null or empty, age is null, or role is null or empty),
-   / a CustomException is thrown with an appropriate error message.
+ 
    @PostMapping("/submit")
 public org.springframework.http.ResponseEntity<String> submitUser(@RequestBody User user) {
 
