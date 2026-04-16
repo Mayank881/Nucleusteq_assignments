@@ -1,3 +1,4 @@
+// added globla exception handler
 package com.mayank.session3.exception;
 
 import org.springframework.http.ResponseEntity;
@@ -10,7 +11,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(CustomException.class)
     public ResponseEntity<String> handleCustomException(CustomException ex) {
-        
+
         return ResponseEntity.badRequest().body(ex.getMessage());
     }
 }
