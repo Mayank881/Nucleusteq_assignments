@@ -1,10 +1,10 @@
-package com.example.demo;
+package com.mayank.session3;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class DemoApplicationTests {
+class Session3ApplicationTests {
 
 	@Test
 	void contextLoads() {
