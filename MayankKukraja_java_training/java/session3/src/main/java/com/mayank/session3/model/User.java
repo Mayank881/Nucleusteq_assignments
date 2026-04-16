@@ -1,3 +1,4 @@
+// User model with basic fields
 package com.mayank.session3.model;
 
 public class User {
