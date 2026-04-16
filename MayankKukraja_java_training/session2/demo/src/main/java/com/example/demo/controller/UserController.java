@@ -19,14 +19,12 @@ public class UserController {
     }
 
     // API to get all users
-    // GET /users
     @GetMapping
     public List<User> getAllUsers() {
         return userService.getAllUsers();
     }
 
     // API to create a new user
-    // POST /users
     @PostMapping
     public String createUser(@RequestBody User user) {
         userService.createUser(user);
@@ -34,13 +32,22 @@ public class UserController {
     }
 
     // API to get user by id
-    // GET /users/{id}
     @GetMapping("/{id}")
     public User getUserById(@PathVariable int id) {
         return userService.getUserById(id);
     }
+
+    // Test API
     @GetMapping("/test")
-public String test() {
-    return "Working";
-}
+    public String test() {
+        return "Working";
+    }
+
+    // 🔥 ADD THIS METHOD HERE
+    @GetMapping("/add")
+    public String addUserFromBrowser() {
+        User user = new User(1, "Mayank", "mayank@gmail.com");
+        userService.createUser(user);
+        return "User added from browser";
+    }
 }
