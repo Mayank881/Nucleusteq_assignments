@@ -18,7 +18,8 @@ public class UserController {
         this.service = service;
     }
 
-    // SEARCH API
+    // SEARCH API for users
+    
     // This API allows clients to search for users based on optional criteria: name, age, and role.
     @GetMapping("/search")
     public List<User> searchUsers(
