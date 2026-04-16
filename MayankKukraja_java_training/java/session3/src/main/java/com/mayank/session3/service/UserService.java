@@ -1,3 +1,4 @@
+// Service layer for business logic
 package com.mayank.session3.service;
 
 import com.mayank.session3.model.User;
@@ -50,33 +51,35 @@ public class UserService {
     }
 
     // SUBMIT USER 
+    // This method allows submitting a new user. It validates the input data and returns appropriate responses.
+    //uses exception handling to manage invalid input scenarios,
+    //  ensuring that clients receive clear feedback on what went wrong.
     
     public String submitUser(User user) {
 
-        if (user.getName() == null || user.getName().trim().isEmpty()) {
-            return "Invalid name";
-        }
-
-        if (user.getAge() == null) {
-            return "Invalid age";
-        }
-
-        if (user.getRole() == null || user.getRole().trim().isEmpty()) {
-            return "Invalid role";
-        }
-
-        return "User submitted successfully";
+    if (user.getName() == null || user.getName().trim().isEmpty()) {
+        throw new com.mayank.session3.exception.CustomException("Invalid name");
     }
-    
+
+    if (user.getAge() == null) {
+        throw new com.mayank.session3.exception.CustomException("Invalid age");
+    }
+
+    if (user.getRole() == null || user.getRole().trim().isEmpty()) {
+        throw new com.mayank.session3.exception.CustomException("Invalid role");
+    }
+
+    return "User submitted successfully";
+}
 
     // DELETE USER
-    public String deleteUser(Long id, boolean confirm) {
+   public String deleteUser(Long id, boolean confirm) {
 
-        if (!confirm) {
-            return "Confirmation required";
-        }
-
-        repository.deleteUser(id);
-        return "User deleted successfully";
+    if (!confirm) {
+        return "Confirmation required. Pass confirm=true to delete user.";
     }
+
+    repository.deleteUser(id);
+    return "User deleted successfully";
+}
 }
