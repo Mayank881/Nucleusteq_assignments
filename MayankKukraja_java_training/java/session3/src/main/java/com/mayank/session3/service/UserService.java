@@ -73,6 +73,7 @@ public class UserService {
 }
 
     // DELETE USER
+    // This method allows deleting a user by their ID. It requires a confirmation parameter to prevent accidental deletions.
    public String deleteUser(Long id, boolean confirm) {
 
     if (!confirm) {
