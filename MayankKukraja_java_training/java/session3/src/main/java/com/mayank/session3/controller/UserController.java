@@ -1,3 +1,4 @@
+// Session3 Controller Implementation
 package com.mayank.session3.controller;
 
 import com.mayank.session3.model.User;
@@ -29,19 +30,15 @@ public class UserController {
     }
 
     // SUBMIT API
-    // This API allows clients to submit a new user. The user data is sent in the request body as JSON.
-    // 201 Created is returned on successful submission, while 400 Bad Request is returned if the input data is invalid.
-    @PostMapping("/submit")
-     public org.springframework.http.ResponseEntity<String> submitUser(@RequestBody User user) {
+   // updates the submitUser method to include validation checks for the user's name, age, and role.
+   // If any of these fields are invalid (e.g., name is null or empty, age is null, or role is null or empty),
+   / a CustomException is thrown with an appropriate error message.
+   @PostMapping("/submit")
+public org.springframework.http.ResponseEntity<String> submitUser(@RequestBody User user) {
 
     String response = service.submitUser(user);
-
-    if (response.startsWith("Invalid")) {
-        return org.springframework.http.ResponseEntity.badRequest().body(response);
-    }
-
     return org.springframework.http.ResponseEntity.status(201).body(response);
-  }
+}
 
     // DELETE API
     // This API allows clients to delete a user by their ID. A confirmation parameter is required.
