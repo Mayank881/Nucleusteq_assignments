@@ -20,8 +20,9 @@ public class UserController {
         this.service = service;
     }
 
-    // get all users 
-    // @GetMapping("/users") means this method will handle GET requests to /users endpoint
+    // get all users
+    // @GetMapping("/users") means this method will handle GET requests to /users
+    // endpoint
     @GetMapping("/users")
     public List<User> getUsers() {
         return service.getAllUsers();
@@ -29,7 +30,8 @@ public class UserController {
 
     // get user by id
     @GetMapping("/users/{id}")
-    // @PathVariable means the id in the url will be passed as a parameter to this method
+    // @PathVariable means the id in the url will be passed as a parameter to this
+    // method
     public User getUser(@PathVariable Long id) {
         return service.getUserById(id);
     }
@@ -43,8 +45,16 @@ public class UserController {
 
     // trigger notification api
     // this is a new endpoint to trigger notification
-      @GetMapping("/notify")
-      public String notifyUser() {
-    return service.sendNotification();
+    @GetMapping("/notify")
+    public String notifyUser() {
+        return service.sendNotification();
+    }
+
+    // get message based on type
+    // this is a new endpoint to get message based on type (short or long)
+    // @getmapping uses @RequestParam to get the type parameter from the url.
+    @GetMapping("/message")
+    public String getMessage(@RequestParam String type) {
+        return service.getMessage(type);
     }
 }
