@@ -1,4 +1,4 @@
-package com.mayank.session2.springboot_project;
+package com.mayank.session2;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
