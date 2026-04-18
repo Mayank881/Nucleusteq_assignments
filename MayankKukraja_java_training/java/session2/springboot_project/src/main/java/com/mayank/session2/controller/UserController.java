@@ -40,4 +40,11 @@ public class UserController {
         service.addUser(user);
         return "User added";
     }
+
+    // trigger notification api
+    // this is a new endpoint to trigger notification
+      @GetMapping("/notify")
+      public String notifyUser() {
+    return service.sendNotification();
+    }
 }
