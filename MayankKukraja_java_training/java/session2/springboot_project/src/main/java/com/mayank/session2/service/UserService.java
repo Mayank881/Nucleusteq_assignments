@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 //adding import for notification component, short message formatter and long message formatter
 import com.mayank.session2.component.NotificationComponent;
 import com.mayank.session2.component.ShortMessageFormatter;
+import com.mayank.session2.exception.CustomException;
 import com.mayank.session2.component.LongMessageFormatter;
 import java.util.List;
 
@@ -45,8 +46,16 @@ public class UserService {
     }
 
     // get user by id
+
     public User getUserById(Long id) {
-        return repository.getUserById(id);
+        User user = repository.getUserById(id);
+
+        // if user is not found, we throw a custom exception
+        if (user == null) {
+            throw new CustomException("User not found");
+        }
+
+        return user;
     }
 
     // add new user
@@ -60,7 +69,7 @@ public class UserService {
         return notification.sendNotification();
     }
 
-    //it return message based on type from the formatters  
+    // it return message based on type from the formatters
     public String getMessage(String type) {
 
         if ("SHORT".equalsIgnoreCase(type)) {
