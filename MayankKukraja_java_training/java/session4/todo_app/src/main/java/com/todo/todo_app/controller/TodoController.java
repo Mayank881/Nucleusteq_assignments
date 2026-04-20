@@ -6,6 +6,8 @@ import com.todo.todo_app.service.TodoService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 //@RestController handles incoming HTTP requests and sends responses back to the client
 @RestController
 @RequestMapping("/todos")
@@ -23,4 +25,11 @@ public class TodoController {
     public Todo createTodo(@Valid @RequestBody TodoDTO dto) {
         return service.createTodo(dto);
     }
+   
+
+    //handles get request to fetch all todos
+    @GetMapping
+    public List<Todo> getAllTodos() {
+    return service.getAllTodos();
+}
 }

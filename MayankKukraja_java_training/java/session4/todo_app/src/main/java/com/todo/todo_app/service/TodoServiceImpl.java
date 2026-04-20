@@ -1,6 +1,6 @@
 package com.todo.todo_app.service;
 
-import com.todo.todo_app.dto.TodoDTO;
+import com.todo.todo_app.dto.TodoDTO; //connecting all the layers together
 import com.todo.todo_app.entity.Status;
 import com.todo.todo_app.entity.Todo;
 import com.todo.todo_app.repository.TodoRepository;
@@ -12,7 +12,7 @@ import java.util.List;
 @Service
 public class TodoServiceImpl implements TodoService {
 
-    // repo is used to talk to database
+   //repo used to talk to database
     private final TodoRepository repo;
 
     // constructor injection 
@@ -20,7 +20,7 @@ public class TodoServiceImpl implements TodoService {
         this.repo = repo;
     }
 
-    // creating todo item
+    
     @Override
     public Todo createTodo(TodoDTO dto) {
 
@@ -37,27 +37,26 @@ public class TodoServiceImpl implements TodoService {
             todo.setStatus(dto.getStatus());
         }
 
-        // setting current time automatically
         todo.setCreatedAt(LocalDateTime.now());
 
-        // saving todo in database
+        // saving todo to database
         return repo.save(todo);
     }
 
-    // GET ALL TODOS
+    // get all todos
     @Override
     public List<Todo> getAllTodos() {
 
-        // returns list of all todos from database
+        // returns list of all 
         return repo.findAll();
     }
 
-    // GET TODO BY ID
+    // getting todos by id
     @Override
     public Todo getTodoById(Long id) {
 
         // finding todo using id
-        // if not found, returning null for now (later we will handle exception)
+        // if not found, returning null for now 
         return repo.findById(id).orElse(null);
     }
 
@@ -65,7 +64,7 @@ public class TodoServiceImpl implements TodoService {
     @Override
     public Todo updateTodo(Long id, TodoDTO dto) {
 
-        // first find existing todo
+      
         Todo todo = repo.findById(id).orElse(null);
 
         // if not found, return null
@@ -73,7 +72,7 @@ public class TodoServiceImpl implements TodoService {
             return null;
         }
 
-        // updating only those fields which user sends
+        // updating feilds if they are provided in dto
         if (dto.getTitle() != null) {
             todo.setTitle(dto.getTitle());
         }
@@ -88,7 +87,7 @@ public class TodoServiceImpl implements TodoService {
             Status current = todo.getStatus();
             Status newStatus = dto.getStatus();
 
-            // only allow valid transitions (PENDING <-> COMPLETED)
+            // only allow valid transitions 
             if ((current == Status.PENDING && newStatus == Status.COMPLETED) ||
                 (current == Status.COMPLETED && newStatus == Status.PENDING)) {
 
