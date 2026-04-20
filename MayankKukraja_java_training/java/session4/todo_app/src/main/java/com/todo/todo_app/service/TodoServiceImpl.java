@@ -61,39 +61,34 @@ public class TodoServiceImpl implements TodoService {
         return mapToDTO(savedTodo);
     }
 
-    // get all todos
     @Override
-    public List<Todo> getAllTodos() {
+    public List<TodoResponseDTO> getAllTodos() {
 
-        // returns list of all
-        return repo.findAll();
+        List<Todo> todos = repo.findAll();
+
+        return todos.stream()
+                .map(this::mapToDTO)
+                .toList();
     }
 
     // getting todos by id
     @Override
-    public Todo getTodoById(Long id) {
+    public TodoResponseDTO getTodoById(Long id) {
 
-        // finding todo using id
-        // updating the code to throw custom exception if todo not found
-        return repo.findById(id)
+        Todo todo = repo.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Todo not found"));
-        // USES ARROW FUNCTION TO THROW EXCEPTION IF TODO NOT FOUND
+
+        return mapToDTO(todo);
     }
 
     // update todo
     @Override
-    public Todo updateTodo(Long id, TodoDTO dto) {
+    public TodoResponseDTO updateTodo(Long id, TodoDTO dto) {
 
         // UPDATING THIS ONE TOO TO THROW EXCEPTION IF TODO NOT FOUND
 
         Todo todo = repo.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Todo not found"));
-
-        // if not found, return null
-
-        if (todo == null) {
-            return null;
-        }
 
         // updating feilds if they are provided in dto
         if (dto.getTitle() != null) {
@@ -115,11 +110,12 @@ public class TodoServiceImpl implements TodoService {
                     (current == Status.COMPLETED && newStatus == Status.PENDING)) {
 
                 todo.setStatus(newStatus);
+            } else {
+                throw new IllegalArgumentException("Invalid status change"); //illegal arg, exc. used 
             }
         }
-
         // saving updated todo
-        return repo.save(todo);
+        return mapToDTO(repo.save(todo));
     }
 
     // DELETE TODO
@@ -130,11 +126,6 @@ public class TodoServiceImpl implements TodoService {
 
         Todo todo = repo.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Todo not found"));
-        // if not found, return'
-
-        if (todo == null) {
-            return;
-        }
 
         // deleting todo
         repo.delete(todo);

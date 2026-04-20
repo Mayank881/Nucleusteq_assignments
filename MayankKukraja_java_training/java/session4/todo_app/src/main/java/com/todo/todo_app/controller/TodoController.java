@@ -2,7 +2,6 @@ package com.todo.todo_app.controller;
 
 import com.todo.todo_app.dto.TodoDTO;
 import com.todo.todo_app.dto.TodoResponseDTO;
-import com.todo.todo_app.entity.Todo;
 import com.todo.todo_app.service.TodoService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
@@ -24,20 +23,26 @@ public class TodoController {
     // we use @valid ,,@requestbody to validate the incoming data and map it to our
     // dto obj
     @PostMapping
-   public TodoResponseDTO createTodo(@Valid @RequestBody TodoDTO dto) {
+    public TodoResponseDTO createTodo(@Valid @RequestBody TodoDTO dto) {
         return service.createTodo(dto);
     }
 
     // handles get request to fetch all todos
     @GetMapping
-    public List<Todo> getAllTodos() {
+    public List<TodoResponseDTO> getAllTodos() {
         return service.getAllTodos();
+    }
+
+    // handles get request to fetch todo by id
+    @GetMapping("/{id}")
+    public TodoResponseDTO getTodoById(@PathVariable Long id) {
+        return service.getTodoById(id);
     }
 
     // putmapping will handle the update request to update existing todo
     // path variable get the id and @requestbody get the updated data from user
     @PutMapping("/{id}")
-    public Todo updateTodo(@PathVariable Long id, @RequestBody TodoDTO dto) {
+    public TodoResponseDTO updateTodo(@PathVariable Long id, @Valid @RequestBody TodoDTO dto) {
         return service.updateTodo(id, dto);
     }
 
