@@ -2,13 +2,16 @@ package com.todo.todo_app.service;
 
 import com.todo.todo_app.dto.TodoDTO;
 import com.todo.todo_app.entity.Todo;
+ import com.todo.todo_app.dto.TodoResponseDTO;
 
 import java.util.List;
 
 // interface for todo service
 public interface TodoService {
 
-    Todo createTodo(TodoDTO dto); // method to create a new todo item
+   
+
+    TodoResponseDTO createTodo(TodoDTO dto); // method to create a new todo item
 
     List<Todo> getAllTodos(); // retreive all todo items
 

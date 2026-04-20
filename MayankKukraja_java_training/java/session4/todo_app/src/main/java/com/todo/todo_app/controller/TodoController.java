@@ -1,6 +1,7 @@
 package com.todo.todo_app.controller;
 
 import com.todo.todo_app.dto.TodoDTO;
+import com.todo.todo_app.dto.TodoResponseDTO;
 import com.todo.todo_app.entity.Todo;
 import com.todo.todo_app.service.TodoService;
 import jakarta.validation.Valid;
@@ -21,9 +22,9 @@ public class TodoController {
 
     // it handles the post request to create a new todo
     // we use @valid ,,@requestbody to validate the incoming data and map it to our
-    // dto
+    // dto obj
     @PostMapping
-    public Todo createTodo(@Valid @RequestBody TodoDTO dto) {
+   public TodoResponseDTO createTodo(@Valid @RequestBody TodoDTO dto) {
         return service.createTodo(dto);
     }
 
