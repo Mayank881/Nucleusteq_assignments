@@ -3,6 +3,7 @@ package com.todo.todo_app.service;
 import com.todo.todo_app.dto.TodoDTO; //connecting all the layers together
 import com.todo.todo_app.entity.Status;
 import com.todo.todo_app.entity.Todo;
+import com.todo.todo_app.exception.ResourceNotFoundException;
 import com.todo.todo_app.repository.TodoRepository;
 import org.springframework.stereotype.Service;
 
@@ -56,18 +57,23 @@ public class TodoServiceImpl implements TodoService {
     public Todo getTodoById(Long id) {
 
         // finding todo using id
-        // if not found, returning null for now 
-        return repo.findById(id).orElse(null);
+       // updating the code to throw custom exception if todo not found
+       return repo.findById(id)
+        .orElseThrow(() -> new ResourceNotFoundException("Todo not found"));
+        //USES ARROW FUNCTION TO THROW EXCEPTION IF TODO NOT FOUND
     }
 
-    // UPDATE TODO
+       // update todo
     @Override
     public Todo updateTodo(Long id, TodoDTO dto) {
 
-      
-        Todo todo = repo.findById(id).orElse(null);
+       //UPDATING THIS ONE TOO TO THROW EXCEPTION IF TODO NOT FOUND
+
+        Todo todo = repo.findById(id)
+        .orElseThrow(() -> new ResourceNotFoundException("Todo not found"));
 
         // if not found, return null
+   
         if (todo == null) {
             return null;
         }
@@ -104,11 +110,17 @@ public class TodoServiceImpl implements TodoService {
     public void deleteTodo(Long id) {
 
         // find todo by id
-        Todo todo = repo.findById(id).orElse(null);
 
-        // if exists, delete it
-        if (todo != null) {
-            repo.delete(todo);
+        Todo todo = repo.findById(id)
+        .orElseThrow(() -> new ResourceNotFoundException("Todo not found"));
+        // if not found, return'
+   
+
+        if (todo == null) {
+            return;
         }
+
+        // deleting todo
+        repo.delete(todo);
     }
 }
