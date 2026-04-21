@@ -1,0 +1,1 @@
+this is the frontend folder and here we develop a basic frontend for the project without using any of the library
