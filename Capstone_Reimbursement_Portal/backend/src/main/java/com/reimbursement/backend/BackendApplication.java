@@ -11,14 +11,4 @@ public class BackendApplication {
 	}
 
 }
-// | Folder     | Purpose                      |
-// | ---------- | ---------------------------- |
-// | controller | APIs (what client calls)     |
-// | service    | business logic               |
-// | repository | database operations          |
-// | entity     | database tables              |
-// | dto        | request/response objects     |
-// | exception  | error handling               |
-// | config     | security/config              |
-// | enums      | fixed values (roles, status) |
-// | util       | helper functions             |
+
