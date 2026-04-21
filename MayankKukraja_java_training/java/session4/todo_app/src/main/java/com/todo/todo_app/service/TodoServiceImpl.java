@@ -11,9 +11,14 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.slf4j.Logger; // for logging
+import org.slf4j.LoggerFactory; // to create logger instance
+
 @Service
 public class TodoServiceImpl implements TodoService {
 
+    // creating logger instance for this class
+    private static final Logger logger = LoggerFactory.getLogger(TodoServiceImpl.class);
     // repo used to talk to database
     private final TodoRepository repo;
 
@@ -40,6 +45,9 @@ public class TodoServiceImpl implements TodoService {
     @Override
     public TodoResponseDTO createTodo(TodoDTO dto) {
 
+        // logging the creation of new todo with title
+        logger.info("Creating new todo with title: {}", dto.getTitle());
+
         Todo todo = new Todo();
 
         // taking values from dto and setting in entity
@@ -63,6 +71,8 @@ public class TodoServiceImpl implements TodoService {
 
     @Override
     public List<TodoResponseDTO> getAllTodos() {
+        
+        logger.info("Fetching all todos"); // logging the fetching of all todos
 
         List<Todo> todos = repo.findAll();
 
@@ -75,6 +85,8 @@ public class TodoServiceImpl implements TodoService {
     @Override
     public TodoResponseDTO getTodoById(Long id) {
 
+        logger.info("Fetching todo with id: {}", id); // logging the fetching of todo by id
+
         Todo todo = repo.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Todo not found"));
 
@@ -85,8 +97,9 @@ public class TodoServiceImpl implements TodoService {
     @Override
     public TodoResponseDTO updateTodo(Long id, TodoDTO dto) {
 
-        // UPDATING THIS ONE TOO TO THROW EXCEPTION IF TODO NOT FOUND
+        logger.info("Updating todo with id: {}", id);  // logging the updating of todo by id
 
+        // UPDATING THIS ONE TOO TO THROW EXCEPTION IF TODO NOT FOUND
         Todo todo = repo.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Todo not found"));
 
@@ -111,7 +124,7 @@ public class TodoServiceImpl implements TodoService {
 
                 todo.setStatus(newStatus);
             } else {
-                throw new IllegalArgumentException("Invalid status change"); //illegal arg, exc. used 
+                throw new IllegalArgumentException("Invalid status change"); // illegal arg, exc. used
             }
         }
         // saving updated todo
@@ -122,7 +135,7 @@ public class TodoServiceImpl implements TodoService {
     @Override
     public void deleteTodo(Long id) {
 
-        // find todo by id
+        logger.info("Deleting todo with id: {}", id); // logging the deletion of todo by id
 
         Todo todo = repo.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Todo not found"));
