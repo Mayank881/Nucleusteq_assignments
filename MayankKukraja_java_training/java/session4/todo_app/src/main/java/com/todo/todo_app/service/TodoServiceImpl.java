@@ -16,16 +16,18 @@ import org.slf4j.LoggerFactory; // to create logger instance
 
 @Service
 public class TodoServiceImpl implements TodoService {
-
+    
+    private final NotificationServiceClient notificationClient;
     // creating logger instance for this class
     private static final Logger logger = LoggerFactory.getLogger(TodoServiceImpl.class);
     // repo used to talk to database
     private final TodoRepository repo;
 
     // constructor injection
-    public TodoServiceImpl(TodoRepository repo) {
-        this.repo = repo;
-    }
+   public TodoServiceImpl(TodoRepository repo, NotificationServiceClient notificationClient) {
+    this.repo = repo;
+    this.notificationClient = notificationClient;
+}
 
     // method to map entity to response dto
     // this will help to not expose our entity directly to client
@@ -65,6 +67,8 @@ public class TodoServiceImpl implements TodoService {
 
         // save and convert to response dto
         Todo savedTodo = repo.save(todo);
+        // call notification service after creating todo
+        notificationClient.sendNotification("New TODO created with id: " + savedTodo.getId());
 
         return mapToDTO(savedTodo);
     }
