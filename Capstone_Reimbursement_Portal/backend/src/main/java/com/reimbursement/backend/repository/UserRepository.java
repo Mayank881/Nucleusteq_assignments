@@ -7,6 +7,3 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface UserRepository extends JpaRepository<User, Long> {
 
 }
-git add .
-git commit -m "Day 2: Completed repository layer for User and Claim"
-git push
