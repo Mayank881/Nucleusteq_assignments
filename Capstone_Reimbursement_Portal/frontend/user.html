@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Create User</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <h2>Create User</h2>
+
+    <div class="form-container">
+
+        <form id="userForm">
+
+            <div class="form-group">
+                <label>Name</label>
+                <input type="text" id="name">
+            </div>
+
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="email">
+            </div>
+
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="password">
+            </div>
+
+            <div class="form-group">
+                <label>Role</label>
+                <select id="role">
+                    <option value="EMPLOYEE">Employee</option>
+                    <option value="MANAGER">Manager</option>
+                    <option value="ADMIN">Admin</option>
+                </select>
+            </div>
+
+            <button type="submit">Create User</button>
+
+        </form>
+
+    </div>
+
+    <p id="message"></p>
+
+
+</body>
+
+</html>
