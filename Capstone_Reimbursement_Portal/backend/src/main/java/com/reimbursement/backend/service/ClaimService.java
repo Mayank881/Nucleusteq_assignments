@@ -1,8 +1,11 @@
 package com.reimbursement.backend.service;
 
+import com.reimbursement.backend.dto.ClaimRequestDTO;
+import com.reimbursement.backend.dto.ClaimResponseDTO;
 import com.reimbursement.backend.entity.Claim;
 import com.reimbursement.backend.entity.User;
 import com.reimbursement.backend.enums.ClaimStatus;
+import com.reimbursement.backend.exception.ResourceNotFoundException;
 import com.reimbursement.backend.repository.ClaimRepository;
 import com.reimbursement.backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,72 +26,102 @@ public class ClaimService {
     /**
      * submit a claim
      */
-    public Claim submitClaim(Claim claim, Long employeeId) {
+    public ClaimResponseDTO submitClaim(ClaimRequestDTO requestDTO, Long employeeId) {
 
-        User employee = userRepository.findById(employeeId).orElse(null);
+        User employee = userRepository.findById(employeeId)
+                .orElseThrow(() -> new ResourceNotFoundException("Employee not found"));
 
-        if (employee != null) {
+        Claim claim = new Claim();
+        claim.setAmount(requestDTO.getAmount());
+        claim.setDate(requestDTO.getDate());
+        claim.setDescription(requestDTO.getDescription());
+        claim.setStatus(ClaimStatus.SUBMITTED);
+        claim.setEmployee(employee);
 
-            // set employee
-            claim.setEmployee(employee);
+        // assign reviewer
+        if (employee.getManager() != null) {
+            claim.setReviewer(employee.getManager());
+        } else {
+            User admin = userRepository.findAll()
+                    .stream()
+                    .filter(u -> u.getRole().name().equals("ADMIN"))
+                    .findFirst()
+                    .orElseThrow(() -> new ResourceNotFoundException("Admin not found"));
 
-            // default status
-            claim.setStatus(ClaimStatus.SUBMITTED);
-
-            // assign reviewer
-            if (employee.getManager() != null) {
-                claim.setReviewer(employee.getManager());
-            } else {
-                // assign admin if no manager
-                User admin = userRepository.findAll()
-                        .stream()
-                        .filter(u -> u.getRole().name().equals("ADMIN"))
-                        .findFirst()
-                        .orElse(null);
-
-                claim.setReviewer(admin);
-            }
-
-            return claimRepository.save(claim);
+            claim.setReviewer(admin);
         }
 
-        return null;
+        Claim savedClaim = claimRepository.save(claim);
+
+        ClaimResponseDTO dto = new ClaimResponseDTO();
+        dto.setId(savedClaim.getId());
+        dto.setAmount(savedClaim.getAmount());
+        dto.setDescription(savedClaim.getDescription());
+        dto.setStatus(savedClaim.getStatus());
+
+        return dto;
     }
 
     /**
      * get all claims
      */
-    public List<Claim> getAllClaims() {
-        return claimRepository.findAll();
+    public List<ClaimResponseDTO> getAllClaims() {
+
+        List<Claim> claims = claimRepository.findAll();
+        List<ClaimResponseDTO> list = new java.util.ArrayList<>();
+
+        for (Claim c : claims) {
+            ClaimResponseDTO dto = new ClaimResponseDTO();
+            dto.setId(c.getId());
+            dto.setAmount(c.getAmount());
+            dto.setDescription(c.getDescription());
+            dto.setStatus(c.getStatus());
+
+            list.add(dto);
+        }
+
+        return list;
     }
 
     /**
      * approve claim
      */
-    public Claim approveClaim(Long claimId) {
+    public ClaimResponseDTO approveClaim(Long claimId) {
 
-        Claim claim = claimRepository.findById(claimId).orElse(null);
+        Claim claim = claimRepository.findById(claimId)
+                .orElseThrow(() -> new ResourceNotFoundException("Claim not found"));
 
-        if (claim != null) {
-            claim.setStatus(ClaimStatus.APPROVED);
-            return claimRepository.save(claim);
-        }
+        claim.setStatus(ClaimStatus.APPROVED);
 
-        return null;
+        Claim saved = claimRepository.save(claim);
+
+        ClaimResponseDTO dto = new ClaimResponseDTO();
+        dto.setId(saved.getId());
+        dto.setAmount(saved.getAmount());
+        dto.setDescription(saved.getDescription());
+        dto.setStatus(saved.getStatus());
+
+        return dto;
     }
 
     /**
      * reject claim
      */
-    public Claim rejectClaim(Long claimId) {
+    public ClaimResponseDTO rejectClaim(Long claimId) {
 
-        Claim claim = claimRepository.findById(claimId).orElse(null);
+        Claim claim = claimRepository.findById(claimId)
+                .orElseThrow(() -> new ResourceNotFoundException("Claim not found"));
 
-        if (claim != null) {
-            claim.setStatus(ClaimStatus.REJECTED);
-            return claimRepository.save(claim);
-        }
+        claim.setStatus(ClaimStatus.REJECTED);
 
-        return null;
+        Claim saved = claimRepository.save(claim);
+
+        ClaimResponseDTO dto = new ClaimResponseDTO();
+        dto.setId(saved.getId());
+        dto.setAmount(saved.getAmount());
+        dto.setDescription(saved.getDescription());
+        dto.setStatus(saved.getStatus());
+
+        return dto;
     }
 }

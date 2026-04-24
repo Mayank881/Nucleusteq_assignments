@@ -13,6 +13,10 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    /**
+     * handles cases when requested resource is not found
+     */
+
     @ExceptionHandler(ResourceNotFoundException.class)
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
