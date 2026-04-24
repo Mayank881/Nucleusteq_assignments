@@ -1,6 +1,7 @@
 package com.reimbursement.backend.controller;
 
-import com.reimbursement.backend.entity.User;
+import com.reimbursement.backend.dto.UserRequestDTO;
+import com.reimbursement.backend.dto.UserResponseDTO;
 import com.reimbursement.backend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -19,15 +20,16 @@ public class UserController {
      * create a new user
      */
     @PostMapping
-    public User createUser(@RequestBody User user) {
-        return userService.createUser(user);
+    public UserResponseDTO createUser(@jakarta.validation.Valid @RequestBody UserRequestDTO requestDTO) {
+
+        return userService.createUser(requestDTO);
     }
 
     /**
      * get all users
      */
     @GetMapping
-    public List<User> getAllUsers() {
+    public List<UserResponseDTO> getAllUsers() {
         return userService.getAllUsers();
     }
 
@@ -35,8 +37,8 @@ public class UserController {
      * assign manager to employee
      */
     @PutMapping("/{employeeId}/assign/{managerId}")
-    public User assignManager(@PathVariable Long employeeId,
-                              @PathVariable Long managerId) {
+    public UserResponseDTO assignManager(@PathVariable Long employeeId,
+            @PathVariable Long managerId) {
 
         return userService.assignManager(employeeId, managerId);
     }

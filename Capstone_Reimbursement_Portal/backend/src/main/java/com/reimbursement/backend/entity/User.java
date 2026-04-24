@@ -3,7 +3,8 @@ package com.reimbursement.backend.entity;
 import com.reimbursement.backend.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
-// using lombok to reduce boilerplate code for getters, setters, constructors etc.
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 
 // this class represents users table
 @Entity
@@ -20,13 +21,18 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // basic user info 
+    // basic user info
+
+    @NotBlank(message = "Name is required")
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false , unique = true)
+    @NotBlank(message = "Email is required")
+    @Email(message = "Invalid email format")
+    @Column(nullable = false, unique = true)
     private String email;
 
+    @NotBlank(message = "Password is required")
     @Column(nullable = false)
     private String password;
 
