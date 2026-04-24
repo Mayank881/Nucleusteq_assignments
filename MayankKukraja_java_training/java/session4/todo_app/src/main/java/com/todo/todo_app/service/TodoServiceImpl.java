@@ -89,8 +89,7 @@ public class TodoServiceImpl implements TodoService {
     @Override
     public TodoResponseDTO updateTodo(Long id, TodoDTO dto) {
 
-        // UPDATING THIS ONE TOO TO THROW EXCEPTION IF TODO NOT FOUND
-
+        // UPDATING THIS ONE TOO TO THROW EXCEPTION IF 
         Todo todo = repo.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Todo not found"));
 
@@ -122,7 +121,7 @@ public class TodoServiceImpl implements TodoService {
         return mapToDTO(repo.save(todo));
     }
 
-    // DELETE TODO
+    // DELETE todo
     @Override
     public void deleteTodo(Long id) {
 
