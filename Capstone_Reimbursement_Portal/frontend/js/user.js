@@ -1,16 +1,45 @@
-/*
- handles user form submission
- */
-document.getElementById("userForm").addEventListener("submit", function (e) {
+//handles user form submission with validation
 
-    e.preventDefault();
+ document.getElementById("userForm").addEventListener("submit", function (e) {
 
-    const userData = {
-        name: document.getElementById("name").value,
-        email: document.getElementById("email").value,
-        password: document.getElementById("password").value,
-        role: document.getElementById("role").value
-    };
+    e.preventDefault(); // prevent default form submission
+
+    const name = document.getElementById("name").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value.trim();
+    const role = document.getElementById("role").value;
+
+    const message = document.getElementById("message");
+
+    // Validation checks
+    if (name === "") {
+        message.innerText = "Name is required";
+        return;
+    }
+
+    if (email === "") {
+        message.innerText = "Email is required";
+        return;
+    }
+
+    // email format check
+    if (!email.includes("@")) {
+        message.innerText = "Invalid email format";
+        return;
+    }
+
+    if (password === "") {
+        message.innerText = "Password is required";
+        return;
+    }
+
+    if (password.length < 4) {
+        message.innerText = "Password must be at least 4 characters";
+        return;
+    }
+
+    //  If all valid we can proceed to submit data to backend
+    const userData = { name, email, password, role };
 
     fetch("http://localhost:8080/users", {
         method: "POST",
@@ -26,15 +55,14 @@ document.getElementById("userForm").addEventListener("submit", function (e) {
                 throw new Error(data.message);
             }
 
-            document.getElementById("message").innerText = "User created successfully";
+            message.innerText = "User created successfully";
             document.getElementById("userForm").reset();
         })
         .catch(err => {
-            document.getElementById("message").innerText = err.message;
+            message.innerText = err.message;
         });
 
 });
-
 
 /*
   loads all users and displays in table
