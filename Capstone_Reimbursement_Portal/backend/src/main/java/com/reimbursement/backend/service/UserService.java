@@ -2,6 +2,7 @@ package com.reimbursement.backend.service;
 
 import com.reimbursement.backend.exception.BadRequestException;
 import com.reimbursement.backend.exception.ResourceNotFoundException;
+import com.reimbursement.backend.mapper.UserMapper;
 import com.reimbursement.backend.dto.UserRequestDTO;
 import com.reimbursement.backend.dto.UserResponseDTO;
 import com.reimbursement.backend.entity.User;
@@ -9,7 +10,7 @@ import com.reimbursement.backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,29 +27,21 @@ public class UserService {
      */
     public UserResponseDTO createUser(UserRequestDTO requestDTO) {
 
+        // email validation
         if (userRepository.existsByEmail(requestDTO.getEmail())) {
-           throw new BadRequestException("Email already exists");
+            throw new BadRequestException("Email already exists");
         }
 
         if (!requestDTO.getEmail().endsWith("@company.com")) {
-            throw new BadRequestException("Email must be a company email (@company.com)");
+            throw new BadRequestException("Invalid email domain");
         }
 
-        User user = new User();
-        user.setName(requestDTO.getName());
-        user.setEmail(requestDTO.getEmail());
-        user.setPassword(requestDTO.getPassword());
-        user.setRole(requestDTO.getRole());
+        // map DTO to entity and save
+        User user = UserMapper.toEntity(requestDTO);
 
         User savedUser = userRepository.save(user);
 
-        UserResponseDTO responseDTO = new UserResponseDTO();
-        responseDTO.setId(savedUser.getId());
-        responseDTO.setName(savedUser.getName());
-        responseDTO.setEmail(savedUser.getEmail());
-        responseDTO.setRole(savedUser.getRole());
-
-        return responseDTO;
+        return UserMapper.toDTO(savedUser);
     }
 
     /**
@@ -58,17 +51,10 @@ public class UserService {
 
         List<User> users = userRepository.findAll();
 
-        List<UserResponseDTO> responseList = new java.util.ArrayList<>();
+        List<UserResponseDTO> responseList = new ArrayList<>();
 
         for (User user : users) {
-
-            UserResponseDTO dto = new UserResponseDTO();
-            dto.setId(user.getId());
-            dto.setName(user.getName());
-            dto.setEmail(user.getEmail());
-            dto.setRole(user.getRole());
-
-            responseList.add(dto);
+            responseList.add(UserMapper.toDTO(user));
         }
 
         return responseList;
@@ -80,7 +66,7 @@ public class UserService {
     public UserResponseDTO assignManager(Long employeeId, Long managerId) {
 
         User employee = userRepository.findById(employeeId)
-              .orElseThrow(() -> new ResourceNotFoundException("Employee not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Employee not found"));
 
         User manager = userRepository.findById(managerId)
                 .orElseThrow(() -> new ResourceNotFoundException("Manager not found"));
@@ -89,12 +75,6 @@ public class UserService {
 
         User savedUser = userRepository.save(employee);
 
-        UserResponseDTO dto = new UserResponseDTO();
-        dto.setId(savedUser.getId());
-        dto.setName(savedUser.getName());
-        dto.setEmail(savedUser.getEmail());
-        dto.setRole(savedUser.getRole());
-
-        return dto;
+        return UserMapper.toDTO(savedUser); 
     }
 }

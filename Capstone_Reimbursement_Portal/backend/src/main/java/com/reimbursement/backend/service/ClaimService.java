@@ -1,3 +1,4 @@
+
 package com.reimbursement.backend.service;
 
 import com.reimbursement.backend.dto.ClaimRequestDTO;
@@ -6,6 +7,7 @@ import com.reimbursement.backend.entity.Claim;
 import com.reimbursement.backend.entity.User;
 import com.reimbursement.backend.enums.ClaimStatus;
 import com.reimbursement.backend.exception.ResourceNotFoundException;
+import com.reimbursement.backend.mapper.ClaimMapper;
 import com.reimbursement.backend.repository.ClaimRepository;
 import com.reimbursement.backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,10 +33,9 @@ public class ClaimService {
         User employee = userRepository.findById(employeeId)
                 .orElseThrow(() -> new ResourceNotFoundException("Employee not found"));
 
-        Claim claim = new Claim();
-        claim.setAmount(requestDTO.getAmount());
-        claim.setDate(requestDTO.getDate());
-        claim.setDescription(requestDTO.getDescription());
+        
+        Claim claim = ClaimMapper.toEntity(requestDTO);
+
         claim.setStatus(ClaimStatus.SUBMITTED);
         claim.setEmployee(employee);
 
@@ -53,13 +54,7 @@ public class ClaimService {
 
         Claim savedClaim = claimRepository.save(claim);
 
-        ClaimResponseDTO dto = new ClaimResponseDTO();
-        dto.setId(savedClaim.getId());
-        dto.setAmount(savedClaim.getAmount());
-        dto.setDescription(savedClaim.getDescription());
-        dto.setStatus(savedClaim.getStatus());
-
-        return dto;
+        return ClaimMapper.toDTO(savedClaim);
     }
 
     /**
@@ -71,13 +66,7 @@ public class ClaimService {
         List<ClaimResponseDTO> list = new java.util.ArrayList<>();
 
         for (Claim c : claims) {
-            ClaimResponseDTO dto = new ClaimResponseDTO();
-            dto.setId(c.getId());
-            dto.setAmount(c.getAmount());
-            dto.setDescription(c.getDescription());
-            dto.setStatus(c.getStatus());
-
-            list.add(dto);
+            list.add(ClaimMapper.toDTO(c)); 
         }
 
         return list;
@@ -95,13 +84,7 @@ public class ClaimService {
 
         Claim saved = claimRepository.save(claim);
 
-        ClaimResponseDTO dto = new ClaimResponseDTO();
-        dto.setId(saved.getId());
-        dto.setAmount(saved.getAmount());
-        dto.setDescription(saved.getDescription());
-        dto.setStatus(saved.getStatus());
-
-        return dto;
+        return ClaimMapper.toDTO(saved); 
     }
 
     /**
@@ -116,12 +99,7 @@ public class ClaimService {
 
         Claim saved = claimRepository.save(claim);
 
-        ClaimResponseDTO dto = new ClaimResponseDTO();
-        dto.setId(saved.getId());
-        dto.setAmount(saved.getAmount());
-        dto.setDescription(saved.getDescription());
-        dto.setStatus(saved.getStatus());
-
-        return dto;
+        return ClaimMapper.toDTO(saved);
     }
 }
+
