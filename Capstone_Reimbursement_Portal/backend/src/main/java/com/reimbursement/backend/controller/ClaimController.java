@@ -12,8 +12,8 @@ import java.util.List;
  * handles claim APIs
  */
 @CrossOrigin(origins = {
-    "http://localhost:5500",
-    "http://127.0.0.1:5500"
+        "http://localhost:5500",
+        "http://127.0.0.1:5500"
 })
 @RestController
 @RequestMapping("/claims")
@@ -43,16 +43,18 @@ public class ClaimController {
     /**
      * approve claim
      */
-    @PutMapping("/approve/{claimId}")
-    public ClaimResponseDTO approveClaim(@PathVariable Long claimId) {
-        return claimService.approveClaim(claimId);
+    @PutMapping("/{id}/approve")
+    public ClaimResponseDTO approveClaim(@PathVariable Long id,
+            @RequestParam Long reviewerId) {
+        return claimService.approveClaim(id, reviewerId);
     }
 
     /**
      * reject claim
      */
-    @PutMapping("/reject/{claimId}")
-    public ClaimResponseDTO rejectClaim(@PathVariable Long claimId) {
-        return claimService.rejectClaim(claimId);
+    @PutMapping("/{id}/reject")
+    public ClaimResponseDTO rejectClaim(@PathVariable Long id,
+            @RequestParam Long reviewerId) {
+        return claimService.rejectClaim(id, reviewerId);
     }
 }

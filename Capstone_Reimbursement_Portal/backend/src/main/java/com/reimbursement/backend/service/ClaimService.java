@@ -7,6 +7,7 @@ import com.reimbursement.backend.entity.Claim;
 import com.reimbursement.backend.entity.User;
 import com.reimbursement.backend.enums.ClaimStatus;
 import com.reimbursement.backend.exception.ResourceNotFoundException;
+import com.reimbursement.backend.exception.BadRequestException;
 import com.reimbursement.backend.mapper.ClaimMapper;
 import com.reimbursement.backend.repository.ClaimRepository;
 import com.reimbursement.backend.repository.UserRepository;
@@ -33,7 +34,6 @@ public class ClaimService {
         User employee = userRepository.findById(employeeId)
                 .orElseThrow(() -> new ResourceNotFoundException("Employee not found"));
 
-        
         Claim claim = ClaimMapper.toEntity(requestDTO);
 
         claim.setStatus(ClaimStatus.SUBMITTED);
@@ -66,7 +66,7 @@ public class ClaimService {
         List<ClaimResponseDTO> list = new java.util.ArrayList<>();
 
         for (Claim c : claims) {
-            list.add(ClaimMapper.toDTO(c)); 
+            list.add(ClaimMapper.toDTO(c));
         }
 
         return list;
@@ -75,31 +75,52 @@ public class ClaimService {
     /**
      * approve claim
      */
-    public ClaimResponseDTO approveClaim(Long claimId) {
+    public ClaimResponseDTO approveClaim(Long claimId, Long reviewerId) {
 
         Claim claim = claimRepository.findById(claimId)
                 .orElseThrow(() -> new ResourceNotFoundException("Claim not found"));
+
+        // Check correct reviewer
+        if (!claim.getReviewer().getId().equals(reviewerId)) {
+            throw new BadRequestException("Only assigned reviewer can approve this claim");
+        }
+
+        if (claim.getStatus() != ClaimStatus.SUBMITTED) {
+            throw new BadRequestException("Claim already processed");
+        }
 
         claim.setStatus(ClaimStatus.APPROVED);
 
         Claim saved = claimRepository.save(claim);
 
-        return ClaimMapper.toDTO(saved); 
+        return ClaimMapper.toDTO(saved);
     }
 
     /**
      * reject claim
      */
-    public ClaimResponseDTO rejectClaim(Long claimId) {
+  
 
-        Claim claim = claimRepository.findById(claimId)
-                .orElseThrow(() -> new ResourceNotFoundException("Claim not found"));
+public ClaimResponseDTO rejectClaim(Long claimId, Long reviewerId) {
 
-        claim.setStatus(ClaimStatus.REJECTED);
+    Claim claim = claimRepository.findById(claimId)
+            .orElseThrow(() -> new ResourceNotFoundException("Claim not found"));
 
-        Claim saved = claimRepository.save(claim);
-
-        return ClaimMapper.toDTO(saved);
+    //  Check correct reviewer
+    if (!claim.getReviewer().getId().equals(reviewerId)) {
+        throw new BadRequestException("Only assigned reviewer can reject this claim");
     }
+
+    // Prevent re-processing
+    if (claim.getStatus() != ClaimStatus.SUBMITTED) {
+        throw new BadRequestException("Claim already processed");
+    }
+
+    claim.setStatus(ClaimStatus.REJECTED);
+
+    Claim saved = claimRepository.save(claim);
+
+    return ClaimMapper.toDTO(saved);
 }
 
+}

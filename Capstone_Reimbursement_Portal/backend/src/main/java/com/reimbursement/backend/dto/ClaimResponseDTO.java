@@ -18,5 +18,8 @@ public class ClaimResponseDTO {
     private String description;
     private ClaimStatus status;
     private LocalDate date;
+    private Long employeeId;
+    private Long reviewerId;
+
 }
 
