@@ -1,7 +1,7 @@
-/**
- * handles user form submission
+/*
+ handles user form submission
  */
-document.getElementById("userForm").addEventListener("submit", function(e) {
+document.getElementById("userForm").addEventListener("submit", function (e) {
 
     e.preventDefault();
 
@@ -19,18 +19,52 @@ document.getElementById("userForm").addEventListener("submit", function(e) {
         },
         body: JSON.stringify(userData)
     })
-    .then(async res => {
-        const data = await res.json();
+        .then(async res => {
+            const data = await res.json();
 
-        if (!res.ok) {
-            throw new Error(data.message || "Failed to create user");
-        }
+            if (!res.ok) {
+                throw new Error(data.message);
+            }
 
-        document.getElementById("message").innerText = "User created successfully";
-        document.getElementById("userForm").reset();   // clear form
-    })
-    .catch(err => {
-        document.getElementById("message").innerText = err.message;
-    });
+            document.getElementById("message").innerText = "User created successfully";
+            document.getElementById("userForm").reset();
+        })
+        .catch(err => {
+            document.getElementById("message").innerText = err.message;
+        });
 
 });
+
+
+/*
+  loads all users and displays in table
+ */
+function loadUsers() {
+
+    fetch("http://localhost:8080/users")
+        .then(res => res.json())
+        .then(data => {
+
+            const tableBody = document.getElementById("userTableBody");
+            tableBody.innerHTML = "";
+
+            data.forEach(user => {
+
+                const row = `
+                <tr>
+                    <td>${user.id}</td>
+                    <td>${user.name}</td>
+                    <td>${user.email}</td>
+                    <td>${user.role}</td>
+                </tr>
+            `;
+
+                tableBody.innerHTML += row;
+            });
+
+            document.getElementById("userTable").style.display = "table";
+        })
+        .catch(err => {
+            document.getElementById("message").innerText = "Error loading users";
+        });
+}
