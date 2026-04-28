@@ -3,12 +3,13 @@ package com.reimbursement.backend.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import com.reimbursement.backend.dto.ApiResponse;
+
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * handles all exceptions globally
@@ -21,12 +22,9 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(ResourceNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public Map<String, String> handleNotFound(ResourceNotFoundException ex) {
+    public ApiResponse<Object> handleNotFound(ResourceNotFoundException ex) {
 
-        Map<String, String> response = new HashMap<>();
-        response.put("message", ex.getMessage());
-
-        return response;
+        return new ApiResponse<>(false, ex.getMessage(), null);
     }
 
     /**
@@ -34,12 +32,9 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(BadRequestException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Map<String, String> handleBadRequest(BadRequestException ex) {
+    public ApiResponse<Object> handleBadRequest(BadRequestException ex) {
 
-        Map<String, String> response = new HashMap<>();
-        response.put("message", ex.getMessage());
-
-        return response;
+        return new ApiResponse<>(false, ex.getMessage(), null);
     }
 
     /**
@@ -47,18 +42,14 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Map<String, String> handleValidation(MethodArgumentNotValidException ex) {
-
-        Map<String, String> response = new HashMap<>();
+    public ApiResponse<Object> handleValidation(MethodArgumentNotValidException ex) {
 
         String msg = ex.getBindingResult()
                 .getFieldErrors()
                 .get(0)
                 .getDefaultMessage();
 
-        response.put("message", msg);
-
-        return response;
+        return new ApiResponse<>(false, msg, null);
     }
 
     /**
@@ -66,12 +57,8 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public Map<String, String> handleGeneral(Exception ex) {
+    public ApiResponse<Object> handleGeneral(Exception ex) {
 
-        Map<String, String> response = new HashMap<>();
-        response.put("message", "Something went wrong");
-
-        return response;
+        return new ApiResponse<>(false, "Something went wrong", null);
     }
 }
-

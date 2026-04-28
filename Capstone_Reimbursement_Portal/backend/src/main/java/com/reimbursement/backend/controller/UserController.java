@@ -1,6 +1,7 @@
 
 package com.reimbursement.backend.controller;
 
+import com.reimbursement.backend.dto.ApiResponse;
 import com.reimbursement.backend.dto.UserRequestDTO;
 import com.reimbursement.backend.dto.UserResponseDTO;
 import com.reimbursement.backend.service.UserService;
@@ -23,8 +24,8 @@ import java.util.List;
  * handles user APIs
  */
 @CrossOrigin(origins = {
-    "http://localhost:5500",
-    "http://127.0.0.1:5500"
+        "http://localhost:5500",
+        "http://127.0.0.1:5500"
 })
 @RestController
 @RequestMapping("/users")
@@ -37,24 +38,31 @@ public class UserController {
      * create a new user
      */
     @PostMapping
-    public UserResponseDTO createUser(@Valid @RequestBody UserRequestDTO requestDTO) {
-        return userService.createUser(requestDTO);
+    public ApiResponse<UserResponseDTO> createUser(@Valid @RequestBody UserRequestDTO requestDTO) {
+
+        UserResponseDTO user = userService.createUser(requestDTO);
+
+        return new ApiResponse<>(true, "User created successfully", user);
     }
 
     /**
      * get all users
      */
     @GetMapping
-    public List<UserResponseDTO> getAllUsers() {
-        return userService.getAllUsers();
+    public ApiResponse<List<UserResponseDTO>> getAllUsers() {
+
+        List<UserResponseDTO> users = userService.getAllUsers();
+
+        return new ApiResponse<>(true, "Users fetched successfully", users);
     }
 
     /**
      * assign manager to employee
      */
     @PutMapping("/{employeeId}/assign/{managerId}")
-    public UserResponseDTO assignManager(@PathVariable Long employeeId,
-                                         @PathVariable Long managerId) {
-        return userService.assignManager(employeeId, managerId);
+    public ApiResponse<UserResponseDTO> assignManager(@PathVariable Long employeeId,
+            @PathVariable Long managerId) {
+        UserResponseDTO updatedUser = userService.assignManager(employeeId, managerId);
+        return new ApiResponse<>(true, "Manager assigned successfully", updatedUser);
     }
 }

@@ -1,5 +1,6 @@
 package com.reimbursement.backend.controller;
 
+import com.reimbursement.backend.dto.ApiResponse;
 import com.reimbursement.backend.dto.ClaimRequestDTO;
 import com.reimbursement.backend.dto.ClaimResponseDTO;
 import com.reimbursement.backend.service.ClaimService;
@@ -26,35 +27,46 @@ public class ClaimController {
      * submit a claim
      */
     @PostMapping("/{employeeId}")
-    public ClaimResponseDTO submitClaim(@RequestBody ClaimRequestDTO requestDTO,
+    public ApiResponse<ClaimResponseDTO> submitClaim(@RequestBody ClaimRequestDTO requestDTO,
             @PathVariable Long employeeId) {
 
-        return claimService.submitClaim(requestDTO, employeeId);
+        ClaimResponseDTO claim = claimService.submitClaim(requestDTO, employeeId);
+
+        return new ApiResponse<>(true, "Claim submitted successfully", claim);
     }
 
     /**
      * get all claims
      */
     @GetMapping
-    public List<ClaimResponseDTO> getAllClaims() {
-        return claimService.getAllClaims();
+    public ApiResponse<List<ClaimResponseDTO>> getAllClaims() {
+
+        List<ClaimResponseDTO> claims = claimService.getAllClaims();
+
+        return new ApiResponse<>(true, "Claims fetched successfully", claims);
     }
 
     /**
      * approve claim
      */
     @PutMapping("/{id}/approve")
-    public ClaimResponseDTO approveClaim(@PathVariable Long id,
+    public ApiResponse<ClaimResponseDTO> approveClaim(@PathVariable Long id,
             @RequestParam Long reviewerId) {
-        return claimService.approveClaim(id, reviewerId);
+
+        ClaimResponseDTO claim = claimService.approveClaim(id, reviewerId);
+
+        return new ApiResponse<>(true, "Claim approved successfully", claim);
     }
 
     /**
      * reject claim
      */
     @PutMapping("/{id}/reject")
-    public ClaimResponseDTO rejectClaim(@PathVariable Long id,
+    public ApiResponse<ClaimResponseDTO> rejectClaim(@PathVariable Long id,
             @RequestParam Long reviewerId) {
-        return claimService.rejectClaim(id, reviewerId);
+
+        ClaimResponseDTO claim = claimService.rejectClaim(id, reviewerId);
+
+        return new ApiResponse<>(true, "Claim rejected successfully", claim);
     }
 }
