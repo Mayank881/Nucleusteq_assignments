@@ -1,11 +1,24 @@
+
 package com.reimbursement.backend.controller;
 
 import com.reimbursement.backend.dto.ApiResponse;
 import com.reimbursement.backend.dto.ClaimRequestDTO;
 import com.reimbursement.backend.dto.ClaimResponseDTO;
 import com.reimbursement.backend.service.ClaimService;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 
 import java.util.List;
 
@@ -27,46 +40,56 @@ public class ClaimController {
      * submit a claim
      */
     @PostMapping("/{employeeId}")
-    public ApiResponse<ClaimResponseDTO> submitClaim(@RequestBody ClaimRequestDTO requestDTO,
+    public ResponseEntity<ApiResponse<ClaimResponseDTO>> submitClaim(
+            @RequestBody ClaimRequestDTO requestDTO,
             @PathVariable Long employeeId) {
 
         ClaimResponseDTO claim = claimService.submitClaim(requestDTO, employeeId);
 
-        return new ApiResponse<>(true, "Claim submitted successfully", claim);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(new ApiResponse<>(true, "Claim submitted successfully", claim));
     }
 
     /**
      * get all claims
      */
     @GetMapping
-    public ApiResponse<List<ClaimResponseDTO>> getAllClaims() {
+    public ResponseEntity<ApiResponse<List<ClaimResponseDTO>>> getAllClaims() {
 
         List<ClaimResponseDTO> claims = claimService.getAllClaims();
 
-        return new ApiResponse<>(true, "Claims fetched successfully", claims);
+        return ResponseEntity.ok(
+                new ApiResponse<>(true, "Claims fetched successfully", claims)
+        );
     }
 
     /**
      * approve claim
      */
     @PutMapping("/{id}/approve")
-    public ApiResponse<ClaimResponseDTO> approveClaim(@PathVariable Long id,
+    public ResponseEntity<ApiResponse<ClaimResponseDTO>> approveClaim(
+            @PathVariable Long id,
             @RequestParam Long reviewerId) {
 
         ClaimResponseDTO claim = claimService.approveClaim(id, reviewerId);
 
-        return new ApiResponse<>(true, "Claim approved successfully", claim);
+        return ResponseEntity.ok(
+                new ApiResponse<>(true, "Claim approved successfully", claim)
+        );
     }
 
     /**
      * reject claim
      */
     @PutMapping("/{id}/reject")
-    public ApiResponse<ClaimResponseDTO> rejectClaim(@PathVariable Long id,
+    public ResponseEntity<ApiResponse<ClaimResponseDTO>> rejectClaim(
+            @PathVariable Long id,
             @RequestParam Long reviewerId) {
 
         ClaimResponseDTO claim = claimService.rejectClaim(id, reviewerId);
 
-        return new ApiResponse<>(true, "Claim rejected successfully", claim);
+        return ResponseEntity.ok(
+                new ApiResponse<>(true, "Claim rejected successfully", claim)
+        );
     }
 }

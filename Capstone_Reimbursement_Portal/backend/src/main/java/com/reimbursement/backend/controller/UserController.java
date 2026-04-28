@@ -1,4 +1,3 @@
-
 package com.reimbursement.backend.controller;
 
 import com.reimbursement.backend.dto.ApiResponse;
@@ -17,6 +16,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 
 import java.util.List;
 
@@ -38,31 +40,41 @@ public class UserController {
      * create a new user
      */
     @PostMapping
-    public ApiResponse<UserResponseDTO> createUser(@Valid @RequestBody UserRequestDTO requestDTO) {
+    public ResponseEntity<ApiResponse<UserResponseDTO>> createUser(
+            @Valid @RequestBody UserRequestDTO requestDTO) {
 
         UserResponseDTO user = userService.createUser(requestDTO);
 
-        return new ApiResponse<>(true, "User created successfully", user);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(new ApiResponse<>(true, "User created successfully", user));
     }
 
     /**
      * get all users
      */
     @GetMapping
-    public ApiResponse<List<UserResponseDTO>> getAllUsers() {
+    public ResponseEntity<ApiResponse<List<UserResponseDTO>>> getAllUsers() {
 
         List<UserResponseDTO> users = userService.getAllUsers();
 
-        return new ApiResponse<>(true, "Users fetched successfully", users);
+        return ResponseEntity.ok(
+                new ApiResponse<>(true, "Users fetched successfully", users)
+        );
     }
 
     /**
      * assign manager to employee
      */
     @PutMapping("/{employeeId}/assign/{managerId}")
-    public ApiResponse<UserResponseDTO> assignManager(@PathVariable Long employeeId,
+    public ResponseEntity<ApiResponse<UserResponseDTO>> assignManager(
+            @PathVariable Long employeeId,
             @PathVariable Long managerId) {
+
         UserResponseDTO updatedUser = userService.assignManager(employeeId, managerId);
-        return new ApiResponse<>(true, "Manager assigned successfully", updatedUser);
+
+        return ResponseEntity.ok(
+                new ApiResponse<>(true, "Manager assigned successfully", updatedUser)
+        );
     }
 }
+
