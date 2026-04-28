@@ -1,5 +1,6 @@
 package com.reimbursement.backend.service;
 
+import com.reimbursement.backend.constants.Messages;
 import com.reimbursement.backend.exception.BadRequestException;
 import com.reimbursement.backend.exception.ResourceNotFoundException;
 import com.reimbursement.backend.mapper.UserMapper;
@@ -7,6 +8,7 @@ import com.reimbursement.backend.dto.UserRequestDTO;
 import com.reimbursement.backend.dto.UserResponseDTO;
 import com.reimbursement.backend.entity.User;
 import com.reimbursement.backend.repository.UserRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,11 +31,11 @@ public class UserService {
 
         // email validation
         if (userRepository.existsByEmail(requestDTO.getEmail())) {
-            throw new BadRequestException("Email already exists");
+            throw new BadRequestException(Messages.EMAIL_EXISTS);
         }
 
         if (!requestDTO.getEmail().endsWith("@company.com")) {
-            throw new BadRequestException("Invalid email domain");
+            throw new BadRequestException(Messages.INVALID_EMAIL_DOMAIN);
         }
 
         // map DTO to entity and save
@@ -66,15 +68,15 @@ public class UserService {
     public UserResponseDTO assignManager(Long employeeId, Long managerId) {
 
         User employee = userRepository.findById(employeeId)
-                .orElseThrow(() -> new ResourceNotFoundException("Employee not found"));
+                .orElseThrow(() -> new ResourceNotFoundException(Messages.EMPLOYEE_NOT_FOUND));
 
         User manager = userRepository.findById(managerId)
-                .orElseThrow(() -> new ResourceNotFoundException("Manager not found"));
+                .orElseThrow(() -> new ResourceNotFoundException(Messages.MANAGER_NOT_FOUND));
 
         employee.setManager(manager);
 
         User savedUser = userRepository.save(employee);
 
-        return UserMapper.toDTO(savedUser); 
+        return UserMapper.toDTO(savedUser);
     }
 }

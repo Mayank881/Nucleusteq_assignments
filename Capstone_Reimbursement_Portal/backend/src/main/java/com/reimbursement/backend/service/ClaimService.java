@@ -1,4 +1,3 @@
-
 package com.reimbursement.backend.service;
 
 import com.reimbursement.backend.dto.ClaimRequestDTO;
@@ -11,9 +10,12 @@ import com.reimbursement.backend.exception.BadRequestException;
 import com.reimbursement.backend.mapper.ClaimMapper;
 import com.reimbursement.backend.repository.ClaimRepository;
 import com.reimbursement.backend.repository.UserRepository;
+import com.reimbursement.backend.constants.Messages;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 // handles claim logic
@@ -32,7 +34,7 @@ public class ClaimService {
     public ClaimResponseDTO submitClaim(ClaimRequestDTO requestDTO, Long employeeId) {
 
         User employee = userRepository.findById(employeeId)
-                .orElseThrow(() -> new ResourceNotFoundException("Employee not found"));
+                .orElseThrow(() -> new ResourceNotFoundException(Messages.EMPLOYEE_NOT_FOUND));
 
         Claim claim = ClaimMapper.toEntity(requestDTO);
 
@@ -47,7 +49,7 @@ public class ClaimService {
                     .stream()
                     .filter(u -> u.getRole().name().equals("ADMIN"))
                     .findFirst()
-                    .orElseThrow(() -> new ResourceNotFoundException("Admin not found"));
+                    .orElseThrow(() -> new ResourceNotFoundException(Messages.USER_NOT_FOUND));
 
             claim.setReviewer(admin);
         }
@@ -63,7 +65,7 @@ public class ClaimService {
     public List<ClaimResponseDTO> getAllClaims() {
 
         List<Claim> claims = claimRepository.findAll();
-        List<ClaimResponseDTO> list = new java.util.ArrayList<>();
+        List<ClaimResponseDTO> list = new ArrayList<>();
 
         for (Claim c : claims) {
             list.add(ClaimMapper.toDTO(c));
@@ -78,15 +80,16 @@ public class ClaimService {
     public ClaimResponseDTO approveClaim(Long claimId, Long reviewerId) {
 
         Claim claim = claimRepository.findById(claimId)
-                .orElseThrow(() -> new ResourceNotFoundException("Claim not found"));
+                .orElseThrow(() -> new ResourceNotFoundException(Messages.CLAIM_NOT_FOUND));
 
-        // Check correct reviewer
+        // check correct reviewer
         if (!claim.getReviewer().getId().equals(reviewerId)) {
-            throw new BadRequestException("Only assigned reviewer can approve this claim");
+            throw new BadRequestException(Messages.UNAUTHORIZED_REVIEWER);
         }
 
+        // prevent re-processing
         if (claim.getStatus() != ClaimStatus.SUBMITTED) {
-            throw new BadRequestException("Claim already processed");
+            throw new BadRequestException(Messages.CLAIM_ALREADY_PROCESSED);
         }
 
         claim.setStatus(ClaimStatus.APPROVED);
@@ -99,28 +102,26 @@ public class ClaimService {
     /**
      * reject claim
      */
-  
+    public ClaimResponseDTO rejectClaim(Long claimId, Long reviewerId) {
 
-public ClaimResponseDTO rejectClaim(Long claimId, Long reviewerId) {
+        Claim claim = claimRepository.findById(claimId)
+                .orElseThrow(() -> new ResourceNotFoundException(Messages.CLAIM_NOT_FOUND));
 
-    Claim claim = claimRepository.findById(claimId)
-            .orElseThrow(() -> new ResourceNotFoundException("Claim not found"));
+        // check correct reviewer
+        if (!claim.getReviewer().getId().equals(reviewerId)) {
+            throw new BadRequestException(Messages.UNAUTHORIZED_REVIEWER);
+        }
 
-    //  Check correct reviewer
-    if (!claim.getReviewer().getId().equals(reviewerId)) {
-        throw new BadRequestException("Only assigned reviewer can reject this claim");
+        // prevent re-processing
+        if (claim.getStatus() != ClaimStatus.SUBMITTED) {
+            throw new BadRequestException(Messages.CLAIM_ALREADY_PROCESSED);
+        }
+
+        claim.setStatus(ClaimStatus.REJECTED);
+
+        Claim saved = claimRepository.save(claim);
+
+        return ClaimMapper.toDTO(saved);
     }
-
-    // Prevent re-processing
-    if (claim.getStatus() != ClaimStatus.SUBMITTED) {
-        throw new BadRequestException("Claim already processed");
-    }
-
-    claim.setStatus(ClaimStatus.REJECTED);
-
-    Claim saved = claimRepository.save(claim);
-
-    return ClaimMapper.toDTO(saved);
 }
 
-}
