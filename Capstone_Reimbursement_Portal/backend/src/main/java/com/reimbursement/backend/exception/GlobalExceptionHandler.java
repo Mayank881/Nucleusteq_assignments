@@ -1,7 +1,10 @@
+
 package com.reimbursement.backend.exception;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.util.HashMap;
@@ -16,9 +19,7 @@ public class GlobalExceptionHandler {
     /**
      * handles cases when requested resource is not found
      */
-
     @ExceptionHandler(ResourceNotFoundException.class)
-
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public Map<String, String> handleNotFound(ResourceNotFoundException ex) {
 
@@ -32,7 +33,6 @@ public class GlobalExceptionHandler {
      * handles bad request exceptions like invalid input or duplicate data
      */
     @ExceptionHandler(BadRequestException.class)
-
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Map<String, String> handleBadRequest(BadRequestException ex) {
 
@@ -43,27 +43,13 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * handles unexpected server errors
-     */
-    @ExceptionHandler(Exception.class)
-
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public Map<String, String> handleGeneral(Exception ex) {
-
-        Map<String, String> response = new HashMap<>();
-        response.put("message", "Something went wrong");
-
-        return response;
-    }
-
-    /**
-     * handles validation errors
+     * handles validation errors (DTO validation)
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public java.util.Map<String, String> handleValidation(MethodArgumentNotValidException ex) {
+    public Map<String, String> handleValidation(MethodArgumentNotValidException ex) {
 
-        java.util.Map<String, String> response = new java.util.HashMap<>();
+        Map<String, String> response = new HashMap<>();
 
         String msg = ex.getBindingResult()
                 .getFieldErrors()
@@ -74,4 +60,18 @@ public class GlobalExceptionHandler {
 
         return response;
     }
+
+    /**
+     * handles unexpected server errors
+     */
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public Map<String, String> handleGeneral(Exception ex) {
+
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Something went wrong");
+
+        return response;
+    }
 }
+

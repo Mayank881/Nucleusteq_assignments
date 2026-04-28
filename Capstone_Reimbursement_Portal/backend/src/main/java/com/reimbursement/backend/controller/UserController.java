@@ -1,10 +1,21 @@
+
 package com.reimbursement.backend.controller;
 
 import com.reimbursement.backend.dto.UserRequestDTO;
 import com.reimbursement.backend.dto.UserResponseDTO;
 import com.reimbursement.backend.service.UserService;
+
+import jakarta.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
@@ -26,8 +37,7 @@ public class UserController {
      * create a new user
      */
     @PostMapping
-    public UserResponseDTO createUser(@jakarta.validation.Valid @RequestBody UserRequestDTO requestDTO) {
-
+    public UserResponseDTO createUser(@Valid @RequestBody UserRequestDTO requestDTO) {
         return userService.createUser(requestDTO);
     }
 
@@ -44,8 +54,7 @@ public class UserController {
      */
     @PutMapping("/{employeeId}/assign/{managerId}")
     public UserResponseDTO assignManager(@PathVariable Long employeeId,
-            @PathVariable Long managerId) {
-
+                                         @PathVariable Long managerId) {
         return userService.assignManager(employeeId, managerId);
     }
 }
