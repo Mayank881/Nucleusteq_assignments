@@ -1,8 +1,10 @@
-//handles user form submission with validation
 
- document.getElementById("userForm").addEventListener("submit", function (e) {
+/**
+ * Handles user form submission with validation and API call
+ */
+document.getElementById("userForm").addEventListener("submit", async function (e) {
 
-    e.preventDefault(); // prevent default form submission
+    e.preventDefault();
 
     const name = document.getElementById("name").value.trim();
     const email = document.getElementById("email").value.trim();
@@ -11,7 +13,7 @@
 
     const message = document.getElementById("message");
 
-    // Validation checks
+    // validate inputs
     if (name === "") {
         message.innerText = "Name is required";
         return;
@@ -22,7 +24,6 @@
         return;
     }
 
-    // email format check
     if (!email.includes("@")) {
         message.innerText = "Invalid email format";
         return;
@@ -38,47 +39,40 @@
         return;
     }
 
-    //  If all valid we can proceed to submit data to backend
     const userData = { name, email, password, role };
 
-    fetch("http://localhost:8080/users", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(userData)
-    })
-        .then(async res => {
-            const data = await res.json();
+    try {
+        const res = await postRequest("/users", userData);
 
-            if (!res.ok) {
-                throw new Error(data.message);
-            }
-
-            message.innerText = "User created successfully";
+        if (res && res.success) {
+            message.innerText = res.message;
             document.getElementById("userForm").reset();
-        })
-        .catch(err => {
-            message.innerText = err.message;
-        });
+        }
 
+    } catch (err) {
+        message.innerText = err.message;
+    }
 });
 
-/*
-  loads all users and displays in table
+
+/**
+ * Fetches all users from backend and displays them in table
  */
-function loadUsers() {
+async function loadUsers() {
 
-    fetch("http://localhost:8080/users")
-        .then(res => res.json())
-        .then(data => {
+    try {
+        const res = await getRequest("/users");
 
-            const tableBody = document.getElementById("userTableBody");
-            tableBody.innerHTML = "";
+        if (!res || !res.success) return;
 
-            data.forEach(user => {
+        const users = res.data;
 
-                const row = `
+        const tableBody = document.getElementById("userTableBody");
+        tableBody.innerHTML = "";
+
+        users.forEach(user => {
+
+            const row = `
                 <tr>
                     <td>${user.id}</td>
                     <td>${user.name}</td>
@@ -87,12 +81,12 @@ function loadUsers() {
                 </tr>
             `;
 
-                tableBody.innerHTML += row;
-            });
-
-            document.getElementById("userTable").style.display = "table";
-        })
-        .catch(err => {
-            document.getElementById("message").innerText = "Error loading users";
+            tableBody.innerHTML += row;
         });
+
+        document.getElementById("userTable").style.display = "table";
+
+    } catch (err) {
+        document.getElementById("message").innerText = "Error loading users";
+    }
 }

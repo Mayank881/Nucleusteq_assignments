@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Submit Claim</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
 
     <h2>Submit Claim</h2>
@@ -27,11 +29,6 @@
                 <input type="text" id="description">
             </div>
 
-            <div class="form-group">
-                <label>Employee ID</label>
-                <input type="number" id="employeeId">
-            </div>
-
             <button type="submit">Submit Claim</button>
 
         </form>
@@ -39,7 +36,24 @@
     </div>
 
     <p id="message"></p>
-   
+       
+    <!-- View Claims Button -->
+    <button onclick="loadClaims()">View Claims</button>
+    
+    <!--claim table -->
+    <table border="1" id="claimTable" style="display:none;">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody id="claimBody"></tbody>
+    </table>
+    <script src="js/api.js"></script>
     <script src="js/claim.js"></script>
 </body>
+
 </html>
