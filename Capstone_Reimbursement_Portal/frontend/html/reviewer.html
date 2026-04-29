@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Reviewer Dashboard</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body>
+
+    <h2>Reviewer Dashboard</h2>
+
+    <!-- Load Claims -->
+    <button onclick="loadClaims()">Load Claims</button>
+
+    <!-- Claims Table -->
+    <table border="1" id="claimTable" style="margin-top: 10px; display: none;">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Amount</th>
+                <th>Description</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+        <tbody id="claimBody"></tbody>
+    </table>
+
+    <p id="message"></p>
+
+    <script src="../js/api.js"></script>
+    <script src="../js/reviewer.js"></script>
+
+</body>
+
+</html>

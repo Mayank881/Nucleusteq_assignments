@@ -30,7 +30,7 @@ document.getElementById("claimForm").addEventListener("submit", async function (
 
     const claimData = { amount, date, description };
 
-    const employeeId = 1; // temporary (we fix later with login)
+    const employeeId = 1; // temporary 
 
     try {
         const res = await postRequest(`/claims/${employeeId}`, claimData);
