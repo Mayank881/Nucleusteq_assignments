@@ -3,11 +3,12 @@
  */
 async function loadClaims() {
 
+    //temporary reviewerId until we implement login
+    const reviewerId = 2;
     try {
         const res = await getRequest("/claims");
 
         if (!res || !res.success) return;
-
         const claims = res.data;
 
         const body = document.getElementById("claimBody");
@@ -15,23 +16,32 @@ async function loadClaims() {
 
         body.innerHTML = "";
 
-        claims.forEach(c => {
 
-            const row = `
+        claims
+            .filter(c => c.reviewerId === reviewerId)
+            .forEach(c => {
+
+                const row = `
                 <tr>
                     <td>${c.id}</td>
                     <td>${c.amount}</td>
+                    <td>${c.date}</td>
                     <td>${c.description}</td>
                     <td>${c.status}</td>
                     <td>
-                        <button onclick="approveClaim(${c.id})">Approve</button>
-                        <button onclick="rejectClaim(${c.id})">Reject</button>
+                        ${c.status === "SUBMITTED"
+                        ? `
+                                <button onclick="approveClaim(${c.id}, ${c.reviewerId})">Approve</button>
+                                <button onclick="rejectClaim(${c.id}, ${c.reviewerId})">Reject</button>
+                              `
+                        : "No Action"
+                    }
                     </td>
                 </tr>
             `;
 
-            body.innerHTML += row;
-        });
+                body.innerHTML += row;
+            });
 
         table.style.display = "table";
 
@@ -44,9 +54,7 @@ async function loadClaims() {
 /**
  * Approves a claim
  */
-async function approveClaim(claimId) {
-
-    const reviewerId = 1; // temporary
+async function approveClaim(claimId, reviewerId) {
 
     try {
         const res = await putRequest(`/claims/${claimId}/approve?reviewerId=${reviewerId}`);
@@ -65,9 +73,7 @@ async function approveClaim(claimId) {
 /**
  * Rejects a claim
  */
-async function rejectClaim(claimId) {
-
-    const reviewerId = 1; // temporary
+async function rejectClaim(claimId, reviewerId) {
 
     try {
         const res = await putRequest(`/claims/${claimId}/reject?reviewerId=${reviewerId}`);
