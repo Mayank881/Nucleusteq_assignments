@@ -8,6 +8,7 @@ import com.reimbursement.backend.dto.UserRequestDTO;
 import com.reimbursement.backend.dto.UserResponseDTO;
 import com.reimbursement.backend.entity.User;
 import com.reimbursement.backend.repository.UserRepository;
+import com.reimbursement.backend.enums.Role;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -68,10 +69,19 @@ public class UserService {
     public UserResponseDTO assignManager(Long employeeId, Long managerId) {
 
         User employee = userRepository.findById(employeeId)
-                .orElseThrow(() -> new ResourceNotFoundException(Messages.EMPLOYEE_NOT_FOUND));
+                .orElseThrow(() -> new ResourceNotFoundException("Employee not found"));
 
         User manager = userRepository.findById(managerId)
-                .orElseThrow(() -> new ResourceNotFoundException(Messages.MANAGER_NOT_FOUND));
+                .orElseThrow(() -> new ResourceNotFoundException("Manager not found"));
+
+        // ✅ correct enum comparison
+        if (employee.getRole() != Role.EMPLOYEE) {
+            throw new BadRequestException("Selected user is not an employee");
+        }
+
+        if (manager.getRole() != Role.MANAGER) {
+            throw new BadRequestException("Selected user is not a manager");
+        }
 
         employee.setManager(manager);
 

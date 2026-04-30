@@ -1,3 +1,4 @@
+console.log("User JS loaded");
 
 /**
  * Handles user form submission with validation and API call
@@ -13,7 +14,7 @@ document.getElementById("userForm").addEventListener("submit", async function (e
 
     const message = document.getElementById("message");
 
-    // validate inputs
+    // validation
     if (name === "") {
         message.innerText = "Name is required";
         return;
@@ -24,8 +25,8 @@ document.getElementById("userForm").addEventListener("submit", async function (e
         return;
     }
 
-    if (!email.includes("@")) {
-        message.innerText = "Invalid email format";
+    if (!email.endsWith("@company.com")) {
+        message.innerText = "Email must be @company.com domain";
         return;
     }
 
@@ -56,7 +57,7 @@ document.getElementById("userForm").addEventListener("submit", async function (e
 
 
 /**
- * Fetches all users from backend and displays them in table
+ * Fetch users and display in table
  */
 async function loadUsers() {
 
@@ -71,7 +72,6 @@ async function loadUsers() {
         tableBody.innerHTML = "";
 
         users.forEach(user => {
-
             const row = `
                 <tr>
                     <td>${user.id}</td>
@@ -80,7 +80,6 @@ async function loadUsers() {
                     <td>${user.role}</td>
                 </tr>
             `;
-
             tableBody.innerHTML += row;
         });
 
@@ -90,3 +89,40 @@ async function loadUsers() {
         document.getElementById("message").innerText = "Error loading users";
     }
 }
+
+
+/**
+ * Assign manager to employee
+ */
+window.assignManager = async function () {
+
+    console.log("Assign button clicked");
+
+    const employeeId = document.getElementById("employeeId").value;
+    const managerId = document.getElementById("managerId").value;
+    const message = document.getElementById("message");
+
+    if (!employeeId || !managerId) {
+        message.innerText = "Enter employee and manager ID";
+        return;
+    }
+
+    try {
+        const res = await postRequest("/users/assign", {
+            employeeId,
+            managerId
+        });
+
+        console.log("Response:", res);
+
+        if (res && res.success) {
+            message.innerText = res.message || "Manager assigned";
+        } else {
+            message.innerText = "Assignment failed";
+        }
+
+    } catch (err) {
+        console.error(err);
+        message.innerText = "Error assigning manager";
+    }
+};
