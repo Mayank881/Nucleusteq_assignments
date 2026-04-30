@@ -1,4 +1,3 @@
-
 /**
  * Handles claim submission
  */
@@ -6,9 +5,9 @@ document.getElementById("claimForm").addEventListener("submit", async function (
 
     e.preventDefault();
 
-    const amount = document.getElementById("amount").value;
+    const amount = parseFloat(document.getElementById("amount").value);
     const date = document.getElementById("date").value;
-    const description = document.getElementById("description").value;
+    const description = document.getElementById("description").value.trim();
 
     const message = document.getElementById("message");
 
@@ -36,12 +35,14 @@ document.getElementById("claimForm").addEventListener("submit", async function (
         const res = await postRequest(`/claims/${employeeId}`, claimData);
 
         if (res && res.success) {
-            message.innerText = res.message;
+            message.innerText = res.message || "Claim submitted successfully";
             document.getElementById("claimForm").reset();
+        } else {
+            message.innerText = "Failed to submit claim";
         }
 
     } catch (err) {
-        message.innerText = err.message;
+        message.innerText = err.message || "Something went wrong";
     }
 });
 
@@ -66,13 +67,15 @@ async function loadClaims() {
         claims.forEach(c => {
 
             const row = `
-                <tr>
-                    <td>${c.id}</td>
-                    <td>${c.amount}</td>
-                    <td>${c.status}</td>
-                    <td>${c.description}</td>
-                </tr>
-            `;
+              <tr>
+                  <td>${c.id}</td>
+                  <td>${c.amount}</td>
+                  <td>${c.date}</td>
+                  <td>${c.status}</td>
+                  <td>${c.description}</td>
+                  <td>${c.reviewerId}</td>
+              </tr>
+          `;
 
             body.innerHTML += row;
         });
@@ -80,6 +83,6 @@ async function loadClaims() {
         table.style.display = "table";
 
     } catch (err) {
-        document.getElementById("message").innerText = "Error loading claims";
+        document.getElementById("message").innerText = err.message || "Error loading claims";
     }
 }
