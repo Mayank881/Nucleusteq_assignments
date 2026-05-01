@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Create User</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body>
+    <!-- user creation form -->
+    <h2>Create User</h2>
+
+    <div class="form-container">
+
+        <form id="userForm">
+
+            <div class="form-group">
+                <label>Name</label>
+                <input type="text" id="name">
+            </div>
+
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="email">
+            </div>
+
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="password">
+            </div>
+
+            <div class="form-group">
+                <label>Role</label>
+                <select id="role">
+                    <option value="EMPLOYEE">Employee</option>
+                    <option value="MANAGER">Manager</option>
+                    <option value="ADMIN">Admin</option>
+                </select>
+            </div>
+
+            <button type="submit">Create User</button>
+
+        </form>
+
+    </div>
+
+    <p id="message"></p>
+
+    <!-- view users -->
+    <h2>View Users</h2>
+
+    <button onclick="loadUsers()">Load Users</button>
+
+    <table id="userTable" border="1" style="display:none;">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Role</th>
+            </tr>
+        </thead>
+        <tbody id="userTableBody"></tbody>
+    </table>
+
+    <!-- assign manager -->
+    <h2>Assign Manager</h2>
+
+    <input type="number" id="employeeId" placeholder="Employee ID">
+    <input type="number" id="managerId" placeholder="Manager ID">
+    <!--button for assigning manager-->
+    <button type="button" onclick="assignManager()">Assign</button>
+
+    <script src="../js/api.js"></script>
+    <script src="../js/user.js"></script>
+
+
+</body>
+
+</html>
