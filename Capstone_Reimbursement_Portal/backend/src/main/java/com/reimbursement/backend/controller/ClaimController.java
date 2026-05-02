@@ -5,6 +5,7 @@ import com.reimbursement.backend.dto.ApiResponse;
 import com.reimbursement.backend.dto.ClaimRequestDTO;
 import com.reimbursement.backend.dto.ClaimResponseDTO;
 import com.reimbursement.backend.service.ClaimService;
+import com.reimbursement.backend.constants.Messages;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -44,7 +45,7 @@ public class ClaimController {
         ClaimResponseDTO claim = claimService.submitClaim(requestDTO, employeeId);
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(new ApiResponse<>(true, "Claim submitted successfully", claim));
+                .body(new ApiResponse<>(true, Messages.CLAIM_SUBMITTED, claim));
     }
 
     /**
@@ -56,7 +57,7 @@ public class ClaimController {
         List<ClaimResponseDTO> claims = claimService.getAllClaims();
 
         return ResponseEntity.ok(
-                new ApiResponse<>(true, "Claims fetched successfully", claims)
+                new ApiResponse<>(true, Messages.CLAIMS_FETCHED, claims)
         );
     }
 
@@ -71,7 +72,7 @@ public class ClaimController {
         ClaimResponseDTO claim = claimService.approveClaim(id, reviewerId);
 
         return ResponseEntity.ok(
-                new ApiResponse<>(true, "Claim approved successfully", claim)
+                new ApiResponse<>(true, Messages.CLAIM_APPROVED, claim)
         );
     }
 
@@ -86,7 +87,7 @@ public class ClaimController {
         ClaimResponseDTO claim = claimService.rejectClaim(id, reviewerId);
 
         return ResponseEntity.ok(
-                new ApiResponse<>(true, "Claim rejected successfully", claim)
+                new ApiResponse<>(true, Messages.CLAIM_REJECTED, claim)
         );
     }
 }

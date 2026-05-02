@@ -27,5 +27,9 @@ public class Messages {
     public static final String CLAIMS_FETCHED = "Claims fetched successfully";
     public static final String CLAIM_APPROVED = "Claim approved successfully";
     public static final String CLAIM_REJECTED = "Claim rejected successfully";
+    
+    public static final String ADMIN_CANT_DELETED = "Admin user cannot be deleted";
+    public static final String USER_DELETED = "User deleted successfully";
+
 }
 

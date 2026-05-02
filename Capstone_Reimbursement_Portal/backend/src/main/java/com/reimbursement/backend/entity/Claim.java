@@ -2,8 +2,11 @@ package com.reimbursement.backend.entity;
 
 import com.reimbursement.backend.enums.ClaimStatus;
 import jakarta.persistence.*;
-import lombok.*;
-// using lombok to reduce boilerplate code for getters, setters, constructors etc.
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import java.time.LocalDate;
 
 // this class is for claim table

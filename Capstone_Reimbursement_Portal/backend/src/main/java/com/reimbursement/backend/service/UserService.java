@@ -8,10 +8,11 @@ import com.reimbursement.backend.dto.UserRequestDTO;
 import com.reimbursement.backend.dto.UserResponseDTO;
 import com.reimbursement.backend.entity.User;
 import com.reimbursement.backend.repository.UserRepository;
-import com.reimbursement.backend.enums.Role;
+import com.reimbursement.backend.repository.ClaimRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +25,9 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private ClaimRepository claimRepository;
 
     /**
      * create a new user
@@ -69,24 +73,64 @@ public class UserService {
     public UserResponseDTO assignManager(Long employeeId, Long managerId) {
 
         User employee = userRepository.findById(employeeId)
-                .orElseThrow(() -> new ResourceNotFoundException("Employee not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Selected user is not an employee"));
 
         User manager = userRepository.findById(managerId)
-                .orElseThrow(() -> new ResourceNotFoundException("Manager not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Selected user is not a manager"));
 
-        // ✅ correct enum comparison
-        if (employee.getRole() != Role.EMPLOYEE) {
+        // null safety
+        if (employee.getRole() == null || manager.getRole() == null) {
+            throw new BadRequestException("User roles must be defined");
+        }
+
+        // role validation
+        if (!"EMPLOYEE".equals(employee.getRole().name())) {
             throw new BadRequestException("Selected user is not an employee");
         }
 
-        if (manager.getRole() != Role.MANAGER) {
+        if (!"MANAGER".equals(manager.getRole().name())) {
             throw new BadRequestException("Selected user is not a manager");
         }
 
+        // prevent self assignment
+        if (employeeId.equals(managerId)) {
+            throw new BadRequestException("Employee cannot be their own manager");
+        }
+
+        // assign manager
         employee.setManager(manager);
 
         User savedUser = userRepository.save(employee);
 
         return UserMapper.toDTO(savedUser);
+    }
+
+    /**
+     * delete user safely
+     */
+
+    @Transactional
+    public void deleteUser(Long userId) {
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException(Messages.USER_NOT_FOUND));
+
+        if ("ADMIN".equals(user.getRole().name())) {
+            throw new BadRequestException(Messages.ADMIN_CANT_DELETED);
+        }
+
+        // remove manager references
+        List<User> users = userRepository.findAll();
+        for (User u : users) {
+            if (u.getManager() != null && u.getManager().getId().equals(userId)) {
+                u.setManager(null);
+            }
+        }
+
+        // delete claims safely
+        claimRepository.deleteByEmployee(user);
+        claimRepository.deleteByReviewer(user);
+
+        userRepository.delete(user);
     }
 }

@@ -3,7 +3,10 @@ package com.reimbursement.backend.entity;
 
 import com.reimbursement.backend.enums.Role;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 // this class represents users table
 @Entity
