@@ -9,6 +9,8 @@ import com.reimbursement.backend.dto.UserResponseDTO;
 import com.reimbursement.backend.entity.User;
 import com.reimbursement.backend.repository.UserRepository;
 import com.reimbursement.backend.repository.ClaimRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import com.reimbursement.backend.dto.LoginRequestDTO;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,6 +18,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+
+
+
 
 /**
  * handles user related business logic
@@ -28,6 +33,9 @@ public class UserService {
 
     @Autowired
     private ClaimRepository claimRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     /**
      * create a new user
@@ -46,8 +54,10 @@ public class UserService {
         // map DTO to entity and save
         User user = UserMapper.toEntity(requestDTO);
 
-        User savedUser = userRepository.save(user);
+        // hash password before saving
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
 
+        User savedUser = userRepository.save(user);
         return UserMapper.toDTO(savedUser);
     }
 
@@ -92,12 +102,10 @@ public class UserService {
             throw new BadRequestException("Selected user is not a manager");
         }
 
-        // prevent self assignment
         if (employeeId.equals(managerId)) {
             throw new BadRequestException("Employee cannot be their own manager");
         }
 
-        // assign manager
         employee.setManager(manager);
 
         User savedUser = userRepository.save(employee);
@@ -127,10 +135,22 @@ public class UserService {
             }
         }
 
-        // delete claims safely
         claimRepository.deleteByEmployee(user);
         claimRepository.deleteByReviewer(user);
 
         userRepository.delete(user);
     }
+
+    public UserResponseDTO login(LoginRequestDTO request) {
+
+
+    User user = userRepository.findByEmail(request.getEmail())
+            .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+   
+    if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+        throw new BadRequestException("Invalid password");
+    }
+
+    return UserMapper.toDTO(user);
+}
 }

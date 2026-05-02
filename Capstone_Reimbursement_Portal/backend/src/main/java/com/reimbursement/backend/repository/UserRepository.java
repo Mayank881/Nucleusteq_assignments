@@ -2,8 +2,10 @@ package com.reimbursement.backend.repository;
 
 import com.reimbursement.backend.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import java.util.Optional;
 
 // handles user DB operations 
 public interface UserRepository extends JpaRepository<User, Long> {
        boolean existsByEmail(String email);
+       Optional<User> findByEmail(String email);
 }
