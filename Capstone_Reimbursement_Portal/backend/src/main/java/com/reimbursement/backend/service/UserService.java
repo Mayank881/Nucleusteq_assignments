@@ -6,21 +6,20 @@ import com.reimbursement.backend.exception.ResourceNotFoundException;
 import com.reimbursement.backend.mapper.UserMapper;
 import com.reimbursement.backend.dto.UserRequestDTO;
 import com.reimbursement.backend.dto.UserResponseDTO;
+import com.reimbursement.backend.dto.logindto.LoginRequestDTO;
 import com.reimbursement.backend.entity.User;
 import com.reimbursement.backend.repository.UserRepository;
 import com.reimbursement.backend.repository.ClaimRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import com.reimbursement.backend.dto.LoginRequestDTO;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.reimbursement.backend.config.JwtUtil;
+import com.reimbursement.backend.dto.logindto.LoginResponseDTO;
+
 
 import java.util.ArrayList;
 import java.util.List;
-
-
-
 
 /**
  * handles user related business logic
@@ -36,6 +35,9 @@ public class UserService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private JwtUtil jwtUtil;
 
     /**
      * create a new user
@@ -141,16 +143,16 @@ public class UserService {
         userRepository.delete(user);
     }
 
-    public UserResponseDTO login(LoginRequestDTO request) {
-
+public LoginResponseDTO login(LoginRequestDTO request) {
 
     User user = userRepository.findByEmail(request.getEmail())
-            .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-   
+            .orElseThrow(() -> new ResourceNotFoundException(Messages.USER_NOT_FOUND));
+
     if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-        throw new BadRequestException("Invalid password");
+        throw new BadRequestException(Messages.INVALID_PASSWORD);
     }
 
-    return UserMapper.toDTO(user);
+    String token = jwtUtil.generateToken(user.getEmail());
+    return new LoginResponseDTO(token, user.getRole().name());
 }
 }

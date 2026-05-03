@@ -1,8 +1,8 @@
 package com.reimbursement.backend.controller;
 
 import com.reimbursement.backend.dto.ApiResponse;
-import com.reimbursement.backend.dto.LoginRequestDTO;
-import com.reimbursement.backend.dto.UserResponseDTO;
+import com.reimbursement.backend.dto.logindto.LoginRequestDTO;
+import com.reimbursement.backend.dto.logindto.LoginResponseDTO;
 import com.reimbursement.backend.service.UserService;
 
 import jakarta.validation.Valid;
@@ -21,12 +21,12 @@ public class AuthController {
     private UserService userService;
 
     @PostMapping("/login")
-    public ResponseEntity<ApiResponse<UserResponseDTO>> login(
+    public ResponseEntity<ApiResponse<LoginResponseDTO>> login(
             @Valid @RequestBody LoginRequestDTO request) {
 
-        UserResponseDTO user = userService.login(request);
+        LoginResponseDTO response = userService.login(request);
 
         return ResponseEntity.ok(
-                new ApiResponse<>(true, "Login successful", user));
+                new ApiResponse<>(true, "Login successful", response));
     }
 }

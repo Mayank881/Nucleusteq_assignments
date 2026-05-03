@@ -30,6 +30,8 @@ public class Messages {
     
     public static final String ADMIN_CANT_DELETED = "Admin user cannot be deleted";
     public static final String USER_DELETED = "User deleted successfully";
+    //INVALID PASSWORD
+    public static final String INVALID_PASSWORD = "Invalid password";
 
 }
 
