@@ -16,9 +16,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.reimbursement.backend.config.JwtUtil;
 import com.reimbursement.backend.dto.logindto.LoginResponseDTO;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import java.util.Map;
 
-
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -66,17 +68,23 @@ public class UserService {
     /**
      * get all users
      */
-    public List<UserResponseDTO> getAllUsers() {
+    public Map<String, Object> getAllUsers(int page, int size) {
 
-        List<User> users = userRepository.findAll();
+        Pageable pageable = PageRequest.of(page, size);
 
-        List<UserResponseDTO> responseList = new ArrayList<>();
+        Page<User> userPage = userRepository.findAll(pageable);
 
-        for (User user : users) {
-            responseList.add(UserMapper.toDTO(user));
-        }
+        List<UserResponseDTO> userList = userPage.getContent()
+                .stream()
+                .map(UserMapper::toDTO)
+                .toList();
 
-        return responseList;
+        return Map.of(
+                "content", userList,
+                "page", userPage.getNumber(),
+                "size", userPage.getSize(),
+                "totalElements", userPage.getTotalElements(),
+                "totalPages", userPage.getTotalPages());
     }
 
     /**
@@ -143,16 +151,16 @@ public class UserService {
         userRepository.delete(user);
     }
 
-public LoginResponseDTO login(LoginRequestDTO request) {
+    public LoginResponseDTO login(LoginRequestDTO request) {
 
-    User user = userRepository.findByEmail(request.getEmail())
-            .orElseThrow(() -> new ResourceNotFoundException(Messages.USER_NOT_FOUND));
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new ResourceNotFoundException(Messages.USER_NOT_FOUND));
 
-    if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-        throw new BadRequestException(Messages.INVALID_PASSWORD);
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            throw new BadRequestException("invalid password");
+        }
+
+        String token = jwtUtil.generateToken(user.getEmail());
+        return new LoginResponseDTO(token, user.getRole().name());
     }
-
-    String token = jwtUtil.generateToken(user.getEmail());
-    return new LoginResponseDTO(token, user.getRole().name());
-}
 }
