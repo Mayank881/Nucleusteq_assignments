@@ -259,3 +259,30 @@ body {
   gap: 10px;
 }
 
+/* reviewer claim card */
+.claim-card {
+  border-bottom: 1px solid #eee;
+  padding: 12px 0;
+}
+
+.claim-actions {
+  margin-top: 8px;
+  display: flex;
+  gap: 10px;
+}
+
+.btn-approve {
+  background: green;
+  color: white;
+}
+
+.btn-reject {
+  background: red;
+  color: white;
+}
+
+textarea {
+  width: 100%;
+  margin-top: 5px;
+  padding: 6px;
+}

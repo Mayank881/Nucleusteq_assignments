@@ -35,21 +35,28 @@ const Auth = {
 };
 
 // ================= API =================
-async function apiFetch(url, options = {}) {
+async function apiFetch(url, method = "GET", body = null) {
+
     const token = Auth.getToken();
 
-    const res = await fetch(CONFIG.BASE_URL + url, {
-        ...options,
+    const options = {
+        method: method,  
         headers: {
             "Content-Type": "application/json",
-            ...(token && { Authorization: "Bearer " + token })
+            "Authorization": "Bearer " + token
         }
-    });
+    };
+
+    if (body) {
+        options.body = JSON.stringify(body);
+    }
+
+    const res = await fetch(CONFIG.BASE_URL + url, options);
 
     const data = await res.json();
 
     if (!res.ok) {
-        throw new Error(data.message || "Error");
+        throw new Error(data.message || "Something went wrong");
     }
 
     return data;

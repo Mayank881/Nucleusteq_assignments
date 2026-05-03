@@ -123,4 +123,21 @@ public class ClaimService {
 
         return ClaimMapper.toDTO(saved);
     }
+
+    /**
+     * get claims by reviewer
+     
+     */
+    public List<ClaimResponseDTO> getClaimsByReviewer(Long reviewerId) {
+
+        List<Claim> claims = claimRepository.findByReviewerId(reviewerId);
+
+        List<ClaimResponseDTO> list = new ArrayList<>();
+
+        for (Claim c : claims) {
+            list.add(ClaimMapper.toDTO(c));
+        }
+
+        return list;
+    }
 }

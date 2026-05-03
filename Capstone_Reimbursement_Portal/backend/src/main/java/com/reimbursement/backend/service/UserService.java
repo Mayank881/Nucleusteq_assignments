@@ -10,6 +10,8 @@ import com.reimbursement.backend.dto.logindto.LoginRequestDTO;
 import com.reimbursement.backend.entity.User;
 import com.reimbursement.backend.repository.UserRepository;
 import com.reimbursement.backend.repository.ClaimRepository;
+
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,6 +30,7 @@ import java.util.List;
  */
 @Service
 public class UserService {
+   
 
     @Autowired
     private UserRepository userRepository;
@@ -152,6 +155,7 @@ public class UserService {
     }
 
     public LoginResponseDTO login(LoginRequestDTO request) {
+    
 
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new ResourceNotFoundException(Messages.USER_NOT_FOUND));
@@ -161,6 +165,12 @@ public class UserService {
         }
 
         String token = jwtUtil.generateToken(user.getEmail());
-        return new LoginResponseDTO(token, user.getRole().name());
+        return new LoginResponseDTO(
+                token,
+                user.getId(),
+                user.getEmail(),
+                user.getRole().name());
     }
+
+
 }

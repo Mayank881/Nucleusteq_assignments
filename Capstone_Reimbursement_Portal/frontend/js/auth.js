@@ -1,3 +1,4 @@
+
 // redirect if already logged in
 if (Auth.isLoggedIn()) {
     redirectByRole(Auth.getRole());
@@ -51,4 +52,10 @@ async function login() {
     } catch (err) {
         errorDiv.innerText = err.message;
     }
+    console.log("LOGIN DATA:", data);
+    console.log("SAVING USER:", {
+        email: email,
+        role: data.data.role,
+        id: data.data.id
+    });
 }

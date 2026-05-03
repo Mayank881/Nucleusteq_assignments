@@ -50,12 +50,19 @@ public class ClaimController {
         }
 
         /**
-         * get all claims
+         * get claims - all or by reviewer
          */
         @GetMapping
-        public ResponseEntity<ApiResponse<List<ClaimResponseDTO>>> getAllClaims() {
+        public ResponseEntity<ApiResponse<List<ClaimResponseDTO>>> getClaims(
+                        @RequestParam(required = false) Long reviewerId) {
 
-                List<ClaimResponseDTO> claims = claimService.getAllClaims();
+                List<ClaimResponseDTO> claims;
+
+                if (reviewerId != null) {
+                        claims = claimService.getClaimsByReviewer(reviewerId);
+                } else {
+                        claims = claimService.getAllClaims();
+                }
 
                 return ResponseEntity.ok(
                                 new ApiResponse<>(true, Messages.CLAIMS_FETCHED, claims));
@@ -91,18 +98,3 @@ public class ClaimController {
                                 new ApiResponse<>(true, "Claim rejected successfully", response));
         }
 }
-/*
-{
-    "success": true,
-    "message": "Claim submitted successfully",
-    "data": {
-        "id": 8,
-        "amount": 500.0,
-        "description": "Travel expense",
-        "status": "SUBMITTED",
-        "date": "2026-05-03",
-        "employeeId": 10,
-        "reviewerId": 1,
-        "reviewerComment": null
-    }
-} */
