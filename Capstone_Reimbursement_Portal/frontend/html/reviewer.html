@@ -10,6 +10,8 @@
 
     <h2>Reviewer Dashboard</h2>
 
+    <nav id="navbar"></nav>
+
     <!-- Load Claims -->
     <button onclick="loadClaims()">Load Claims</button>
 
@@ -33,6 +35,9 @@
 
     <script src="../js/api.js"></script>
     <script src="../js/reviewer.js"></script>
+   <script>
+    window.onload = loadNavbar;
+</script>
 
 </body>
 

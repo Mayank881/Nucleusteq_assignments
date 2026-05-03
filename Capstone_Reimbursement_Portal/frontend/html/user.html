@@ -2,11 +2,13 @@
 <html>
 
 <head>
-    <title>Create User</title>
+    <title>Admin dashboard</title>
     <link rel="stylesheet" href="../css/style.css">
 </head>
 
 <body>
+
+    <nav id="navbar"></nav>
     <!-- user creation form -->
     <h2>Create User</h2>
 
@@ -73,6 +75,9 @@
 
     <script src="../js/api.js"></script>
     <script src="../js/user.js"></script>
+   <script>
+    window.onload = loadNavbar;
+</script>
 
 
 </body>

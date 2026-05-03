@@ -91,3 +91,18 @@ public class ClaimController {
                                 new ApiResponse<>(true, "Claim rejected successfully", response));
         }
 }
+/*
+{
+    "success": true,
+    "message": "Claim submitted successfully",
+    "data": {
+        "id": 8,
+        "amount": 500.0,
+        "description": "Travel expense",
+        "status": "SUBMITTED",
+        "date": "2026-05-03",
+        "employeeId": 10,
+        "reviewerId": 1,
+        "reviewerComment": null
+    }
+} */
