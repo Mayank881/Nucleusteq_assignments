@@ -29,6 +29,7 @@ public class ClaimMapper {
         dto.setStatus(claim.getStatus());
         dto.setEmployeeId(claim.getEmployee().getId());
         dto.setReviewerId(claim.getReviewer().getId());
+        dto.setReviewerComment(claim.getReviewerComment());
 
         return dto;
     }

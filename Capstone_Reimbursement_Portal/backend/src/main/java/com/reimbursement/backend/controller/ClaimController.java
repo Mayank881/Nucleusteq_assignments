@@ -2,6 +2,7 @@
 package com.reimbursement.backend.controller;
 
 import com.reimbursement.backend.dto.ApiResponse;
+import com.reimbursement.backend.dto.ClaimActionDTO;
 import com.reimbursement.backend.dto.ClaimRequestDTO;
 import com.reimbursement.backend.dto.ClaimResponseDTO;
 import com.reimbursement.backend.service.ClaimService;
@@ -31,63 +32,62 @@ import java.util.List;
 @RequestMapping("/claims")
 public class ClaimController {
 
-    @Autowired
-    private ClaimService claimService;
+        @Autowired
+        private ClaimService claimService;
 
-    /**
-     * submit a claim
-     */
-    @PostMapping("/{employeeId}")
-    public ResponseEntity<ApiResponse<ClaimResponseDTO>> submitClaim(
-            @RequestBody ClaimRequestDTO requestDTO,
-            @PathVariable Long employeeId) {
+        /**
+         * submit a claim
+         */
+        @PostMapping("/{employeeId}")
+        public ResponseEntity<ApiResponse<ClaimResponseDTO>> submitClaim(
+                        @RequestBody ClaimRequestDTO requestDTO,
+                        @PathVariable Long employeeId) {
 
-        ClaimResponseDTO claim = claimService.submitClaim(requestDTO, employeeId);
+                ClaimResponseDTO claim = claimService.submitClaim(requestDTO, employeeId);
 
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(new ApiResponse<>(true, Messages.CLAIM_SUBMITTED, claim));
-    }
+                return ResponseEntity.status(HttpStatus.CREATED)
+                                .body(new ApiResponse<>(true, Messages.CLAIM_SUBMITTED, claim));
+        }
 
-    /**
-     * get all claims
-     */
-    @GetMapping
-    public ResponseEntity<ApiResponse<List<ClaimResponseDTO>>> getAllClaims() {
+        /**
+         * get all claims
+         */
+        @GetMapping
+        public ResponseEntity<ApiResponse<List<ClaimResponseDTO>>> getAllClaims() {
 
-        List<ClaimResponseDTO> claims = claimService.getAllClaims();
+                List<ClaimResponseDTO> claims = claimService.getAllClaims();
 
-        return ResponseEntity.ok(
-                new ApiResponse<>(true, Messages.CLAIMS_FETCHED, claims)
-        );
-    }
+                return ResponseEntity.ok(
+                                new ApiResponse<>(true, Messages.CLAIMS_FETCHED, claims));
+        }
 
-    /**
-     * approve claim
-     */
-    @PutMapping("/{id}/approve")
-    public ResponseEntity<ApiResponse<ClaimResponseDTO>> approveClaim(
-            @PathVariable Long id,
-            @RequestParam Long reviewerId) {
+        /**
+         * approve claim
+         */
+        @PutMapping("/{id}/approve")
+        public ResponseEntity<ApiResponse<ClaimResponseDTO>> approveClaim(
+                        @PathVariable Long id,
+                        @RequestParam Long reviewerId,
+                        @RequestBody ClaimActionDTO request) {
 
-        ClaimResponseDTO claim = claimService.approveClaim(id, reviewerId);
+                ClaimResponseDTO response = claimService.approveClaim(id, reviewerId, request.getComment());
 
-        return ResponseEntity.ok(
-                new ApiResponse<>(true, Messages.CLAIM_APPROVED, claim)
-        );
-    }
+                return ResponseEntity.ok(
+                                new ApiResponse<>(true, "Claim approved successfully", response));
+        }
 
-    /**
-     * reject claim
-     */
-    @PutMapping("/{id}/reject")
-    public ResponseEntity<ApiResponse<ClaimResponseDTO>> rejectClaim(
-            @PathVariable Long id,
-            @RequestParam Long reviewerId) {
+        /**
+         * reject claim
+         */
+        @PutMapping("/{id}/reject")
+        public ResponseEntity<ApiResponse<ClaimResponseDTO>> rejectClaim(
+                        @PathVariable Long id,
+                        @RequestParam Long reviewerId,
+                        @RequestBody ClaimActionDTO request) {
 
-        ClaimResponseDTO claim = claimService.rejectClaim(id, reviewerId);
+                ClaimResponseDTO response = claimService.rejectClaim(id, reviewerId, request.getComment());
 
-        return ResponseEntity.ok(
-                new ApiResponse<>(true, Messages.CLAIM_REJECTED, claim)
-        );
-    }
+                return ResponseEntity.ok(
+                                new ApiResponse<>(true, "Claim rejected successfully", response));
+        }
 }

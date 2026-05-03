@@ -77,22 +77,22 @@ public class ClaimService {
     /**
      * approve claim
      */
-    public ClaimResponseDTO approveClaim(Long claimId, Long reviewerId) {
+    public ClaimResponseDTO approveClaim(Long claimId, Long reviewerId, String comment) {
 
         Claim claim = claimRepository.findById(claimId)
                 .orElseThrow(() -> new ResourceNotFoundException(Messages.CLAIM_NOT_FOUND));
 
-        // check correct reviewer
         if (!claim.getReviewer().getId().equals(reviewerId)) {
             throw new BadRequestException(Messages.UNAUTHORIZED_REVIEWER);
         }
 
-        // prevent re-processing
         if (claim.getStatus() != ClaimStatus.SUBMITTED) {
             throw new BadRequestException(Messages.CLAIM_ALREADY_PROCESSED);
         }
 
         claim.setStatus(ClaimStatus.APPROVED);
+
+        claim.setReviewerComment(comment);
 
         Claim saved = claimRepository.save(claim);
 
@@ -102,26 +102,25 @@ public class ClaimService {
     /**
      * reject claim
      */
-    public ClaimResponseDTO rejectClaim(Long claimId, Long reviewerId) {
+    public ClaimResponseDTO rejectClaim(Long claimId, Long reviewerId, String comment) {
 
         Claim claim = claimRepository.findById(claimId)
                 .orElseThrow(() -> new ResourceNotFoundException(Messages.CLAIM_NOT_FOUND));
 
-        // check correct reviewer
         if (!claim.getReviewer().getId().equals(reviewerId)) {
             throw new BadRequestException(Messages.UNAUTHORIZED_REVIEWER);
         }
 
-        // prevent re-processing
         if (claim.getStatus() != ClaimStatus.SUBMITTED) {
             throw new BadRequestException(Messages.CLAIM_ALREADY_PROCESSED);
         }
 
         claim.setStatus(ClaimStatus.REJECTED);
 
+        claim.setReviewerComment(comment);
+
         Claim saved = claimRepository.save(claim);
 
         return ClaimMapper.toDTO(saved);
     }
 }
-

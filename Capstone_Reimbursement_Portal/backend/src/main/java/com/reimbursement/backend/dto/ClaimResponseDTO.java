@@ -20,6 +20,7 @@ public class ClaimResponseDTO {
     private LocalDate date;
     private Long employeeId;
     private Long reviewerId;
+    private String reviewerComment;
 
 }
 

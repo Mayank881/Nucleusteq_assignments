@@ -49,4 +49,7 @@ public class Claim {
     @JoinColumn(name = "reviewer_id")
     private User reviewer;
 
+    @Column(length = 500)
+    private String reviewerComment;
+
 }
