@@ -5,19 +5,19 @@ if (!Auth.isLoggedIn()) {
 
 window.onload = function () {
 
-  const user = Auth.getUser();
+    const user = Auth.getUser();
 
-  const name = user?.email ? user.email.split("@")[0] : "User";
+    const name = user?.email ? user.email.split("@")[0] : "User";
 
-  document.getElementById("nav-name").innerText = name;
-  document.getElementById("nav-role").innerText = user?.role || "EMPLOYEE";
+    document.getElementById("nav-name").innerText = name;
+    document.getElementById("nav-role").innerText = user?.role || "EMPLOYEE";
 
-  const avatar = document.getElementById("avatar");
-  if (avatar) {
-    avatar.innerText = name.charAt(0).toUpperCase();
-  }
-
+    const avatar = document.getElementById("avatar");
+    if (avatar) {
+        avatar.innerText = name.charAt(0).toUpperCase();
+    }
 };
+
 let page = 0;
 const size = 5;
 
@@ -31,7 +31,6 @@ function showTab(name) {
 async function loadClaims() {
     try {
         const res = await apiFetch(`/claims?page=${page}&size=${size}`);
-
         const claims = res.data.content || res.data;
 
         renderClaims(claims);
@@ -99,27 +98,40 @@ function changePage(dir) {
 
 /** submit claim */
 async function submitClaim() {
+
+    const description = document.getElementById("description").value;
     const amount = document.getElementById("amount").value;
     const date = document.getElementById("date").value;
-    const description = document.getElementById("description").value;
 
-    if (!amount || !date || !description) {
+    if (!description || !amount || !date) {
         alert("All fields required");
         return;
     }
 
+    const user = Auth.getUser();
+
+    console.log("Submitting:", {
+        description,
+        amount,
+        date,
+        user
+    });
+
     try {
         await apiFetch(`/claims/${user.id}`, "POST", {
+            description,
             amount: Number(amount),
-            date,
-            description
+            date
         });
 
+
         alert("Claim submitted");
+
         showTab("claims");
         loadClaims();
 
     } catch (err) {
+        console.error(err);
         alert(err.message);
     }
 }

@@ -1,0 +1,94 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body class="app-layout">
+
+    <!-- NAVBAR -->
+    <div class="navbar">
+
+        <div class="navbar-brand">
+            <span>Reimbursement Portal</span>
+        </div>
+
+        <div class="navbar-right">
+
+            <div class="user-pill">
+                <div class="avatar" id="avatar">A</div>
+
+                <div class="user-info">
+                    <span class="user-name" id="admin-name">Admin</span>
+                    <span class="user-role" id="admin-role">ADMIN</span>
+                </div>
+            </div>
+
+            <button class="btn btn-ghost" onclick="goToReviewer()">
+                Reviewer
+            </button>
+
+            <button class="btn btn-ghost" onclick="Auth.logout()">
+                Logout
+            </button>
+
+        </div>
+    </div>
+
+    <!-- MAIN -->
+    <div class="main">
+
+        <!-- CREATE USER -->
+        <div class="card">
+            <h3>Create User</h3>
+
+            <input id="name" placeholder="Full Name">
+            <input id="email" placeholder="Email">
+            <input id="password" placeholder="Password">
+
+            <select id="role">
+                <option value="EMPLOYEE">EMPLOYEE</option>
+                <option value="MANAGER">MANAGER</option>
+                <option value="ADMIN">ADMIN</option>
+            </select>
+
+            <button class="btn btn-primary" onclick="createUser()">Create</button>
+
+            <p id="msg"></p>
+        </div>
+
+        <!-- USERS TABLE -->
+        <div class="card">
+            <h3>Users</h3>
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Manager</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody id="user-table"></tbody>
+            </table>
+
+            <div class="pagination">
+                <button onclick="prevPage()">Prev</button>
+                <span id="page-info"></span>
+                <button onclick="nextPage()">Next</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="../js/config.js"></script>
+    <script src="../js/admin.js"></script>
+
+</body>
+</html>
