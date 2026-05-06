@@ -1,0 +1,397 @@
+/* RESET */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* BODY */
+body {
+  font-family: Arial, sans-serif;
+  background: #f4f5f7;
+  color: #222;
+}
+
+/* ===== LOGIN PAGE ===== */
+.page-login {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+/* LOGIN BOX */
+.login-box {
+  width: 400px;
+  padding: 30px;
+  background: white;
+  border-radius: 10px;
+}
+
+.login-box h2 {
+  margin-bottom: 10px;
+}
+
+.login-box p {
+  margin-bottom: 20px;
+  color: gray;
+}
+
+.login-box input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.login-box button {
+  width: 100%;
+  padding: 10px;
+}
+
+/* ===== LAYOUT ===== */
+.app-layout {
+  display: grid;
+  grid-template-rows: 60px 1fr;
+  grid-template-columns: 200px 1fr;
+  grid-template-areas:
+    "nav nav"
+    "side main";
+  height: 100vh;
+}
+
+/* ===== NAVBAR ===== */
+.navbar {
+  grid-area: nav;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  background: #1e1e1e;
+  color: white;
+}
+
+/* ===== SIDEBAR ===== */
+.sidebar {
+  grid-area: side;
+  background: white;
+  border-right: 1px solid #ddd;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* section spacing */
+.sidebar-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* label */
+.sidebar-label {
+  font-size: 12px;
+  color: gray;
+  margin-bottom: 5px;
+}
+
+/* sidebar item FIX */
+.sidebar-item {
+  display: flex;           
+  align-items: center;
+  gap: 8px;
+
+  padding: 10px;
+  border-radius: 6px;
+
+  text-decoration: none;
+  color: #222;
+
+  cursor: pointer;
+}
+
+/* hover */
+.sidebar-item:hover {
+  background: #eee;
+}
+
+/* active */
+.sidebar-item.active {
+  background: #ddd;
+  font-weight: bold;
+}
+
+/* icon fix */
+.si-icon {
+  width: 20px;
+  text-align: center;
+}
+
+/* ===== MAIN ===== */
+.main {
+  grid-area: main;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+/* ===== HEADER ===== */
+.page-title {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.page-sub {
+  font-size: 13px;
+  color: gray;
+}
+
+/* ===== STATS ===== */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin: 15px 0;
+}
+
+.stat-card {
+  background: white;
+  padding: 15px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+}
+
+.stat-value {
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.success { color: green; }
+.warn { color: orange; }
+.danger { color: red; }
+
+/* ===== CARD ===== */
+.card {
+  background: white;
+  padding: 18px;
+  border-radius: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ddd;
+}
+
+/* ===== INPUT ===== */
+input, select {
+  width: 100%;
+  padding: 10px;
+  margin: 6px 0;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+/* ===== BUTTON ===== */
+.btn {
+  padding: 6px 10px;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.btn-primary {
+  background: #534AB7;
+  color: white;
+  border: none;
+}
+
+.btn-primary:hover {
+  background: #4339a5;
+}
+
+.btn-ghost {
+  background: transparent;
+  border: 1px solid #ccc;
+  color: white;
+}
+
+/* ===== NAVBAR RIGHT ===== */
+.navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;       
+}
+
+/* ===== USER PILL ===== */
+.user-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 10px;
+  background: #2a2a2a;
+  border-radius: 20px;
+}
+@media (max-width: 600px) {
+  .navbar-right {
+    gap: 8px;
+  }}
+
+  .navbar-right .btn {
+  white-space: nowrap; 
+}
+
+
+/* ===== AVATAR ===== */
+.avatar {
+  width: 32px;
+  height: 32px;
+  background: #534AB7;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-size: 14px;
+}
+
+/* ===== USER TEXT ===== */
+.user-info {
+  display: flex;
+  flex-direction: column;
+  font-size: 12px;
+}
+
+.user-name {
+  font-weight: bold;
+  color: white;
+}
+
+.user-role {
+  color: #bbb;
+  font-size: 11px;
+}
+
+/* ===== CLAIM ===== */
+.claim-item {
+  padding: 12px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.claim-desc {
+  font-weight: 600;
+}
+
+.claim-meta {
+  font-size: 12px;
+  color: gray;
+}
+
+.claim-comment {
+  margin-top: 5px;
+  font-size: 12px;
+  color: #444;
+}
+
+/* ===== REVIEWER CARDS ===== */
+.claim-card {
+  border-bottom: 1px solid #eee;
+  padding: 12px 0;
+}
+
+.claim-actions {
+  margin-top: 8px;
+  display: flex;
+  gap: 10px;
+}
+
+.btn-approve {
+  background: green;
+  color: white;
+}
+
+.btn-reject {
+  background: red;
+  color: white;
+}
+
+textarea {
+  width: 100%;
+  margin-top: 5px;
+  padding: 6px;
+}
+
+/* ===== TABLE ===== */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.table th {
+  background: #f3f4f6;
+  text-align: left;
+  padding: 10px;
+}
+
+.table td {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.table tr:hover {
+  background: #fafafa;
+}
+
+/* DELETE BUTTON */
+.table button {
+  background: #ff4d4f;
+  color: white;
+  border: none;
+  padding: 5px 8px;
+  border-radius: 5px;
+}
+
+.table button:hover {
+  background: #d9363e;
+}
+
+/* ===== PAGINATION ===== */
+.pagination {
+  margin-top: 10px;
+  display: flex;
+  gap: 10px;
+}
+
+.pagination button {
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  background: white;
+  color: #222;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.pagination button:hover {
+  background: #eee;
+}
+/* ===== EMPLOYEE TAB BUTTONS FIX ===== */
+.tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+/* buttons equal & clean */
+.tabs button {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  background: #e5e7eb;
+}
+
+/* active tab */
+.tabs button.active {
+  background: #534AB7;
+  color: white;
+}
+
+/* hover */
+.tabs button:hover {
+  background: #d1d5db;
+}
