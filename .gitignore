@@ -1,2 +1,5 @@
 .env
 *.class
+.vscode/
+*.log
+app.log
