@@ -1,4 +1,3 @@
-
 package com.reimbursement.backend.controller;
 
 import com.reimbursement.backend.dto.ApiResponse;
@@ -24,6 +23,10 @@ import org.springframework.http.HttpStatus;
 
 import java.util.List;
 
+// LOGGING IMPORTS
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * handles claim APIs
  */
@@ -31,6 +34,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/claims")
 public class ClaimController {
+
+        private static final Logger logger = LoggerFactory.getLogger(ClaimController.class);
 
         @Autowired
         private ClaimService claimService;
@@ -43,10 +48,21 @@ public class ClaimController {
                         @RequestBody ClaimRequestDTO requestDTO,
                         @PathVariable Long employeeId) {
 
-                ClaimResponseDTO claim = claimService.submitClaim(requestDTO, employeeId);
+                logger.info("API HIT: Submit Claim | employeeId={}", employeeId);
 
-                return ResponseEntity.status(HttpStatus.CREATED)
-                                .body(new ApiResponse<>(true, Messages.CLAIM_SUBMITTED, claim));
+                try {
+                        ClaimResponseDTO claim = claimService.submitClaim(requestDTO, employeeId);
+
+                        logger.info("SUCCESS: Claim submitted | claimId={} | employeeId={}",
+                                        claim.getId(), employeeId);
+
+                        return ResponseEntity.status(HttpStatus.CREATED)
+                                        .body(new ApiResponse<>(true, Messages.CLAIM_SUBMITTED, claim));
+
+                } catch (Exception e) {
+                        logger.error("ERROR: Claim submission failed | employeeId={}", employeeId, e);
+                        throw e;
+                }
         }
 
         /**
@@ -56,16 +72,28 @@ public class ClaimController {
         public ResponseEntity<ApiResponse<List<ClaimResponseDTO>>> getClaims(
                         @RequestParam(required = false) Long reviewerId) {
 
-                List<ClaimResponseDTO> claims;
+                logger.info("API HIT: Get Claims | reviewerId={}", reviewerId);
 
-                if (reviewerId != null) {
-                        claims = claimService.getClaimsByReviewer(reviewerId);
-                } else {
-                        claims = claimService.getAllClaims();
+                try {
+                        List<ClaimResponseDTO> claims;
+
+                        if (reviewerId != null) {
+                                logger.info("Fetching claims for reviewerId={}", reviewerId);
+                                claims = claimService.getClaimsByReviewer(reviewerId);
+                        } else {
+                                logger.info("Fetching all claims");
+                                claims = claimService.getAllClaims();
+                        }
+
+                        logger.info("SUCCESS: Claims fetched | count={}", claims.size());
+
+                        return ResponseEntity.ok(
+                                        new ApiResponse<>(true, Messages.CLAIMS_FETCHED, claims));
+
+                } catch (Exception e) {
+                        logger.error("ERROR: Failed to fetch claims", e);
+                        throw e;
                 }
-
-                return ResponseEntity.ok(
-                                new ApiResponse<>(true, Messages.CLAIMS_FETCHED, claims));
         }
 
         /**
@@ -77,10 +105,23 @@ public class ClaimController {
                         @RequestParam Long reviewerId,
                         @RequestBody ClaimActionDTO request) {
 
-                ClaimResponseDTO response = claimService.approveClaim(id, reviewerId, request.getComment());
+                logger.info("API HIT: Approve Claim | claimId={} | reviewerId={}", id, reviewerId);
 
-                return ResponseEntity.ok(
-                                new ApiResponse<>(true, "Claim approved successfully", response));
+                try {
+                        ClaimResponseDTO response = claimService.approveClaim(id, reviewerId,
+                                        request.getComment());
+
+                        logger.info("SUCCESS: Claim approved | claimId={} | reviewerId={}",
+                                        id, reviewerId);
+
+                        return ResponseEntity.ok(
+                                        new ApiResponse<>(true, Messages.CLAIM_APPROVED, response));
+
+                } catch (Exception e) {
+                        logger.error("ERROR: Claim approval failed | claimId={} | reviewerId={}",
+                                        id, reviewerId, e);
+                        throw e;
+                }
         }
 
         /**
@@ -92,9 +133,22 @@ public class ClaimController {
                         @RequestParam Long reviewerId,
                         @RequestBody ClaimActionDTO request) {
 
-                ClaimResponseDTO response = claimService.rejectClaim(id, reviewerId, request.getComment());
+                logger.info("API HIT: Reject Claim | claimId={} | reviewerId={}", id, reviewerId);
 
-                return ResponseEntity.ok(
-                                new ApiResponse<>(true, "Claim rejected successfully", response));
+                try {
+                        ClaimResponseDTO response = claimService.rejectClaim(id, reviewerId,
+                                        request.getComment());
+
+                        logger.info("SUCCESS: Claim rejected | claimId={} | reviewerId={}",
+                                        id, reviewerId);
+
+                        return ResponseEntity.ok(
+                                        new ApiResponse<>(true, Messages.CLAIM_REJECTED, response));
+
+                } catch (Exception e) {
+                        logger.error("ERROR: Claim rejection failed | claimId={} | reviewerId={}",
+                                        id, reviewerId, e);
+                        throw e;
+                }
         }
 }
