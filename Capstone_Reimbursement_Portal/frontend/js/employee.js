@@ -3,7 +3,11 @@ if (!Auth.isLoggedIn()) {
     window.location.href = "index.html";
 }
 
-window.onload = function () {
+let page = 0;
+const size = 5;
+
+// ================= INIT =================
+document.addEventListener("DOMContentLoaded", () => {
 
     const user = Auth.getUser();
 
@@ -16,18 +20,53 @@ window.onload = function () {
     if (avatar) {
         avatar.innerText = name.charAt(0).toUpperCase();
     }
-};
 
-let page = 0;
-const size = 5;
+    // ===== EVENT LISTENERS =====
 
-/** switch tabs */
+    // Logout
+    document.getElementById("logoutBtn")
+        ?.addEventListener("click", () => Auth.logout());
+
+    // Tabs
+    document.getElementById("claimsTabBtn")
+        ?.addEventListener("click", (e) => {
+            e.preventDefault();
+            showTab("claims");
+        });
+
+    document.getElementById("submitTabBtn")
+        ?.addEventListener("click", (e) => {
+            e.preventDefault();
+            showTab("submit");
+        });
+
+    // Pagination
+    document.getElementById("prevPageBtn")
+        ?.addEventListener("click", () => changePage(-1));
+
+    document.getElementById("nextPageBtn")
+        ?.addEventListener("click", () => changePage(1));
+
+    // Submit Claim
+    document.getElementById("submitClaimBtn")
+        ?.addEventListener("click", submitClaim);
+
+    // Initial load
+    loadClaims();
+});
+
+
+// ================= TAB SWITCH =================
 function showTab(name) {
-    document.getElementById("tab-claims").style.display = name === "claims" ? "block" : "none";
-    document.getElementById("tab-submit").style.display = name === "submit" ? "block" : "none";
+    document.getElementById("tab-claims").style.display =
+        name === "claims" ? "block" : "none";
+
+    document.getElementById("tab-submit").style.display =
+        name === "submit" ? "block" : "none";
 }
 
-/** load claims */
+
+// ================= LOAD CLAIMS =================
 async function loadClaims() {
     try {
         const res = await apiFetch(`/claims?page=${page}&size=${size}`);
@@ -40,11 +79,12 @@ async function loadClaims() {
             `Page ${page + 1}`;
 
     } catch (err) {
-        console.error(err);
+        console.error("Error loading claims:", err);
     }
 }
 
-/** render claims */
+
+// ================= RENDER =================
 function renderClaims(claims) {
     const container = document.getElementById("claims-list");
 
@@ -78,25 +118,31 @@ function renderClaims(claims) {
     `).join("");
 }
 
-/** stats */
+
+// ================= STATS =================
 function updateStats(claims) {
     document.getElementById("stat-total").innerText = claims.length;
+
     document.getElementById("stat-approved").innerText =
         claims.filter(c => c.status === "APPROVED").length;
+
     document.getElementById("stat-pending").innerText =
         claims.filter(c => c.status === "SUBMITTED").length;
+
     document.getElementById("stat-rejected").innerText =
         claims.filter(c => c.status === "REJECTED").length;
 }
 
-/** pagination */
+
+// ================= PAGINATION =================
 function changePage(dir) {
     if (page + dir < 0) return;
     page += dir;
     loadClaims();
 }
 
-/** submit claim */
+
+// ================= SUBMIT CLAIM =================
 async function submitClaim() {
 
     const description = document.getElementById("description").value;
@@ -124,17 +170,13 @@ async function submitClaim() {
             date
         });
 
-
         alert("Claim submitted");
 
         showTab("claims");
         loadClaims();
 
     } catch (err) {
-        console.error(err);
+        console.error("Submit error:", err);
         alert(err.message);
     }
 }
-
-// init
-loadClaims();

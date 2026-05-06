@@ -19,18 +19,16 @@
             <div class="navbar-right">
 
                 <div class="user-pill">
-
-
                     <div class="avatar" id="avatar"></div>
 
                     <div class="user-info">
                         <span class="user-name" id="nav-name">user</span>
                         <span class="user-role" id="nav-role">Employee</span>
                     </div>
-
                 </div>
 
-                <button class="btn btn-ghost btn-sm" onclick="Auth.logout()">Logout</button>
+                
+                <button class="btn btn-ghost btn-sm" id="logoutBtn">Logout</button>
 
             </div>
         </nav>
@@ -40,11 +38,11 @@
             <div class="sidebar-section">
                 <div class="sidebar-label">Menu</div>
 
-                <a class="sidebar-item active" onclick="showTab('claims')" href="#">
+                <a class="sidebar-item active" id="claimsTabBtn" href="#">
                     <span class="si-icon">📋</span> My Claims
                 </a>
 
-                <a class="sidebar-item" onclick="showTab('submit')" href="#">
+                <a class="sidebar-item" id="submitTabBtn" href="#">
                     <span class="si-icon">✚</span> Submit New
                 </a>
             </div>
@@ -87,9 +85,11 @@
                         <span class="card-title">All Claims</span>
 
                         <div class="pagination">
-                            <button class="btn btn-ghost btn-sm" onclick="changePage(-1)">Prev</button>
+                     
+                            <button class="btn btn-ghost btn-sm" id="prevPageBtn">Prev</button>
                             <span id="page-info">Page 1</span>
-                            <button class="btn btn-ghost btn-sm" onclick="changePage(1)">Next</button>
+                       
+                            <button class="btn btn-ghost btn-sm" id="nextPageBtn">Next</button>
                         </div>
                     </div>
 
@@ -113,7 +113,8 @@
                     <input type="date" id="date" />
                     <input type="text" id="description" placeholder="Description" />
 
-                    <button class="btn btn-primary" onclick="submitClaim()">Submit</button>
+                   
+                    <button class="btn btn-primary" id="submitClaimBtn">Submit</button>
                 </div>
             </div>
 

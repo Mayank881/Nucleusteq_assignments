@@ -117,9 +117,12 @@ async function createUser() {
     const email = document.getElementById("email").value.trim();
     const password = document.getElementById("password").value.trim();
     const role = document.getElementById("role").value;
+    
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@company\.com$/;
 
-    if (!email.endsWith("@company.com")) {
-        document.getElementById("msg").innerText = "Use company email";
+    if (!emailRegex.test(email)) {
+        document.getElementById("msg").innerText =
+            "Enter a valid @company.com email";
         return;
     }
 
