@@ -11,4 +11,5 @@ public interface ClaimRepository extends JpaRepository<Claim, Long> {
     void deleteByEmployee(User user);
     void deleteByReviewer(User user);
     List<Claim> findByReviewerId(Long reviewerId);
+    List<Claim> findByEmployeeId(Long employeeId);
 }

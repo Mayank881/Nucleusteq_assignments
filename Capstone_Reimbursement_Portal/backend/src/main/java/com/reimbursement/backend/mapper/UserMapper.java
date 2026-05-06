@@ -5,7 +5,7 @@ import com.reimbursement.backend.dto.UserResponseDTO;
 import com.reimbursement.backend.entity.User;
 
 /**
- * handles mapping between User and DTOs 
+ * handles mapping between User and DTOs
  */
 public class UserMapper {
 
@@ -19,9 +19,10 @@ public class UserMapper {
 
         return user;
     }
+
     /**
      * maps User entity to UserResponseDTO for sending in API response
-    */
+     */
     public static UserResponseDTO toDTO(User user) {
 
         UserResponseDTO dto = new UserResponseDTO();
@@ -29,6 +30,12 @@ public class UserMapper {
         dto.setName(user.getName());
         dto.setEmail(user.getEmail());
         dto.setRole(user.getRole());
+         
+        dto.setManagerId(
+                user.getManager() != null ? user.getManager().getId() : null);  // include manager ID if exists
+
+        dto.setManagerName(
+                user.getManager() != null ? user.getManager().getName() : null); // include manager name if exists
 
         return dto;
     }

@@ -7,6 +7,7 @@ import com.reimbursement.backend.mapper.UserMapper;
 import com.reimbursement.backend.dto.UserRequestDTO;
 import com.reimbursement.backend.dto.UserResponseDTO;
 import com.reimbursement.backend.dto.logindto.LoginRequestDTO;
+import com.reimbursement.backend.entity.Claim;
 import com.reimbursement.backend.entity.User;
 import com.reimbursement.backend.repository.UserRepository;
 import com.reimbursement.backend.repository.ClaimRepository;
@@ -29,7 +30,6 @@ import java.util.List;
  */
 @Service
 public class UserService {
-   
 
     @Autowired
     private UserRepository userRepository;
@@ -92,20 +92,15 @@ public class UserService {
     /**
      * assign manager to employee
      */
+    @Transactional
     public UserResponseDTO assignManager(Long employeeId, Long managerId) {
 
         User employee = userRepository.findById(employeeId)
-                .orElseThrow(() -> new ResourceNotFoundException("Selected user is not an employee"));
+                .orElseThrow(() -> new ResourceNotFoundException(Messages.EMPLOYEE_NOT_FOUND));
 
         User manager = userRepository.findById(managerId)
-                .orElseThrow(() -> new ResourceNotFoundException("Selected user is not a manager"));
+                .orElseThrow(() -> new ResourceNotFoundException(Messages.MANAGER_NOT_FOUND));
 
-        // null safety
-        if (employee.getRole() == null || manager.getRole() == null) {
-            throw new BadRequestException("User roles must be defined");
-        }
-
-        // role validation
         if (!"EMPLOYEE".equals(employee.getRole().name())) {
             throw new BadRequestException("Selected user is not an employee");
         }
@@ -114,15 +109,22 @@ public class UserService {
             throw new BadRequestException("Selected user is not a manager");
         }
 
-        if (employeeId.equals(managerId)) {
-            throw new BadRequestException("Employee cannot be their own manager");
+        employee.setManager(manager);
+        userRepository.save(employee);
+
+        // reassign OLD claims
+        List<Claim> claims = claimRepository.findByEmployeeId(employeeId);
+
+        for (Claim c : claims) {
+
+            if (c.getStatus().name().equals("SUBMITTED")) {
+                c.setReviewer(manager);
+            }
         }
 
-        employee.setManager(manager);
+        claimRepository.saveAll(claims);
 
-        User savedUser = userRepository.save(employee);
-
-        return UserMapper.toDTO(savedUser);
+        return UserMapper.toDTO(employee);
     }
 
     /**
@@ -139,22 +141,47 @@ public class UserService {
             throw new BadRequestException(Messages.ADMIN_CANT_DELETED);
         }
 
-        // remove manager references
-        List<User> users = userRepository.findAll();
-        for (User u : users) {
-            if (u.getManager() != null && u.getManager().getId().equals(userId)) {
-                u.setManager(null);
-            }
+        // find admin
+        User admin = userRepository.findAll()
+                .stream()
+                .filter(u -> u.getRole().name().equals("ADMIN"))
+                .findFirst()
+                .orElseThrow(() -> new ResourceNotFoundException("Admin not found"));
+
+        if ("EMPLOYEE".equals(user.getRole().name())) {
+
+            // delete employee claims
+            claimRepository.deleteByEmployee(user);
+
         }
 
-        claimRepository.deleteByEmployee(user);
-        claimRepository.deleteByReviewer(user);
+        if ("MANAGER".equals(user.getRole().name())) {
+
+            // reassign employees to admin
+            List<User> users = userRepository.findAll();
+            for (User u : users) {
+                if (u.getManager() != null && u.getManager().getId().equals(userId)) {
+                    u.setManager(admin);
+                }
+            }
+
+            // reassign claims to admin
+            List<Claim> claims = claimRepository.findByReviewerId(userId);
+
+            for (Claim c : claims) {
+                c.setReviewer(admin);
+            }
+
+            claimRepository.saveAll(claims);
+        }
 
         userRepository.delete(user);
     }
 
+    /**
+     * login user and return JWT token
+     */
     public LoginResponseDTO login(LoginRequestDTO request) {
-    
 
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new ResourceNotFoundException(Messages.USER_NOT_FOUND));
@@ -170,6 +197,5 @@ public class UserService {
                 user.getEmail(),
                 user.getRole().name());
     }
-
 
 }

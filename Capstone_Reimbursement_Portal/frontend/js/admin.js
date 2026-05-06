@@ -33,7 +33,7 @@ async function loadUsers() {
 
         usersData = data.content;
 
-        console.log("USERS:", usersData); // 🔥 debug
+        console.log("USERS:", usersData); // debug
 
         renderUsers(usersData);
 
@@ -50,9 +50,11 @@ async function loadManagers() {
         const res = await apiFetch("/users?page=0&size=100");
         const data = res.data;
 
-        allManagers = data.content.filter(u => u.role === "MANAGER");
+        allManagers = data.content.filter(
+            u => u.role === "MANAGER" || u.role === "ADMIN"
+        );
 
-        console.log("MANAGERS:", allManagers); // 🔥 debug
+        console.log("MANAGERS:", allManagers); // debug
 
     } catch (err) {
         console.error(err);
@@ -70,11 +72,15 @@ function renderUsers(users) {
 
         const managerOptions = allManagers
             .map(m => `
-                <option value="${m.id}" 
-                  ${u.managerId === m.id ? "selected" : ""}>
-                  ${m.email}
-                </option>
-            `)
+    <option value="${m.id}" 
+      ${(u.managerId && u.managerId === m.id) ||
+                    (!u.managerId && m.role === "ADMIN")
+                    ? "selected"
+                    : ""
+                }>
+      ${m.name || m.email}
+    </option>
+  `)
             .join("");
 
         table.innerHTML += `

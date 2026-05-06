@@ -1,64 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8" />
-  <title>Reviewer Dashboard</title>
-  <link rel="stylesheet" href="../css/style.css" />
+    <meta charset="UTF-8" />
+    <title>Reviewer Dashboard</title>
+    <link rel="stylesheet" href="../css/style.css" />
 </head>
 
 <body class="page-reviewer">
-<div class="app-layout">
+    <div class="app-layout">
 
-  <!-- NAVBAR -->
-  <nav class="navbar">
-    <div class="navbar-brand">
-      <span>Reimbursement Portal</span>
+        <!-- NAVBAR -->
+        <nav class="navbar">
+            <div class="navbar-brand">
+                <span>Reimbursement Portal</span>
+            </div>
+
+            <div class="navbar-right">
+                <div class="user-pill">
+                    <div class="avatar" id="avatar"></div>
+                    <div class="user-info">
+                        <span class="user-name" id="nav-name">user</span>
+                        <span class="user-role" id="nav-role">MANAGER</span>
+                    </div>
+                </div>
+
+                <button id="admin-btn" class="btn btn-ghost btn-sm" style="display:none;">
+                    Admin
+                </button>
+                <button class="btn btn-ghost btn-sm" onclick="Auth.logout()">Logout</button>
+            </div>
+        </nav>
+
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <a class="sidebar-item active" onclick="showTab('pending')">Pending</a>
+            <a class="sidebar-item" onclick="showTab('reviewed')">Reviewed</a>
+        </aside>
+
+        <!-- MAIN -->
+        <main class="main">
+
+            <!-- PENDING -->
+            <div id="tab-pending">
+                <div class="page-title">Pending Claims</div>
+                <div class="card">
+                    <div id="pending-list">Loading...</div>
+                </div>
+            </div>
+
+            <!-- REVIEWED -->
+            <div id="tab-reviewed" style="display:none;">
+                <div class="page-title">Reviewed Claims</div>
+                <div class="card">
+                    <div id="reviewed-list">Loading...</div>
+                </div>
+            </div>
+
+        </main>
+
     </div>
 
-    <div class="navbar-right">
-      <div class="user-pill">
-        <div class="avatar" id="avatar"></div>
-        <div class="user-info">
-          <span class="user-name" id="nav-name">user</span>
-          <span class="user-role" id="nav-role">MANAGER</span>
-        </div>
-      </div>
-
-      <button class="btn btn-ghost btn-sm" onclick="Auth.logout()">Logout</button>
-    </div>
-  </nav>
-
-  <!-- SIDEBAR -->
-  <aside class="sidebar">
-    <a class="sidebar-item active" onclick="showTab('pending')">Pending</a>
-    <a class="sidebar-item" onclick="showTab('reviewed')">Reviewed</a>
-  </aside>
-
-  <!-- MAIN -->
-  <main class="main">
-
-    <!-- PENDING -->
-    <div id="tab-pending">
-      <div class="page-title">Pending Claims</div>
-      <div class="card">
-        <div id="pending-list">Loading...</div>
-      </div>
-    </div>
-
-    <!-- REVIEWED -->
-    <div id="tab-reviewed" style="display:none;">
-      <div class="page-title">Reviewed Claims</div>
-      <div class="card">
-        <div id="reviewed-list">Loading...</div>
-      </div>
-    </div>
-
-  </main>
-
-</div>
-
-<script src="../js/config.js"></script>
-<script src="../js/reviewer.js"></script>
+    <script src="../js/config.js"></script>
+    <script src="../js/reviewer.js"></script>
 
 </body>
+
 </html>

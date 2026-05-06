@@ -14,4 +14,6 @@ public class UserResponseDTO {
     private String name;
     private String email;
     private Role role;
+    private Long managerId;
+    private String managerName;
 }

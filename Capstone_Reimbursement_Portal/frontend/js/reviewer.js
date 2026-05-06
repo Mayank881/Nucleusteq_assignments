@@ -1,64 +1,65 @@
 // protect
 if (!Auth.isLoggedIn()) {
-  window.location.href = "index.html";
+    window.location.href = "index.html";
 }
 
 const user = Auth.getUser();
 
-// safety check
-if (!user || !user.id) {
-  alert("User ID missing. Please login again.");
-  window.location.href = "index.html";
-}
+// ADMIN BUTTON LOGIC (SAFE)
+const adminBtn = document.getElementById("admin-btn");
 
+if (adminBtn && user.role === "ADMIN") {
+    adminBtn.style.display = "inline-block";
+
+    adminBtn.onclick = () => {
+        window.location.href = "admin.html";
+    };
+}
 const name = user?.email ? user.email.split("@")[0] : "User";
 
 document.getElementById("nav-name").innerText = name;
 document.getElementById("nav-role").innerText = user?.role || "MANAGER";
-
-const avatar = document.getElementById("avatar");
-if (avatar) {
-  avatar.innerText = name.charAt(0).toUpperCase();
-}
+document.getElementById("avatar").innerText = name.charAt(0).toUpperCase();
 
 /** switch tabs */
 function showTab(tab) {
-  document.getElementById("tab-pending").style.display =
-    tab === "pending" ? "block" : "none";
+    document.getElementById("tab-pending").style.display =
+        tab === "pending" ? "block" : "none";
 
-  document.getElementById("tab-reviewed").style.display =
-    tab === "reviewed" ? "block" : "none";
+    document.getElementById("tab-reviewed").style.display =
+        tab === "reviewed" ? "block" : "none";
 }
 
-/** load claims (ONLY reviewer claims) */
+/** load all claims */
 async function loadClaims() {
-  try {
-    const res = await apiFetch(`/claims?reviewerId=${user.id}`);
-    const claims = res.data;
+    try {
+        const res = await apiFetch(`/claims?reviewerId=${user.id}`);
+        const claims = res.data;
 
-    renderClaims(claims);
-  } catch (err) {
-    console.error(err);
-    alert("Failed to load claims");
-  }
+        renderClaims(claims);
+    } catch (err) {
+        console.error(err);
+    }
 }
 
-/** render claims */
+/** render */
 function renderClaims(claims) {
 
-  const pending = claims.filter(c => c.status === "SUBMITTED");
-  const reviewed = claims.filter(c => c.status !== "SUBMITTED");
+    const pending = claims.filter(c => c.status === "SUBMITTED");
+    const reviewed = claims.filter(c => c.status !== "SUBMITTED");
 
-  document.getElementById("pending-list").innerHTML =
-    pending.length ? pending.map(renderCard).join("") : "No pending claims";
+    // pending
+    document.getElementById("pending-list").innerHTML =
+        pending.length ? pending.map(renderCard).join("") : "No pending claims";
 
-  document.getElementById("reviewed-list").innerHTML =
-    reviewed.length ? reviewed.map(renderCard).join("") : "No reviewed claims";
+    // reviewed
+    document.getElementById("reviewed-list").innerHTML =
+        reviewed.length ? reviewed.map(renderCard).join("") : "No reviewed claims";
 }
 
-/** render single card */
+/** card html */
 function renderCard(c) {
-  return `
+    return `
     <div class="claim-card">
       <div><b>${c.description}</b></div>
       <div>₹${c.amount}</div>
@@ -84,44 +85,24 @@ function renderCard(c) {
 
 /** approve */
 async function approve(id) {
-  try {
-    const commentEl = document.getElementById(`comment-${id}`);
-    const comment = commentEl ? commentEl.value : "";
+    const comment = document.getElementById(`comment-${id}`).value;
 
-    await apiFetch(
-      `/claims/${id}/approve?reviewerId=${user.id}`,
-      "PUT",
-      { comment }
-    );
+    await apiFetch(`/claims/${id}/approve?reviewerId=${user.id}`, "PUT", {
+        comment
+    });
 
-    alert("Approved");
     loadClaims();
-
-  } catch (err) {
-    console.error(err);
-    alert(err.message);
-  }
 }
 
 /** reject */
 async function reject(id) {
-  try {
-    const commentEl = document.getElementById(`comment-${id}`);
-    const comment = commentEl ? commentEl.value : "";
+    const comment = document.getElementById(`comment-${id}`).value;
 
-    await apiFetch(
-      `/claims/${id}/reject?reviewerId=${user.id}`,
-      "PUT",
-      { comment }
-    );
+    await apiFetch(`/claims/${id}/reject?reviewerId=${user.id}`, "PUT", {
+        comment
+    });
 
-    alert("Rejected");
     loadClaims();
-
-  } catch (err) {
-    console.error(err);
-    alert(err.message);
-  }
 }
 
 // init
