@@ -1,0 +1,22 @@
+# Q1 - Create an iterator for a list and print elements using next().
+
+# Constants
+NUMBER_LIST = [10, 20, 30, 40, 50]
+
+
+def print_list_elements() -> None:
+    """Create an iterator for a list and print elements using next()."""
+
+    number_iterator = iter(NUMBER_LIST)
+
+    while True:
+        try:
+            current_number = next(number_iterator)
+            print(current_number)
+
+        except StopIteration:
+            break
+
+
+if __name__ == "__main__":
+    print_list_elements()
