@@ -1,13 +1,14 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.routers.user import router as user_router
+
 app = FastAPI(
     title="Issue & Sprint Management System API",
     description="Backend API for Issue & Sprint Management System",
-    version="1.0.0"
+    version="1.0.0",
 )
 
-# Configure CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:3000"],
@@ -15,6 +16,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.include_router(user_router)
 
 
 @app.get("/")
