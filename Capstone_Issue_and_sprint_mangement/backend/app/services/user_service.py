@@ -4,8 +4,7 @@ from fastapi import HTTPException, status
 
 from app.database import users_collection
 from app.schemas.user import UserCreate, UserResponse
-from app.utils.security import hash_password
-
+from app.auth.password import hash_password
 
 def register_user(user: UserCreate) -> UserResponse:
     """

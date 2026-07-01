@@ -37,3 +37,17 @@ class UserResponse(BaseModel):
     name: str
     email: EmailStr
     role: UserRole
+
+
+class UserLogin(BaseModel):
+    """Schema for user login."""
+
+    email: EmailStr
+    password: str
+
+
+class Token(BaseModel):
+    """JWT token returned after successful login."""
+
+    access_token: str
+    token_type: str
