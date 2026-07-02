@@ -29,7 +29,6 @@ def test_get_profile_with_token():
         "name": "Profile User",
         "email": unique_email,
         "password": "Password@123",
-        "role": "MEMBER",
     }
 
     # Register a new user
@@ -67,4 +66,4 @@ def test_get_profile_with_token():
 
     assert data["name"] == "Profile User"
     assert data["email"] == unique_email
-    assert data["role"] == "MEMBER"
+    assert data["role"] == "member"

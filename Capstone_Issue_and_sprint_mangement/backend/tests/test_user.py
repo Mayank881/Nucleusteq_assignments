@@ -20,7 +20,6 @@ def test_register_user_success():
             "name": "Test User",
             "email": unique_email,
             "password": "Password@123",
-            "role": "MEMBER",
         },
     )
 
@@ -30,7 +29,7 @@ def test_register_user_success():
 
     assert data["name"] == "Test User"
     assert data["email"] == unique_email
-    assert data["role"] == "MEMBER"
+    assert data["role"] == "member"
     assert "id" in data
 def test_register_duplicate_email():
     """
@@ -41,7 +40,6 @@ def test_register_duplicate_email():
         "name": "Duplicate User",
         "email": "duplicate@gmail.com",
         "password": "Password@123",
-        "role": "MEMBER",
     }
 
     # First registration
@@ -70,7 +68,6 @@ def test_register_invalid_data():
             "name": "",
             "email": "invalid-email",
             "password": "123",
-            "role": "MEMBER",
         },
     )
 
