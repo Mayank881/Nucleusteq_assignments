@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.routers.user import router as user_router
 from app.routers.admin import router as admin_router
+from app.routers.project import router as project_router
 
 app = FastAPI(
     title="Issue & Sprint Management System API",
@@ -20,6 +21,7 @@ app.add_middleware(
 
 app.include_router(user_router)
 app.include_router(admin_router)
+app.include_router(project_router)
 
 @app.get("/")
 def root():

@@ -2,6 +2,10 @@ from fastapi import Depends, HTTPException, status
 
 from app.auth.authentication import get_current_user
 from app.schemas.user import UserRole
+from app.constants import app_constants
+
+UNAUTHORIZED_ACTION = app_constants.UNAUTHORIZED_ACTION
+
 
 
 class RoleChecker:
@@ -26,7 +30,7 @@ class RoleChecker:
         ]:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
-                detail="You are not authorized to perform this action.",
+                detail=UNAUTHORIZED_ACTION,
             )
 
         return current_user

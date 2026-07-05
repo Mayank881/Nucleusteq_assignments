@@ -7,8 +7,6 @@ from app.database import users_collection
 from app.schemas.user import Token, UserLogin
 from app.constants import app_constants
 
-from app.constants import app_constants
-
 INVALID_CREDENTIALS = app_constants.INVALID_CREDENTIALS
 
 def login_user(login_data: OAuth2PasswordRequestForm) -> Token:
