@@ -45,7 +45,11 @@ def create_admin():
 
     token = login_response.json()["access_token"]
 
-    return token
+    user = users_collection.find_one(
+        {"email": unique_email}
+    )
+
+    return token, str(user["_id"])
 
 
 def create_project(token):
@@ -66,13 +70,41 @@ def create_project(token):
 
     return response.json()["id"]
 
+def create_issue(
+    token: str,
+    user_id: str,
+    project_id: str,
+):
+    """
+    Create an issue and return its id.
+    """
+
+    response = client.post(
+        f"/projects/{project_id}/issues",
+        json={
+            "title": "Workflow Issue",
+            "description": "Testing workflow",
+            "type": "Bug",
+            "priority": "High",
+            "assignee_id": user_id,
+            "parent_id": None,
+        },
+        headers={
+            "Authorization": f"Bearer {token}",
+        },
+    )
+
+    assert response.status_code == 201
+
+    return response.json()["id"]
+
 
 def test_create_issue_success():
     """
     Test successful issue creation.
     """
 
-    token = create_admin()
+    token, user_id = create_admin()
 
     project_id = create_project(token)
 
@@ -83,7 +115,7 @@ def test_create_issue_success():
             "description": "Unable to login",
             "type": "Bug",
             "priority": "High",
-            "assignee_id": None,
+            "assignee_id": user_id,
             "parent_id": None,
         },
         headers={
@@ -105,7 +137,7 @@ def test_create_issue_invalid_project():
     Test issue creation with invalid project id.
     """
 
-    token = create_admin()
+    token, _ = create_admin()
 
     response = client.post(
         "/projects/686868686868686868686868/issues",
@@ -129,7 +161,7 @@ def test_create_issue_missing_fields():
     Test issue creation with missing required fields.
     """
 
-    token = create_admin()
+    token, _ = create_admin()
 
     project_id = create_project(token)
 
@@ -142,3 +174,116 @@ def test_create_issue_missing_fields():
     )
 
     assert response.status_code == 422
+
+def test_valid_status_transition():
+    """
+    Test valid issue status transition.
+    """
+
+    token, user_id = create_admin()
+
+    project_id = create_project(token)
+
+    issue_id = create_issue(
+        token,
+        user_id,
+        project_id,
+    )
+
+    response = client.patch(
+        f"/projects/{project_id}/issues/{issue_id}/status",
+        json={
+            "status": "TODO",
+        },
+        headers={
+            "Authorization": f"Bearer {token}",
+        },
+    )
+
+    assert response.status_code == 200
+
+    data = response.json()
+
+    assert data["status"] == "TODO"
+
+def test_invalid_status_transition():
+    """
+    Test invalid status transition.
+    """
+
+    token, user_id = create_admin()
+
+    project_id = create_project(token)
+
+    issue_id = create_issue(
+        token,
+        user_id,
+        project_id,
+    )
+
+    headers = {
+        "Authorization": f"Bearer {token}",
+    }
+
+    client.patch(
+        f"/projects/{project_id}/issues/{issue_id}/status",
+        json={"status": "TODO"},
+        headers=headers,
+    )
+
+    client.patch(
+        f"/projects/{project_id}/issues/{issue_id}/status",
+        json={"status": "IN_PROGRESS"},
+        headers=headers,
+    )
+
+    client.patch(
+        f"/projects/{project_id}/issues/{issue_id}/status",
+        json={"status": "DONE"},
+        headers=headers,
+    )
+
+    response = client.patch(
+        f"/projects/{project_id}/issues/{issue_id}/status",
+        json={"status": "TODO"},
+        headers=headers,
+    )
+
+    assert response.status_code == 409
+
+    assert response.json()["detail"] == (
+        "Invalid status transition."
+    )
+
+def test_non_assignee_update():
+    """
+    Test that a non-assignee cannot update issue status.
+    """
+
+    token1, user1 = create_admin()
+
+    project_id = create_project(token1)
+
+    issue_id = create_issue(
+        token1,
+        user1,
+        project_id,
+    )
+
+    token2, _ = create_admin()
+
+    response = client.patch(
+        f"/projects/{project_id}/issues/{issue_id}/status",
+        json={
+            "status": "TODO",
+        },
+        headers={
+            "Authorization": f"Bearer {token2}",
+        },
+    )
+
+    assert response.status_code == 403
+
+    assert response.json()["detail"] == (
+        "Only the assignee can update the issue status."
+    )        
