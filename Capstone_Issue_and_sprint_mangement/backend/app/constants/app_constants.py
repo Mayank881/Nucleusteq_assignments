@@ -38,6 +38,9 @@ INVALID_USER_ID = "Invalid user ID."
 PROJECT_NOT_FOUND = "Project not found."
 PROJECT_CREATED = "Project created successfully."
 
+ISSUE_NOT_FOUND = "Issue not found."
+INVALID_ISSUE_ID = "Invalid issue ID."
+
 USER_NOT_FOUND = "User not found."
 
 MEMBER_ALREADY_EXISTS = "User is already a project member."
@@ -53,4 +56,12 @@ PROJECT_OWNER_CANNOT_BE_REMOVED = (
 
 UNAUTHORIZED_ACTION = (
     "You are not authorized to perform this action."
+)
+
+ISSUE_NOT_ASSIGNEE = (
+    "Only the assignee can update the issue status."
+)
+
+INVALID_STATUS_TRANSITION = (
+    "Invalid status transition."
 )
