@@ -1,5 +1,6 @@
 
 from fastapi import APIRouter, Depends, status
+from typing import Optional
 
 from app.auth.authorization import RoleChecker
 from app.schemas.issue import (
@@ -11,7 +12,9 @@ from app.schemas.user import UserRole
 from app.services.issue_service import (
     create_issue,
     update_issue_status,
+    search_issues,
 )
+from app.auth.authentication import get_current_user
 
 router = APIRouter(
     prefix="/projects",
@@ -71,4 +74,28 @@ def update_issue_workflow(
         issue_id,
         status_update,
         current_user,
+    )
+
+@router.get(
+    "/issues/search",
+    response_model=list[IssueResponse],
+)
+def search_issue(
+    title: Optional[str] = None,
+    description: Optional[str] = None,
+    status: Optional[str] = None,
+    project_id: Optional[str] = None,
+    assignee_id: Optional[str] = None,
+    current_user=Depends(get_current_user),
+):
+    """
+    Search and filter issues.
+    """
+
+    return search_issues(
+        title,
+        description,
+        status,
+        project_id,
+        assignee_id,
     )

@@ -155,3 +155,60 @@ def update_issue_status(
         status=updated_issue["status"],
         parent_id=updated_issue.get("parent_id"),
     )
+
+def search_issues(
+    title=None,
+    description=None,
+    status=None,
+    project_id=None,
+    assignee_id=None,
+):
+    """
+    Search issues.
+    """
+
+    query = {}
+
+    if title:
+        query["title"] = {
+            "$regex": title,
+            "$options": "i",
+        }
+
+    if description:
+        query["description"] = {
+            "$regex": description,
+            "$options": "i",
+        }
+
+    if status:
+        query["status"] = status
+
+    if project_id:
+        query["project_id"] = project_id
+
+    if assignee_id:
+        query["assignee_id"] = assignee_id
+
+    issues = issues_collection.find(query)
+
+    response = []
+
+    for issue in issues:
+
+        response.append(
+            IssueResponse(
+                id=str(issue["_id"]),
+                title=issue["title"],
+                description=issue["description"],
+                project_id=issue["project_id"],
+                reporter_id=issue["reporter_id"],
+                assignee_id=issue.get("assignee_id"),
+                type=issue["type"],
+                priority=issue["priority"],
+                status=issue["status"],
+                parent_id=issue.get("parent_id"),
+            )
+        )
+
+    return response
