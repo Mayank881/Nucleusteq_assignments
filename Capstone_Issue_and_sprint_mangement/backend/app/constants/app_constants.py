@@ -65,3 +65,50 @@ ISSUE_NOT_ASSIGNEE = (
 INVALID_STATUS_TRANSITION = (
     "Invalid status transition."
 )
+# sprint module constants
+
+SPRINT_STATUS_PLANNED = "PLANNED"
+SPRINT_STATUS_ACTIVE = "ACTIVE"
+SPRINT_STATUS_COMPLETED = "COMPLETED"
+
+INVALID_SPRINT_DATES = (
+    "Sprint start date must be before end date."
+)
+
+SPRINT_NOT_FOUND = "Sprint not found."
+INVALID_SPRINT_ID = "Invalid sprint ID."
+
+ISSUE_ALREADY_IN_SPRINT = (
+    "Issue is already added to this sprint."
+)
+
+DONE_ISSUE_NOT_ALLOWED = (
+    "Completed issues cannot be added to a sprint."
+)
+
+ISSUE_NOT_IN_SPRINT = (
+    "Issue is not part of this sprint."
+)
+
+SPRINT_ALREADY_ACTIVE = (
+    "Sprint is already active."
+)
+
+SPRINT_ALREADY_COMPLETED = (
+    "Sprint is already completed."
+)
+
+SPRINT_NOT_ACTIVE = (
+    "Sprint must be active before it can be completed."
+)
+
+ISSUE_NOT_FOUND = "Issue not found."
+
+
+ISSUE_PROJECT_MISMATCH = (
+    "Issue and sprint belong to different projects."
+)
+
+DONE_ISSUE_NOT_ALLOWED = (
+    "Completed issues cannot be added to a sprint."
+)

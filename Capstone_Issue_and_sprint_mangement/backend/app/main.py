@@ -5,6 +5,7 @@ from app.routers.user import router as user_router
 from app.routers.admin import router as admin_router
 from app.routers.project import router as project_router
 from app.routers.issue import router as issue_router
+from app.routers.sprint import router as sprint_router
 
 app = FastAPI(
     title="Issue & Sprint Management System API",
@@ -24,6 +25,7 @@ app.include_router(user_router)
 app.include_router(admin_router)
 app.include_router(project_router)
 app.include_router(issue_router)
+app.include_router(sprint_router)
 
 @app.get("/")
 def root():
