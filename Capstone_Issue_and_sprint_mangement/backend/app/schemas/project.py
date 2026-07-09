@@ -7,6 +7,10 @@ class ProjectCreate(BaseModel):
     name: str
     description: str
 
+class ProjectUpdate(BaseModel):
+    name: str
+    description: str    
+
 
 class MemberRequest(BaseModel):
     user_id: str

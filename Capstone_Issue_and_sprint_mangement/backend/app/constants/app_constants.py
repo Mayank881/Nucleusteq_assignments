@@ -126,3 +126,7 @@ COMMENT_CREATED = "Comment created successfully."
 COMMENT_UPDATED = "Comment updated successfully."
 
 COMMENT_DELETED = "Comment deleted successfully."
+
+ADMIN_REGISTERED_NOT_ALLOWED = (
+    "Admin registration is not allowed through public API."
+)

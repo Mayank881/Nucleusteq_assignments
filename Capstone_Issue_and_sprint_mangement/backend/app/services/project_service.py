@@ -8,6 +8,7 @@ from app.database import projects_collection, users_collection
 from app.schemas.project import (
     MemberRequest,
     ProjectCreate,
+    ProjectUpdate,
     ProjectResponse,
 )
 
@@ -245,3 +246,66 @@ def remove_member(
         owner_id=project["owner_id"],
         members=updated_members,
     )
+
+
+def update_project(
+    project_id: str,
+    project_data: ProjectUpdate,
+) -> ProjectResponse:
+    """
+    Update an existing project.
+    """
+
+    project = get_project_by_id(project_id)
+
+    existing_project = projects_collection.find_one(
+        {
+            "name": project_data.name,
+            "_id": {"$ne": project["_id"]},
+        }
+    )
+
+    if existing_project:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail=PROJECT_NAME_EXISTS,
+        )
+
+    projects_collection.update_one(
+        {"_id": project["_id"]},
+        {
+            "$set": {
+                "name": project_data.name,
+                "description": project_data.description,
+                "updated_at": datetime.utcnow(),
+            }
+        },
+    )
+
+    updated_project = get_project_by_id(project_id)
+
+    return ProjectResponse(
+        id=str(updated_project["_id"]),
+        name=updated_project["name"],
+        description=updated_project["description"],
+        owner_id=updated_project["owner_id"],
+        members=updated_project["members"],
+    )
+
+
+def delete_project(
+    project_id: str,
+) -> dict:
+    """
+    Delete a project.
+    """
+
+    project = get_project_by_id(project_id)
+
+    projects_collection.delete_one(
+        {"_id": project["_id"]}
+    )
+
+    return {
+        "message": "Project deleted successfully"
+    }
