@@ -89,6 +89,73 @@ def create_issue(
         parent_id=issue_data.parent_id,
     )
 
+
+def get_all_issues() -> list[IssueResponse]:
+    """
+    Retrieve all issues.
+    """
+
+    issues = issues_collection.find()
+
+    response = []
+
+    for issue in issues:
+        response.append(
+            IssueResponse(
+                id=str(issue["_id"]),
+                title=issue["title"],
+                description=issue["description"],
+                project_id=issue["project_id"],
+                reporter_id=issue["reporter_id"],
+                assignee_id=issue.get("assignee_id"),
+                type=issue["type"],
+                priority=issue["priority"],
+                status=issue["status"],
+                parent_id=issue.get("parent_id"),
+            )
+        )
+
+    return response
+
+def get_issue_by_id(
+    issue_id: str,
+) -> IssueResponse:
+    """
+    Retrieve an issue by its ID.
+    """
+
+    try:
+        issue = issues_collection.find_one(
+            {
+                "_id": ObjectId(issue_id),
+            }
+        )
+
+    except InvalidId:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=INVALID_ISSUE_ID,
+        )
+
+    if not issue:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=ISSUE_NOT_FOUND,
+        )
+
+    return IssueResponse(
+        id=str(issue["_id"]),
+        title=issue["title"],
+        description=issue["description"],
+        project_id=issue["project_id"],
+        reporter_id=issue["reporter_id"],
+        assignee_id=issue.get("assignee_id"),
+        type=issue["type"],
+        priority=issue["priority"],
+        status=issue["status"],
+        parent_id=issue.get("parent_id"),
+    )
+
 def update_issue_status(
     issue_id: str,
     status_update: IssueStatusUpdate,

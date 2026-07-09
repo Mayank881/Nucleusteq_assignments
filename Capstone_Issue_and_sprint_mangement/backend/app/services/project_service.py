@@ -4,7 +4,6 @@ from bson import ObjectId
 from bson.errors import InvalidId
 from fastapi import HTTPException, status
 
-from app.constants import app_constants
 from app.database import projects_collection, users_collection
 from app.schemas.project import (
     MemberRequest,
@@ -12,15 +11,15 @@ from app.schemas.project import (
     ProjectResponse,
 )
 
-PROJECT_NOT_FOUND = app_constants.PROJECT_NOT_FOUND
-PROJECT_NAME_EXISTS = app_constants.PROJECT_NAME_EXISTS
-USER_NOT_FOUND = app_constants.USER_NOT_FOUND
-MEMBER_ALREADY_EXISTS = app_constants.MEMBER_ALREADY_EXISTS
-MEMBER_NOT_FOUND = app_constants.MEMBER_NOT_FOUND
-INVALID_PROJECT_ID = app_constants.INVALID_PROJECT_ID
-INVALID_USER_ID = app_constants.INVALID_USER_ID
-PROJECT_OWNER_CANNOT_BE_REMOVED = (
-    app_constants.PROJECT_OWNER_CANNOT_BE_REMOVED
+from app.constants.app_constants import (
+    PROJECT_NOT_FOUND,
+    PROJECT_NAME_EXISTS,    
+    USER_NOT_FOUND,
+    MEMBER_ALREADY_EXISTS,
+    MEMBER_NOT_FOUND,
+    INVALID_PROJECT_ID,
+    INVALID_USER_ID,
+    PROJECT_OWNER_CANNOT_BE_REMOVED,
 )
 
 def create_project(
@@ -63,6 +62,46 @@ def create_project(
         owner_id=owner_id,
         members=[owner_id],
     )
+
+def get_all_projects() -> list[ProjectResponse]:
+    """
+    Retrieve all projects.
+    """
+
+    projects = projects_collection.find()
+
+    response = []
+
+    for project in projects:
+        response.append(
+            ProjectResponse(
+                id=str(project["_id"]),
+                name=project["name"],
+                description=project["description"],
+                owner_id=project["owner_id"],
+                members=project["members"],
+            )
+        )
+
+    return response
+
+def get_project(
+    project_id: str,
+) -> ProjectResponse:
+    """
+    Retrieve a project by its ID.
+    """
+
+    project = get_project_by_id(project_id)
+
+    return ProjectResponse(
+        id=str(project["_id"]),
+        name=project["name"],
+        description=project["description"],
+        owner_id=project["owner_id"],
+        members=project["members"],
+    )
+
 
 def get_project_by_id(
     project_id: str,

@@ -1,6 +1,6 @@
 
 from fastapi import APIRouter, Depends, status
-from typing import Optional
+from typing import Optional, List
 
 from app.auth.authorization import RoleChecker
 from app.schemas.issue import (
@@ -11,8 +11,10 @@ from app.schemas.issue import (
 from app.schemas.user import UserRole
 from app.services.issue_service import (
     create_issue,
+    get_issue_by_id,
     update_issue_status,
     search_issues,
+    get_all_issues,
 )
 from app.auth.authentication import get_current_user
 
@@ -20,6 +22,7 @@ router = APIRouter(
     prefix="/projects",
     tags=["Issues"],
 )
+
 
 
 @router.post(
@@ -99,3 +102,30 @@ def search_issue(
         project_id,
         assignee_id,
     )
+
+@router.get(
+    "",
+    response_model=List[IssueResponse],
+)
+def get_issues(
+    current_user=Depends(get_current_user),
+):
+    """
+    Retrieve all issues.
+    """
+
+    return get_all_issues()
+
+@router.get(
+    "/{issue_id}",
+    response_model=IssueResponse,
+)
+def get_issue(
+    issue_id: str,
+    current_user=Depends(get_current_user),
+):
+    """
+    Retrieve an issue by its ID.
+    """
+
+    return get_issue_by_id(issue_id)
