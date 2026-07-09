@@ -19,14 +19,14 @@ from app.services.issue_service import (
 from app.auth.authentication import get_current_user
 
 router = APIRouter(
-    prefix="/projects",
+    prefix="/issues",
     tags=["Issues"],
 )
 
 
 
 @router.post(
-    "/{project_id}/issues",
+    "/project/{project_id}",
     response_model=IssueResponse,
     status_code=status.HTTP_201_CREATED,
 )
@@ -53,7 +53,7 @@ def create_new_issue(
 
 
 @router.patch(
-    "/{project_id}/issues/{issue_id}/status",
+    "/{project_id}/{issue_id}/status",
     response_model=IssueResponse,
 )
 def update_issue_workflow(
@@ -80,7 +80,7 @@ def update_issue_workflow(
     )
 
 @router.get(
-    "/issues/search",
+    "/search",
     response_model=list[IssueResponse],
 )
 def search_issue(
@@ -117,7 +117,7 @@ def get_issues(
     return get_all_issues()
 
 @router.get(
-    "/{issue_id}",
+    "{issue_id}",
     response_model=IssueResponse,
 )
 def get_issue(
