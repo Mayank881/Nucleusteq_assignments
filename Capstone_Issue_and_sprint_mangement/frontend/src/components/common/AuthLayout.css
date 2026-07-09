@@ -1,0 +1,172 @@
+.auth-layout {
+    display: flex;
+    min-height: 100vh;
+    background: var(--background-color);
+}
+
+/* ---------------- LEFT PANEL ---------------- */
+
+.auth-branding {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 60px;
+
+    background: linear-gradient(
+        135deg,
+        #f8fafc 0%,
+        #eef4ff 45%,
+        #dbeafe 100%
+    );
+
+    border-right: 1px solid var(--border-color);
+}
+
+.branding-content {
+    max-width: 420px;
+}
+
+.brand-logo {
+    width: 82px;
+    height: 82px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    border-radius: 18px;
+
+    background: white;
+
+    color: var(--primary-color);
+
+    font-size: 30px;
+    font-weight: 700;
+
+    box-shadow: var(--shadow-md);
+
+    margin-bottom: 32px;
+}
+
+.branding-content h1 {
+    color: var(--text-primary);
+
+    font-size: 46px;
+
+    font-weight: 700;
+
+    line-height: 1.2;
+
+    margin-bottom: 20px;
+}
+
+.branding-content p {
+
+    color: var(--text-secondary);
+
+    font-size: 17px;
+
+    line-height: 1.8;
+}
+
+/* ---------------- RIGHT PANEL ---------------- */
+
+.auth-content {
+    flex: 1;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    padding: 40px;
+
+    background: var(--surface-color);
+}
+
+.auth-card {
+
+    width: 100%;
+
+    max-width: 430px;
+
+    background: var(--surface-color);
+
+    border-radius: 16px;
+
+    padding: 40px;
+
+    box-shadow: var(--shadow-lg);
+}
+
+.auth-card h2 {
+
+    font-size: 32px;
+
+    margin-bottom: 10px;
+
+    color: var(--text-primary);
+}
+
+.auth-subtitle {
+
+    color: #64748b;
+
+    margin-bottom: 35px;
+
+    font-size: 15px;
+}
+
+/* ---------------- RESPONSIVE ---------------- */
+
+@media (max-width: 992px) {
+
+    .auth-layout {
+
+        flex-direction: column;
+    }
+
+    .auth-branding {
+
+        min-height: 280px;
+
+        padding: 40px;
+    }
+
+    .branding-content {
+
+        text-align: center;
+    }
+
+    .brand-logo {
+
+        margin: 0 auto 25px;
+    }
+
+}
+
+@media (max-width: 576px) {
+
+    .auth-content {
+
+        padding: 20px;
+    }
+
+    .auth-card {
+
+        padding: 28px;
+    }
+
+    .branding-content h1 {
+
+        font-size: 28px;
+    }
+
+    .branding-content p {
+
+        font-size: 15px;
+    }
+
+}
