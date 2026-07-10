@@ -1,0 +1,390 @@
+.issues-page {
+    width: 100%;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    box-sizing: border-box;
+}
+
+.issues-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.issues-header h1 {
+    margin: 0;
+    font-size: 28px;
+    color: #1f2937;
+}
+
+.issues-header p {
+    margin-top: 6px;
+    color: #6b7280;
+    font-size: 15px;
+}
+
+.toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 18px;
+    flex-wrap: wrap;
+}
+
+.toolbar select {
+    min-width: 180px;
+    padding: 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    outline: none;
+    font-size: 14px;
+    background: #ffffff;
+}
+
+.toolbar select:focus {
+    border-color: #2563eb;
+}
+
+.issue-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #ffffff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.issue-table thead {
+    background: #f3f4f6;
+}
+
+.issue-table th,
+.issue-table td {
+    padding: 16px;
+    text-align: left;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.issue-table th {
+    font-size: 15px;
+    color: #374151;
+}
+
+.issue-table td {
+    font-size: 14px;
+    color: #4b5563;
+    vertical-align: middle;
+}
+
+.priority-badge,
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 95px;
+    padding: 6px 12px;
+    border-radius: 50px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+}
+
+/* Priority */
+
+.priority-low {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.priority-medium {
+    background: #fef3c7;
+    color: #b45309;
+}
+
+.priority-high {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+/* Status */
+
+.status-backlog {
+    background: #e0f2fe;
+    color: #0369a1;
+}
+
+.status-todo {
+    background: #ede9fe;
+    color: #6d28d9;
+}
+
+.status-in_progress {
+    background: #fef3c7;
+    color: #b45309;
+}
+
+.status-done {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.small-btn {
+    padding: 8px 14px;
+    font-size: 13px;
+    margin-left: 10px;
+}
+
+.issue-details {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.modal-footer {
+    margin-top: 30px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.modal {
+    width: 95%;
+    max-width: 720px;
+    max-height: 90vh;
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    animation: fadeIn 0.25s ease;
+}
+
+.project-form {
+    overflow-y: auto;
+    padding-right: 6px;
+    max-height: calc(90vh - 120px);
+}
+
+.project-form::-webkit-scrollbar {
+    width: 8px;
+}
+
+.project-form::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 20px;
+}
+
+.project-form select {
+    padding: 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    outline: none;
+    font-size: 14px;
+    background: #ffffff;
+}
+
+.project-form select:focus {
+    border-color: #2563eb;
+}
+.issue-table tbody tr {
+    transition: background-color 0.25s ease;
+}
+
+.issue-table tbody tr:hover {
+    background: #f9fafb;
+}
+
+.action-buttons {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.icon-btn {
+    width: 36px;
+    height: 36px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: 0.25s ease;
+}
+
+.icon-btn:hover {
+    transform: translateY(-1px);
+}
+
+.view-btn {
+    background: #10b981;
+}
+
+.view-btn:hover {
+    background: #059669;
+}
+
+.loading,
+.empty-state {
+    background: #ffffff;
+    padding: 40px;
+    border-radius: 10px;
+    text-align: center;
+    color: #6b7280;
+    font-size: 18px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.detail-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 24px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.detail-label {
+    font-weight: 600;
+    color: #374151;
+    min-width: 150px;
+}
+
+.detail-value {
+    flex: 1;
+    color: #6b7280;
+    word-break: break-word;
+    text-align: right;
+}
+
+.modal-header {
+    flex-shrink: 0;
+}
+
+.modal-footer {
+    flex-shrink: 0;
+    padding-top: 20px;
+    border-top: 1px solid #e5e7eb;
+}
+
+.primary-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.primary-btn:disabled:hover {
+    background: #2563eb;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-15px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 992px) {
+
+    .toolbar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .toolbar .search-container {
+        max-width: 100%;
+    }
+
+    .toolbar select {
+        width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+
+    .issues-page {
+        padding: 16px;
+    }
+
+    .issues-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .primary-btn {
+        justify-content: center;
+    }
+
+    .issue-table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+    .detail-item {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .detail-value {
+        text-align: left;
+    }
+
+    .modal {
+        width: 95%;
+        max-height: 95vh;
+        padding: 20px;
+    }
+
+    .project-form {
+        max-height: calc(95vh - 120px);
+    }
+
+    .modal-footer {
+        justify-content: center;
+    }
+
+    .small-btn {
+        margin-left: 0;
+        margin-top: 8px;
+    }
+}
+
+@media (max-width: 576px) {
+
+    .issue-table th,
+    .issue-table td {
+        padding: 12px;
+        font-size: 13px;
+    }
+
+    .priority-badge,
+    .status-badge {
+        min-width: 80px;
+        font-size: 11px;
+        padding: 5px 10px;
+    }
+
+    .modal {
+        padding: 16px;
+    }
+
+    .modal-header h2 {
+        font-size: 20px;
+    }
+
+    .detail-label {
+        min-width: auto;
+    }
+}
