@@ -15,8 +15,10 @@ from app.services.sprint_service import (
     get_all_sprints,
     get_sprint_by_id,
     update_sprint,
+    start_sprint,
     add_issue_to_sprint,
     remove_issue_from_sprint,
+    complete_sprint,
 )
 
 router = APIRouter(
@@ -169,4 +171,53 @@ def remove_issue(
     return remove_issue_from_sprint(
         sprint_id,
         issue_id,
+    )
+
+@router.patch(
+    "/{sprint_id}/start",
+    response_model=SprintResponse,
+    status_code=status.HTTP_200_OK,
+)
+def start_existing_sprint(
+    sprint_id: str,
+    current_user=Depends(
+        RoleChecker(
+            [
+                UserRole.ADMIN,
+                UserRole.MEMBER,
+            ]
+        )
+    ),
+) -> SprintResponse:
+    """
+    Start a planned sprint.
+    """
+
+    return start_sprint(
+        sprint_id,
+    )
+
+
+@router.patch(
+    "/{sprint_id}/complete",
+    response_model=SprintResponse,
+    status_code=status.HTTP_200_OK,
+)
+def complete_existing_sprint(
+    sprint_id: str,
+    current_user=Depends(
+        RoleChecker(
+            [
+                UserRole.ADMIN,
+                UserRole.MEMBER,
+            ]
+        )
+    ),
+) -> SprintResponse:
+    """
+    Complete an active sprint.
+    """
+
+    return complete_sprint(
+        sprint_id,
     )

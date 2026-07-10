@@ -16,6 +16,7 @@ from app.schemas.sprint import (
     UpdateSprintRequest,
     SprintResponse,
     AddIssueRequest,
+    SprintStatus,
 )
 from app.constants.app_constants import (
     DONE_ISSUE_NOT_ALLOWED,
@@ -25,8 +26,13 @@ from app.constants.app_constants import (
     ISSUE_NOT_IN_SPRINT,
     ISSUE_PROJECT_MISMATCH,
     INVALID_SPRINT_ID,
+    SPRINT_ALREADY_ACTIVE,
+    SPRINT_ALREADY_COMPLETED,
+    SPRINT_NOT_ACTIVE,
     SPRINT_NOT_FOUND,
     SPRINT_STATUS_PLANNED,
+    SPRINT_STATUS_ACTIVE,
+    SPRINT_STATUS_COMPLETED,
 )
 from app.services.project_service import get_project_by_id
 
@@ -235,6 +241,112 @@ def update_sprint(
         updated_at=updated_sprint["updated_at"],
     )
 
+def _change_sprint_status(
+    sprint_id: str,
+    new_status: str,
+) -> SprintResponse:
+    """
+    Update sprint status.
+    """
+
+    try:
+        sprint_object_id = ObjectId(sprint_id)
+
+    except InvalidId:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=INVALID_SPRINT_ID,
+        )
+
+    existing_sprint = sprints_collection.find_one(
+        {
+            "_id": sprint_object_id
+        }
+    )
+
+    if not existing_sprint:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=SPRINT_NOT_FOUND,
+        )
+
+    sprints_collection.update_one(
+        {
+            "_id": sprint_object_id
+        },
+        {
+            "$set": {
+                "status": new_status,
+                "updated_at": datetime.utcnow(),
+            }
+        }
+    )
+
+    updated_sprint = sprints_collection.find_one(
+        {
+            "_id": sprint_object_id
+        }
+    )
+
+    return SprintResponse(
+        id=str(updated_sprint["_id"]),
+        name=updated_sprint["name"],
+        project_id=updated_sprint["project_id"],
+        status=updated_sprint["status"],
+        issue_ids=updated_sprint.get("issue_ids", []),
+        start_date=updated_sprint["start_date"],
+        end_date=updated_sprint["end_date"],
+        created_by=updated_sprint["created_by"],
+        created_at=updated_sprint["created_at"],
+        updated_at=updated_sprint["updated_at"],
+    )
+
+def start_sprint(
+    sprint_id: str,
+) -> SprintResponse:
+    """
+    Start a planned sprint.
+    """
+
+    try:
+        sprint_object_id = ObjectId(sprint_id)
+
+    except InvalidId:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=INVALID_SPRINT_ID,
+        )
+
+    sprint = sprints_collection.find_one(
+        {
+            "_id": sprint_object_id
+        }
+    )
+
+    if not sprint:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=SPRINT_NOT_FOUND,
+        )
+
+    if sprint["status"] == SprintStatus.ACTIVE.value:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail=SPRINT_ALREADY_ACTIVE,
+        )
+
+    if sprint["status"] == SprintStatus.COMPLETED.value:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail=SPRINT_ALREADY_COMPLETED,
+        )
+
+    return _change_sprint_status(
+        sprint_id,
+        SprintStatus.ACTIVE.value,
+    )
+
+
 def add_issue_to_sprint(
     sprint_id: str,
     request: AddIssueRequest,
@@ -402,4 +514,49 @@ def remove_issue_from_sprint(
         created_by=updated_sprint["created_by"],
         created_at=updated_sprint["created_at"],
         updated_at=updated_sprint["updated_at"],
+    )
+
+def complete_sprint(
+    sprint_id: str,
+) -> SprintResponse:
+    """
+    Complete an active sprint.
+    """
+
+    try:
+        sprint_object_id = ObjectId(sprint_id)
+
+    except InvalidId:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=INVALID_SPRINT_ID,
+        )
+
+    sprint = sprints_collection.find_one(
+        {
+            "_id": sprint_object_id
+        }
+    )
+
+    if not sprint:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=SPRINT_NOT_FOUND,
+        )
+
+    if sprint["status"] == SprintStatus.PLANNED.value:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail=SPRINT_NOT_ACTIVE,
+        )
+
+    if sprint["status"] == SprintStatus.COMPLETED.value:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail=SPRINT_ALREADY_COMPLETED,
+        )
+
+    return _change_sprint_status(
+        sprint_id,
+        SprintStatus.COMPLETED.value,
     )
