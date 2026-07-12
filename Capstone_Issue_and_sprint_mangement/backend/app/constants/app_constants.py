@@ -17,6 +17,7 @@ COMMENT_COLLECTION = "comments"
 
 # API Prefixes
 
+
 API_V1_PREFIX = "/api/v1"
 
 USER_PREFIX = "/users"

@@ -6,10 +6,13 @@ from app.schemas.user import (
     Token,
     UserCreate,
     UserLogin,
-    UserResponse,
 )
+
 from app.services.auth_service import login_user
 from app.services.user_service import register_user
+
+from app.schemas.api_response import ApiResponse
+from app.utils.api_response import success_response
 
 router = APIRouter(
     prefix="/users",
@@ -19,14 +22,16 @@ router = APIRouter(
 
 @router.post(
     "/register",
-    response_model=UserResponse,
+    response_model=ApiResponse,
     status_code=status.HTTP_201_CREATED,
 )
-def register(user: UserCreate) -> UserResponse:
-    """
-    Register a new user.
-    """
-    return register_user(user)
+def register(user: UserCreate):
+    created_user = register_user(user)
+
+    return success_response(
+        message="User registered successfully",
+        data=created_user,
+    )
 
 
 @router.post(
@@ -39,6 +44,7 @@ def login(login_data: UserLogin) -> Token:
     Authenticate a user and return a JWT access token.
     """
     return login_user(login_data)
+
 
 @router.get("/me")
 def get_profile(
