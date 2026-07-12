@@ -2,10 +2,7 @@
 Application-wide constants.
 """
 
-
-# ===========================
 # MongoDB Collection Names
-# ===========================
 
 USER_COLLECTION = "users"
 
@@ -18,9 +15,8 @@ SPRINT_COLLECTION = "sprints"
 COMMENT_COLLECTION = "comments"
 
 
-# ===========================
 # API Prefixes
-# ===========================
+
 
 API_V1_PREFIX = "/api/v1"
 
