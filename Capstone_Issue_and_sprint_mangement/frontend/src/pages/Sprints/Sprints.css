@@ -1,3 +1,681 @@
-.page{
-    padding : 2rem
+/* ==========================================================
+   Sprint Page Layout
+========================================================== */
+
+.issues-page {
+    width: 100%;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    box-sizing: border-box;
+}
+
+/* ==========================================================
+   Header
+========================================================== */
+
+.issues-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.issues-header h1 {
+    margin: 0;
+    font-size: 28px;
+    color: #1f2937;
+}
+
+.issues-header p {
+    margin-top: 6px;
+    color: #6b7280;
+    font-size: 15px;
+}
+
+/* ==========================================================
+   Toolbar
+========================================================== */
+
+.toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    flex-wrap: wrap;
+}
+
+.toolbar input,
+.toolbar select {
+    flex: 1;
+    min-width: 260px;
+    padding: 12px 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    outline: none;
+    font-size: 14px;
+    background: #ffffff;
+    transition: 0.25s ease;
+}
+
+.toolbar input:focus,
+.toolbar select:focus {
+    border-color: #2563eb;
+}
+
+/* ==========================================================
+   Table
+========================================================== */
+
+.issue-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #ffffff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.issue-table thead {
+    background: #f3f4f6;
+}
+
+.issue-table th,
+.issue-table td {
+    padding: 16px;
+    text-align: left;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.issue-table th {
+    color: #374151;
+    font-size: 15px;
+}
+
+.issue-table td {
+    color: #4b5563;
+    font-size: 14px;
+    vertical-align: middle;
+}
+
+.issue-table tbody tr {
+    transition: background 0.25s ease;
+}
+
+.issue-table tbody tr:hover {
+    background: #f9fafb;
+}
+
+/* ==========================================================
+   Action Buttons
+========================================================== */
+
+.action-buttons {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.icon-btn {
+    width: 36px;
+    height: 36px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.25s ease;
+}
+
+.icon-btn:hover {
+    transform: translateY(-1px);
+}
+
+.view-btn {
+    background: #10b981;
+}
+
+.view-btn:hover {
+    background: #059669;
+}
+
+.edit-btn {
+    background: #f59e0b;
+}
+
+.edit-btn:hover {
+    background: #d97706;
+}
+
+.small-btn {
+    padding: 8px 14px;
+    font-size: 13px;
+}
+
+/* ==========================================================
+   Status Badge
+========================================================== */
+
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 100px;
+    padding: 6px 12px;
+    border-radius: 50px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .4px;
+}
+
+.status-planned {
+    background: #fef3c7;
+    color: #b45309;
+}
+
+.status-active {
+    background: #dbeafe;
+    color: #1d4ed8;
+}
+
+.status-completed {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+/* ==========================================================
+   Priority Badge
+========================================================== */
+
+.priority-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 90px;
+    padding: 6px 12px;
+    border-radius: 50px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.priority-low {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.priority-medium {
+    background: #fef3c7;
+    color: #b45309;
+}
+
+.priority-high {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+/* ==========================================================
+   Loading & Empty State
+========================================================== */
+
+.loading,
+.empty-state {
+    background: #ffffff;
+    padding: 40px;
+    border-radius: 10px;
+    text-align: center;
+    color: #6b7280;
+    font-size: 18px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.08);
+}
+
+/* ==========================================================
+   Modal
+========================================================== */
+
+.modal {
+    width: 95%;
+    max-width: 720px;
+    max-height: 90vh;
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    animation: fadeIn 0.25s ease;
+}
+
+.large-modal {
+    width: 96%;
+    max-width: 1000px;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-shrink: 0;
+}
+
+.modal-header h2 {
+    margin: 0;
+    color: #1f2937;
+    font-size: 24px;
+}
+
+.close-btn {
+    width: 36px;
+    height: 36px;
+    border: none;
+    border-radius: 8px;
+    background: #f3f4f6;
+    cursor: pointer;
+    font-size: 18px;
+    transition: .25s ease;
+}
+
+.close-btn:hover {
+    background: #e5e7eb;
+}
+
+/* ==========================================================
+   Scrollable Modal Content
+========================================================== */
+
+.large-modal {
+    overflow-y: auto;
+}
+
+.large-modal::-webkit-scrollbar {
+    width: 8px;
+}
+
+.large-modal::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 20px;
+}
+
+/* ==========================================================
+   Sprint Form
+========================================================== */
+
+.sprint-form {
+    overflow: visible;
+    max-height: none;
+}
+
+.project-form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #374151;
+}
+
+.project-form input,
+.project-form textarea,
+.project-form select {
+    padding: 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    outline: none;
+    font-size: 14px;
+    transition: .25s ease;
+}
+
+.project-form input:focus,
+.project-form textarea:focus,
+.project-form select:focus {
+    border-color: #2563eb;
+}
+
+.project-form textarea {
+    resize: vertical;
+}
+
+.form-error {
+    color: #dc2626;
+    font-size: 13px;
+}
+
+/* ==========================================================
+   Sprint Details
+========================================================== */
+
+.project-details {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.detail-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 24px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.detail-label {
+    font-weight: 600;
+    color: #374151;
+    min-width: 170px;
+}
+
+.detail-value {
+    flex: 1;
+    text-align: right;
+    color: #6b7280;
+    word-break: break-word;
+}
+
+/* ==========================================================
+   Detail Buttons
+========================================================== */
+
+.details-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin: 20px 0;
+}
+
+.details-actions .primary-btn {
+    min-width: 170px;
+}
+
+/* ==========================================================
+   Add Issue Section
+========================================================== */
+
+.toolbar select {
+    flex: 1;
+}
+
+.toolbar button {
+    white-space: nowrap;
+}
+
+/* ==========================================================
+   Issue Table Inside Modal
+========================================================== */
+
+.large-modal .issue-table {
+    margin-top: 20px;
+}
+
+.large-modal h3 {
+    margin: 24px 0 16px;
+    color: #1f2937;
+    font-size: 20px;
+}
+
+.large-modal hr {
+    border: none;
+    border-top: 1px solid #e5e7eb;
+    margin: 24px 0;
+}
+
+/* ==========================================================
+   Footer
+========================================================== */
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid #e5e7eb;
+}
+
+/* ==========================================================
+   Disabled Buttons
+========================================================== */
+
+.primary-btn:disabled {
+    opacity: .6;
+    cursor: not-allowed;
+}
+
+.primary-btn:disabled:hover {
+    transform: none;
+}
+
+/* ==========================================================
+   Responsive Design
+========================================================== */
+
+@media (max-width: 992px) {
+
+    .toolbar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .toolbar input,
+    .toolbar select {
+        width: 100%;
+        min-width: unset;
+    }
+
+    .toolbar button {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .details-actions {
+        flex-direction: column;
+    }
+
+    .details-actions .primary-btn {
+        width: 100%;
+    }
+
+    .large-modal {
+        width: 98%;
+        max-width: 98%;
+    }
+}
+
+@media (max-width: 768px) {
+
+    .issues-page {
+        padding: 16px;
+    }
+
+    .issues-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .issues-header .primary-btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .issue-table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+    .modal {
+        width: 95%;
+        padding: 18px;
+        max-height: 95vh;
+    }
+
+    .large-modal {
+        width: 95%;
+        max-width: 95%;
+    }
+
+    .detail-item {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .detail-label {
+        min-width: auto;
+    }
+
+    .detail-value {
+        text-align: left;
+    }
+
+    .action-buttons {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+    }
+
+    .project-form input,
+    .project-form textarea,
+    .project-form select {
+        font-size: 14px;
+    }
+
+    .modal-header h2 {
+        font-size: 22px;
+    }
+
+    .large-modal h3 {
+        font-size: 18px;
+    }
+}
+
+@media (max-width: 576px) {
+
+    .issue-table th,
+    .issue-table td {
+        padding: 12px;
+        font-size: 13px;
+    }
+
+    .status-badge,
+    .priority-badge {
+        min-width: 82px;
+        font-size: 11px;
+        padding: 5px 10px;
+    }
+
+    .modal {
+        padding: 16px;
+    }
+
+    .modal-header h2 {
+        font-size: 20px;
+    }
+
+    .icon-btn {
+        width: 34px;
+        height: 34px;
+    }
+
+    .small-btn {
+        padding: 7px 12px;
+        font-size: 12px;
+    }
+}
+
+/* ==========================================================
+   Animation
+========================================================== */
+
+@keyframes fadeIn {
+
+    from {
+        opacity: 0;
+        transform: translateY(-15px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ==========================================================
+   Utility
+========================================================== */
+
+hr {
+    border: none;
+    border-top: 1px solid #e5e7eb;
+}
+
+button {
+    transition: all 0.25s ease;
+}
+
+button:hover:not(:disabled) {
+    transform: translateY(-1px);
+}
+
+button:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+input,
+select,
+textarea {
+    font-family: inherit;
+}
+
+table {
+    table-layout: auto;
+}
+
+.issue-table td,
+.issue-table th {
+    vertical-align: middle;
+}
+
+.project-details .status-badge,
+.issue-table .status-badge,
+.issue-table .priority-badge {
+    white-space: nowrap;
+}
+
+.large-modal .empty-state {
+    margin-top: 20px;
+}
+
+.details-actions {
+    margin-bottom: 24px;
+}
+
+.toolbar+.issue-table {
+    margin-top: 20px;
+}
+
+.project-form button,
+.toolbar button {
+    align-self: flex-start;
+}
+
+@media (max-width:768px) {
+
+    .project-form button,
+    .toolbar button {
+        align-self: stretch;
+    }
 }
