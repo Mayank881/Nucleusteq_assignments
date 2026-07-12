@@ -29,3 +29,5 @@ ISSUE_PREFIX = "/issues"
 SPRINT_PREFIX = "/sprints"
 
 COMMENT_PREFIX = "/comments"
+
+INVALID_CREDENTIALS = "Invalid email or password."
