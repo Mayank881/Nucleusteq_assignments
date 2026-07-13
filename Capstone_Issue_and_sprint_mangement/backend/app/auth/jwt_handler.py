@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta, timezone
 from jose import JWTError, jwt
+from app.exceptions.custom_exceptions import UnauthorizedException
 
 from app.config import (
     ACCESS_TOKEN_EXPIRE_MINUTES,
@@ -38,4 +39,6 @@ def decode_access_token(token: str) -> dict:
             algorithms=[ALGORITHM],
         )
     except JWTError:
-        return {}
+        raise UnauthorizedException(
+                detail="Invalid or expired access token."
+            )
