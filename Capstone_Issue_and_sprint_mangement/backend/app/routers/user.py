@@ -10,7 +10,10 @@ from app.schemas.user import (
     UserResponse,
 )
 from app.services.auth_service import login_user
-from app.services.user_service import register_user
+from app.services.user_service import (
+    register_user,
+    get_all_users,
+)
 
 router = APIRouter(
     prefix="/users",
@@ -54,3 +57,17 @@ def get_profile(
         "email": current_user["email"],
         "role": current_user["role"],
     }
+
+@router.get(
+    "",
+    response_model=list[UserResponse],
+)
+def get_users(
+    _=Depends(
+        get_current_user
+    ),
+):
+    """
+    Retrieve all users.
+    """
+    return get_all_users()
