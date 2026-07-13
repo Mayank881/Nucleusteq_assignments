@@ -41,8 +41,26 @@ const projectService = {
         );
 
         return response.data;
-    }
+    },
 
+    async addMember(projectId, userId) {
+        const response = await api.post(
+            `/projects/${projectId}/members`,
+            {
+                user_id: userId,
+            }
+        );
+
+        return response.data;
+    },
+
+    async removeMember(projectId, userId) {
+        const response = await api.delete(
+            `/projects/${projectId}/members/${userId}`
+        );
+
+        return response.data;
+    },
 };
 
 export default projectService;
