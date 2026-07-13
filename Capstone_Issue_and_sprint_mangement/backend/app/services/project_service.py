@@ -12,16 +12,18 @@ from app.schemas.project import (
     ProjectResponse,
 )
 
-PROJECT_NOT_FOUND = app_constants.PROJECT_NOT_FOUND
-PROJECT_NAME_EXISTS = app_constants.PROJECT_NAME_EXISTS
-USER_NOT_FOUND = app_constants.USER_NOT_FOUND
-MEMBER_ALREADY_EXISTS = app_constants.MEMBER_ALREADY_EXISTS
-MEMBER_NOT_FOUND = app_constants.MEMBER_NOT_FOUND
-INVALID_PROJECT_ID = app_constants.INVALID_PROJECT_ID
-INVALID_USER_ID = app_constants.INVALID_USER_ID
-PROJECT_OWNER_CANNOT_BE_REMOVED = (
-    app_constants.PROJECT_OWNER_CANNOT_BE_REMOVED
+from app.constants.app_constants import (
+    PROJECT_NOT_FOUND,
+    PROJECT_NAME_EXISTS,
+    USER_NOT_FOUND,
+    MEMBER_ALREADY_EXISTS,
+    MEMBER_NOT_FOUND,
+    PROJECT_OWNER_CANNOT_BE_REMOVED,
+    INVALID_PROJECT_ID,
+    INVALID_USER_ID,        
 )
+
+
 
 def create_project(
     project: ProjectCreate,
