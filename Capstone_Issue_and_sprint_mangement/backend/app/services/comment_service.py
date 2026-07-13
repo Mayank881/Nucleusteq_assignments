@@ -185,3 +185,53 @@ def delete_comment(
     return DeleteCommentResponse(
         message=COMMENT_DELETED,
     )
+
+def get_comments_by_issue(
+    issue_id: str,
+) -> list[CommentResponse]:
+    """
+    Retrieve all comments for a specific issue.
+    """
+
+    try:
+        issue_object_id = ObjectId(issue_id)
+
+    except InvalidId:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=INVALID_ISSUE_ID,
+        )
+
+    issue = issues_collection.find_one(
+        {
+            "_id": issue_object_id,
+        }
+    )
+
+    if not issue:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=ISSUE_NOT_FOUND,
+        )
+
+    comments = comments_collection.find(
+        {
+            "issue_id": issue_id,
+        }
+    )
+
+    response = []
+
+    for comment in comments:
+        response.append(
+            CommentResponse(
+                id=str(comment["_id"]),
+                issue_id=comment["issue_id"],
+                user_id=comment["user_id"],
+                content=comment["content"],
+                created_at=comment["created_at"],
+                updated_at=comment["updated_at"],
+            )
+        )
+
+    return response

@@ -11,6 +11,7 @@ from app.schemas.user import UserRole
 from app.services.comment_service import (
     create_comment,
     delete_comment,
+    get_comments_by_issue,
     update_comment,
 )
 
@@ -98,3 +99,25 @@ def delete_existing_comment(
         comment_id,
         current_user,
     )
+
+@router.get(
+    "/issues/{issue_id}",
+    response_model=list[CommentResponse],
+)
+def get_issue_comments(
+    issue_id: str,
+    current_user=Depends(
+        RoleChecker(
+            [
+                UserRole.ADMIN,
+                UserRole.MEMBER,
+                UserRole.VIEWER,
+            ]
+        )
+    ),
+):
+    """
+    Retrieve all comments for an issue.
+    """
+
+    return get_comments_by_issue(issue_id)

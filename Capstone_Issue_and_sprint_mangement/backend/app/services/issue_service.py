@@ -5,7 +5,10 @@ from bson.errors import InvalidId
 from fastapi import HTTPException, status
 
 
-from app.database import issues_collection
+from app.database import (
+    issues_collection,
+    users_collection,
+)
 from app.models.issue import Issue
 from app.schemas.issue import (
     IssueCreate,
@@ -18,8 +21,11 @@ from app.constants.app_constants import (
     INVALID_ISSUE_ID,
     INVALID_STATUS_TRANSITION,
     ISSUE_NOT_ASSIGNEE,
+    USER_NOT_FOUND,
+    ASSIGNEE_NOT_IN_PROJECT,
+    PARENT_ISSUE_NOT_FOUND,
+    PARENT_ISSUE_PROJECT_MISMATCH,
 )
-
 
 ALLOWED_TRANSITIONS = {
     IssueStatus.BACKLOG: [IssueStatus.TODO],
@@ -41,6 +47,63 @@ def create_issue(
 
     # Validate project exists
     project = get_project_by_id(project_id)
+
+        # Validate assignee
+    if issue.assignee_id:
+
+        try:
+            assignee = users_collection.find_one(
+                {"_id": ObjectId(issue.assignee_id)}
+            )
+
+        except InvalidId:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=USER_NOT_FOUND,
+            )
+
+        if not assignee:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=USER_NOT_FOUND,
+            )
+
+        if issue.assignee_id not in project["members"]:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=ASSIGNEE_NOT_IN_PROJECT,
+            )
+
+    # Validate parent issue
+    if issue.parent_id:
+
+        try:
+            parent_issue = issues_collection.find_one(
+                {
+                    "_id": ObjectId(issue.parent_id)
+                }
+            )
+
+        except InvalidId:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=PARENT_ISSUE_NOT_FOUND,
+            )
+
+        if not parent_issue:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=PARENT_ISSUE_NOT_FOUND,
+            )
+
+        if (
+            parent_issue["project_id"]
+            != str(project["_id"])
+        ):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=PARENT_ISSUE_PROJECT_MISMATCH,
+            )
 
     reporter_id = str(current_user["_id"])
 

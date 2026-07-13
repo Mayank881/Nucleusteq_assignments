@@ -113,6 +113,17 @@ DONE_ISSUE_NOT_ALLOWED = (
     "Completed issues cannot be added to a sprint."
 )
 
+ASSIGNEE_NOT_IN_PROJECT = (
+    "Selected assignee is not a member of this project."
+)
+
+PARENT_ISSUE_NOT_FOUND = (
+    "Parent issue not found."
+)
+
+PARENT_ISSUE_PROJECT_MISMATCH = (
+    "Parent issue must belong to the same project."
+)
 # Comment Module
 
 COMMENT_NOT_FOUND = "Comment not found."
