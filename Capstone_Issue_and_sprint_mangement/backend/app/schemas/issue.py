@@ -1,6 +1,18 @@
+from enum import Enum
 from typing import Optional
 
 from pydantic import BaseModel, ConfigDict, Field
+
+
+class IssueStatus(str, Enum):
+    """
+    Allowed workflow statuses for an issue.
+    """
+
+    BACKLOG = "BACKLOG"
+    TODO = "TODO"
+    IN_PROGRESS = "IN_PROGRESS"
+    DONE = "DONE"
 
 
 class IssueCreate(BaseModel):
@@ -15,6 +27,7 @@ class IssueCreate(BaseModel):
     assignee_id: Optional[str] = None
     parent_id: Optional[str] = None
 
+
 class IssueResponse(BaseModel):
     id: str
     title: str
@@ -27,4 +40,12 @@ class IssueResponse(BaseModel):
     status: str
     parent_id: str | None = None
 
-    model_config = ConfigDict(from_attributes=True)    
+    model_config = ConfigDict(from_attributes=True)
+
+
+class IssueStatusUpdate(BaseModel):
+    """
+    Schema for updating only the issue status.
+    """
+
+    status: IssueStatus

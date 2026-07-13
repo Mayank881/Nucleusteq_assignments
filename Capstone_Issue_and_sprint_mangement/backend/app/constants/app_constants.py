@@ -24,6 +24,9 @@ COMMENT_PREFIX = "/comments"
 
 # User Messages
 
+ISSUE_NOT_FOUND = "Issue not found."
+INVALID_ISSUE_ID = "Invalid issue ID."
+
 USER_NOT_FOUND = "User not found."
 USER_ALREADY_EXISTS = "Email already registered."
 INVALID_USER_ID = "Invalid user ID."
@@ -51,4 +54,12 @@ MEMBER_NOT_FOUND = "User is not a project member."
 
 UNAUTHORIZED_ACTION = (
     "You are not authorized to perform this action."
+)
+
+ISSUE_NOT_ASSIGNEE = (
+    "Only the assignee can update the issue status."
+)
+
+INVALID_STATUS_TRANSITION = (
+    "Invalid status transition."
 )
