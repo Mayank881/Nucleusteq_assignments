@@ -5,6 +5,7 @@ from fastapi import HTTPException, status
 from app.database import users_collection
 from app.schemas.user import UserCreate, UserResponse, UserRole
 from app.auth.password import hash_password
+from app.constants import app_constants
 
 def register_user(user: UserCreate) -> UserResponse:
     """
@@ -18,7 +19,7 @@ def register_user(user: UserCreate) -> UserResponse:
     if existing_user:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
-            detail="Email already registered.",
+            detail=app_constants.USER_ALREADY_EXISTS,
         )
 
     user_document = {

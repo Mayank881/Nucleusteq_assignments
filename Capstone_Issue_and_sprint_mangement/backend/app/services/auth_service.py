@@ -1,13 +1,11 @@
-from fastapi import HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 
 from app.auth.jwt_handler import create_access_token
 from app.auth.password import verify_password
 from app.database import users_collection
-from app.schemas.user import Token, UserLogin
+from app.schemas.user import Token
 from app.constants import app_constants
 from app.exceptions.custom_exceptions import UnauthorizedException
-
 
 INVALID_CREDENTIALS = app_constants.INVALID_CREDENTIALS
 
