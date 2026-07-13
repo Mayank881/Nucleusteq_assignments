@@ -3,7 +3,7 @@ from datetime import datetime
 from fastapi import HTTPException, status
 
 from app.database import users_collection
-from app.schemas.user import UserCreate, UserResponse
+from app.schemas.user import UserCreate, UserResponse, UserRole
 from app.auth.password import hash_password
 
 def register_user(user: UserCreate) -> UserResponse:
@@ -25,7 +25,7 @@ def register_user(user: UserCreate) -> UserResponse:
         "name": user.name,
         "email": user.email,
         "hashed_password": hash_password(user.password),
-        "role": user.role.value,
+        "role": UserRole.MEMBER.value,
         "created_at": datetime.utcnow(),
         "updated_at": datetime.utcnow(),
     }
@@ -36,5 +36,5 @@ def register_user(user: UserCreate) -> UserResponse:
         id=str(result.inserted_id),
         name=user.name,
         email=user.email,
-        role=user.role,
+        role=UserRole.MEMBER
     )

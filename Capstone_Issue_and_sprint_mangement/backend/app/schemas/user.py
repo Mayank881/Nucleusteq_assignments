@@ -6,9 +6,9 @@ from pydantic import BaseModel, EmailStr, Field
 class UserRole(str, Enum):
     """Supported user roles."""
 
-    ADMIN = "ADMIN"
-    MEMBER = "MEMBER"
-    VIEWER = "VIEWER"
+    ADMIN = "admin"
+    MEMBER = "member"
+   
 
 
 class UserCreate(BaseModel):
@@ -27,7 +27,7 @@ class UserCreate(BaseModel):
         max_length=128,
         description="User password",
     )
-    role: UserRole
+    
 
 
 class UserResponse(BaseModel):

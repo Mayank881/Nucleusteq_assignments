@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, status
+from fastapi.security import OAuth2PasswordRequestForm 
 
 from app.auth.authentication import get_current_user
 
@@ -39,23 +40,26 @@ def register(user: UserCreate):
     response_model=Token,
     status_code=status.HTTP_200_OK,
 )
-def login(login_data: UserLogin) -> Token:
+def login(login_data: OAuth2PasswordRequestForm = Depends()) -> Token:
     """
     Authenticate a user and return a JWT access token.
     """
     return login_user(login_data)
 
 
-@router.get("/me")
+@router.get(
+    "/me",
+    response_model=ApiResponse,
+)
 def get_profile(
     current_user=Depends(get_current_user),
 ):
-    """
-    Return the currently authenticated user.
-    """
-    return {
-        "id": str(current_user["_id"]),
-        "name": current_user["name"],
-        "email": current_user["email"],
-        "role": current_user["role"],
-    }
+    return success_response(
+        message="User profile fetched successfully",
+        data={
+            "id": str(current_user["_id"]),
+            "name": current_user["name"],
+            "email": current_user["email"],
+            "role": current_user["role"],
+        },
+    )
