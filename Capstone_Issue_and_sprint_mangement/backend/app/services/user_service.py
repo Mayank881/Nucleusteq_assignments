@@ -58,3 +58,28 @@ def register_user(user: UserCreate) -> UserResponse:
         email=user.email,
         role=user.role,
     )
+
+from app.database import users_collection
+from app.schemas.user import UserResponse
+
+
+def get_all_users() -> list[UserResponse]:
+    """
+    Retrieve all users.
+    """
+
+    users = users_collection.find()
+
+    response = []
+
+    for user in users:
+        response.append(
+            UserResponse(
+                id=str(user["_id"]),
+                name=user["name"],
+                email=user["email"],
+                role=user["role"].lower(),
+            )
+        )
+
+    return response
