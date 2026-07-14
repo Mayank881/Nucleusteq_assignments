@@ -1,0 +1,135 @@
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.form-group label {
+    font-size: var(--font-sm);
+    font-weight: var(--font-semibold);
+    color: var(--text-primary);
+}
+
+.form-group input {
+    width: 100%;
+    height: 48px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 0 var(--space-4);
+    font-size: var(--font-md);
+    transition: var(--transition-fast);
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+.password-wrapper {
+    position: relative;
+}
+
+.toggle-password {
+    position: absolute;
+    top: 50%;
+    right: 16px;
+    transform: translateY(-50%);
+
+    width: 24px;
+    height: 24px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    border: none;
+    background: transparent;
+    cursor: pointer;
+
+    color: var(--text-secondary);
+    font-size: 18px;
+}
+
+.login-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: var(--font-sm);
+}
+
+.remember-me {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.login-options a {
+    text-decoration: none;
+    color: var(--primary-color);
+    font-weight: var(--font-medium);
+}
+
+.login-btn {
+    width: 100%;
+    height: 48px;
+    border: none;
+    border-radius: var(--radius-md);
+    background: var(--primary-color);
+    color: white;
+    font-size: var(--font-md);
+    font-weight: var(--font-semibold);
+    cursor: pointer;
+    transition: var(--transition-normal);
+}
+
+.login-btn:hover {
+    background: var(--primary-hover);
+}
+
+.auth-footer {
+    text-align: center;
+    font-size: var(--font-sm);
+}
+
+.auth-footer span {
+    margin-right: var(--space-2);
+}
+
+.auth-footer a {
+    text-decoration: none;
+    color: var(--primary-color);
+    font-weight: var(--font-semibold);
+}
+
+/* Hide default browser password reveal icons */
+
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+    display: none;
+}
+
+input[type="password"]::-webkit-credentials-auto-fill-button,
+input[type="password"]::-webkit-textfield-decoration-container {
+    display: none !important;
+}
+
+.password-wrapper input {
+    padding-right: 50px;
+}
+
+.input-error {
+    border-color: var(--danger-color) !important;
+}
+
+.error-message {
+    margin-top: 4px;
+    color: var(--danger-color);
+    font-size: var(--font-xs);
+    font-weight: var(--font-medium);
+}
