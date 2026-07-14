@@ -1,11 +1,11 @@
-from fastapi import HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 
 from app.auth.jwt_handler import create_access_token
 from app.auth.password import verify_password
 from app.database import users_collection
-from app.schemas.user import Token, UserLogin
+from app.schemas.user import Token
 from app.constants import app_constants
+from app.exceptions.custom_exceptions import UnauthorizedException
 
 INVALID_CREDENTIALS = app_constants.INVALID_CREDENTIALS
 
@@ -21,20 +21,20 @@ def login_user(login_data: OAuth2PasswordRequestForm) -> Token:
 
     # Check if the user exists
     if not user:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail=INVALID_CREDENTIALS,
-        )
+        raise UnauthorizedException(
+        detail=INVALID_CREDENTIALS,
+    )
 
     # Verify the password
     if not verify_password(
         login_data.password,
         user["hashed_password"],
     ):
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
+        raise UnauthorizedException(
             detail=INVALID_CREDENTIALS,
         )
+           
+    
 
     # Create JWT token
     access_token = create_access_token(
