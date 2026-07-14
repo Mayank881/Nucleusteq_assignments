@@ -9,6 +9,7 @@ from app.routers.admin import router as admin_router
 from app.routers.project import router as project_router
 from app.routers.issue import router as issue_router
 from app.routers.sprint import router as sprint_router
+from app.routers.comment import router as comment_router
 
 app = FastAPI(
     title="Issue & Sprint Management System API",
@@ -18,7 +19,7 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=["http://localhost:5173"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -29,6 +30,7 @@ app.include_router(admin_router)
 app.include_router(project_router)
 app.include_router(issue_router)
 app.include_router(sprint_router)
+app.include_router(comment_router)
 
 @app.get("/", response_model=ApiResponse)
 def root():

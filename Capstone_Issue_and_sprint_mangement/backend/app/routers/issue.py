@@ -1,5 +1,6 @@
 
 from fastapi import APIRouter, Depends, status
+from typing import Optional, List
 
 from app.auth.authorization import RoleChecker
 from app.schemas.issue import (
@@ -10,17 +11,22 @@ from app.schemas.issue import (
 from app.schemas.user import UserRole
 from app.services.issue_service import (
     create_issue,
+    get_issue_by_id,
     update_issue_status,
+    search_issues,
+    get_all_issues,
 )
+from app.auth.authentication import get_current_user
 
 router = APIRouter(
-    prefix="/projects",
+    prefix="/issues",
     tags=["Issues"],
 )
 
 
+
 @router.post(
-    "/{project_id}/issues",
+    "/project/{project_id}",
     response_model=IssueResponse,
     status_code=status.HTTP_201_CREATED,
 )
@@ -47,7 +53,7 @@ def create_new_issue(
 
 
 @router.patch(
-    "/{project_id}/issues/{issue_id}/status",
+    "/{project_id}/{issue_id}/status",
     response_model=IssueResponse,
 )
 def update_issue_workflow(
@@ -72,3 +78,54 @@ def update_issue_workflow(
         status_update,
         current_user,
     )
+
+@router.get(
+    "/search",
+    response_model=list[IssueResponse],
+)
+def search_issue(
+    title: Optional[str] = None,
+    description: Optional[str] = None,
+    status: Optional[str] = None,
+    project_id: Optional[str] = None,
+    assignee_id: Optional[str] = None,
+    current_user=Depends(get_current_user),
+):
+    """
+    Search and filter issues.
+    """
+
+    return search_issues(
+        title,
+        description,
+        status,
+        project_id,
+        assignee_id,
+    )
+
+@router.get(
+    "",
+    response_model=List[IssueResponse],
+)
+def get_issues(
+    current_user=Depends(get_current_user),
+):
+    """
+    Retrieve all issues.
+    """
+
+    return get_all_issues()
+
+@router.get(
+    "{issue_id}",
+    response_model=IssueResponse,
+)
+def get_issue(
+    issue_id: str,
+    current_user=Depends(get_current_user),
+):
+    """
+    Retrieve an issue by its ID.
+    """
+
+    return get_issue_by_id(issue_id)

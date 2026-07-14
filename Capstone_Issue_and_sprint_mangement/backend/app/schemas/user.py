@@ -9,7 +9,6 @@ class UserRole(str, Enum):
     ADMIN = "admin"
     MEMBER = "member"
     VIEWER = "viewer"
-   
 
 
 class UserCreate(BaseModel):
@@ -21,14 +20,20 @@ class UserCreate(BaseModel):
         max_length=100,
         description="Full name of the user",
     )
+
     email: EmailStr
+
     password: str = Field(
         ...,
         min_length=8,
         max_length=128,
         description="User password",
     )
-    
+
+    role: UserRole = Field(
+        ...,
+        description="Role selected during registration",
+    )
 
 
 class UserResponse(BaseModel):

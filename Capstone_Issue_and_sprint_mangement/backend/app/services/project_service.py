@@ -4,16 +4,25 @@ from bson import ObjectId
 from bson.errors import InvalidId
 from fastapi import HTTPException, status
 
-from app.constants import app_constants
 from app.database import projects_collection, users_collection
 from app.schemas.project import (
     MemberRequest,
     ProjectCreate,
+    ProjectUpdate,
     ProjectResponse,
 )
 
 from app.constants.app_constants import (
     PROJECT_NOT_FOUND,
+<<<<<<< HEAD
+    PROJECT_NAME_EXISTS,    
+    USER_NOT_FOUND,
+    MEMBER_ALREADY_EXISTS,
+    MEMBER_NOT_FOUND,
+    INVALID_PROJECT_ID,
+    INVALID_USER_ID,
+    PROJECT_OWNER_CANNOT_BE_REMOVED,
+=======
     PROJECT_NAME_EXISTS,
     USER_NOT_FOUND,
     MEMBER_ALREADY_EXISTS,
@@ -21,6 +30,7 @@ from app.constants.app_constants import (
     PROJECT_OWNER_CANNOT_BE_REMOVED,
     INVALID_PROJECT_ID,
     INVALID_USER_ID,        
+>>>>>>> origin/python/develop
 )
 
 
@@ -65,6 +75,46 @@ def create_project(
         owner_id=owner_id,
         members=[owner_id],
     )
+
+def get_all_projects() -> list[ProjectResponse]:
+    """
+    Retrieve all projects.
+    """
+
+    projects = projects_collection.find()
+
+    response = []
+
+    for project in projects:
+        response.append(
+            ProjectResponse(
+                id=str(project["_id"]),
+                name=project["name"],
+                description=project["description"],
+                owner_id=project["owner_id"],
+                members=project["members"],
+            )
+        )
+
+    return response
+
+def get_project(
+    project_id: str,
+) -> ProjectResponse:
+    """
+    Retrieve a project by its ID.
+    """
+
+    project = get_project_by_id(project_id)
+
+    return ProjectResponse(
+        id=str(project["_id"]),
+        name=project["name"],
+        description=project["description"],
+        owner_id=project["owner_id"],
+        members=project["members"],
+    )
+
 
 def get_project_by_id(
     project_id: str,
@@ -208,3 +258,66 @@ def remove_member(
         owner_id=project["owner_id"],
         members=updated_members,
     )
+
+
+def update_project(
+    project_id: str,
+    project_data: ProjectUpdate,
+) -> ProjectResponse:
+    """
+    Update an existing project.
+    """
+
+    project = get_project_by_id(project_id)
+
+    existing_project = projects_collection.find_one(
+        {
+            "name": project_data.name,
+            "_id": {"$ne": project["_id"]},
+        }
+    )
+
+    if existing_project:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail=PROJECT_NAME_EXISTS,
+        )
+
+    projects_collection.update_one(
+        {"_id": project["_id"]},
+        {
+            "$set": {
+                "name": project_data.name,
+                "description": project_data.description,
+                "updated_at": datetime.utcnow(),
+            }
+        },
+    )
+
+    updated_project = get_project_by_id(project_id)
+
+    return ProjectResponse(
+        id=str(updated_project["_id"]),
+        name=updated_project["name"],
+        description=updated_project["description"],
+        owner_id=updated_project["owner_id"],
+        members=updated_project["members"],
+    )
+
+
+def delete_project(
+    project_id: str,
+) -> dict:
+    """
+    Delete a project.
+    """
+
+    project = get_project_by_id(project_id)
+
+    projects_collection.delete_one(
+        {"_id": project["_id"]}
+    )
+
+    return {
+        "message": "Project deleted successfully"
+    }

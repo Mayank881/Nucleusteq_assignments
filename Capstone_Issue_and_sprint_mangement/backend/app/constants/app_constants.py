@@ -110,3 +110,21 @@ ISSUE_PROJECT_MISMATCH = (
 DONE_ISSUE_NOT_ALLOWED = (
     "Completed issues cannot be added to a sprint."
 )
+
+# Comment Module
+
+COMMENT_NOT_FOUND = "Comment not found."
+
+ONLY_COMMENT_OWNER = (
+    "Only the comment owner can perform this action."
+)
+
+COMMENT_CREATED = "Comment created successfully."
+
+COMMENT_UPDATED = "Comment updated successfully."
+
+COMMENT_DELETED = "Comment deleted successfully."
+
+ADMIN_REGISTERED_NOT_ALLOWED = (
+    "Admin registration is not allowed through public API."
+)
