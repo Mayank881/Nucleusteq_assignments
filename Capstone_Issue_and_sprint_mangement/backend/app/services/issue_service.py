@@ -27,6 +27,7 @@ from app.constants.app_constants import (
     PARENT_ISSUE_PROJECT_MISMATCH,
 )
 
+
 ALLOWED_TRANSITIONS = {
     IssueStatus.BACKLOG: [IssueStatus.TODO],
     IssueStatus.TODO: [IssueStatus.IN_PROGRESS],
@@ -34,6 +35,7 @@ ALLOWED_TRANSITIONS = {
     IssueStatus.DONE: [],
 }
 from app.services.project_service import get_project_by_id
+
 
 
 def create_issue(
@@ -153,17 +155,38 @@ def create_issue(
     )
 
 
-def get_all_issues() -> list[IssueResponse]:
+def get_all_issues(
+    current_user: dict,
+    page: int = 1,
+    limit: int = 10,
+) -> dict:
     """
-    Retrieve all issues.
+    Retrieve paginated issues.
     """
 
-    issues = issues_collection.find()
+    skip = (page - 1) * limit
 
-    response = []
+    role = current_user["role"].lower()
+
+    query = {}
+
+    if role == "member":
+        query = {
+            "assignee_id": str(current_user["_id"])
+        }
+
+    total = issues_collection.count_documents(query)
+
+    issues = (
+        issues_collection.find(query)
+        .skip(skip)
+        .limit(limit)
+    )
+
+    items = []
 
     for issue in issues:
-        response.append(
+        items.append(
             IssueResponse(
                 id=str(issue["_id"]),
                 title=issue["title"],
@@ -178,7 +201,20 @@ def get_all_issues() -> list[IssueResponse]:
             )
         )
 
-    return response
+    total_pages = (
+        (total + limit - 1) // limit
+        if total > 0
+        else 1
+    )
+
+    return {
+        "items": items,
+        "page": page,
+        "limit": limit,
+        "total": total,
+        "total_pages": total_pages,
+    }
+
 
 def get_issue_by_id(
     issue_id: str,

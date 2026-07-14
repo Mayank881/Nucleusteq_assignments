@@ -1,7 +1,8 @@
 from enum import Enum
-from typing import Optional
+from typing import Optional,List
 
 from pydantic import BaseModel, ConfigDict, Field
+
 
 
 class IssueStatus(str, Enum):
@@ -42,7 +43,13 @@ class IssueResponse(BaseModel):
 
     model_config = ConfigDict(from_attributes=True)
 
-
+class PaginatedIssueResponse(BaseModel):
+    items: List[IssueResponse]
+    page: int
+    limit: int
+    total: int
+    total_pages: int
+ 
 class IssueStatusUpdate(BaseModel):
     """
     Schema for updating only the issue status.

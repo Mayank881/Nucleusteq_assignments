@@ -87,3 +87,10 @@ class SprintResponse(BaseModel):
     created_at: datetime
 
     updated_at: datetime
+
+class PaginatedSprintResponse(BaseModel):
+    items: List[SprintResponse]
+    page: int
+    limit: int
+    total: int
+    total_pages: int    

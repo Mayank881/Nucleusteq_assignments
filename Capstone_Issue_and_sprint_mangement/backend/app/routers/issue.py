@@ -7,6 +7,7 @@ from app.schemas.issue import (
     IssueCreate,
     IssueResponse,
     IssueStatusUpdate,
+    PaginatedIssueResponse
 )
 from app.schemas.user import UserRole
 from app.services.issue_service import (
@@ -15,6 +16,7 @@ from app.services.issue_service import (
     update_issue_status,
     search_issues,
     get_all_issues,
+    
 )
 from app.auth.authentication import get_current_user
 
@@ -105,16 +107,30 @@ def search_issue(
 
 @router.get(
     "",
-    response_model=List[IssueResponse],
+    response_model=PaginatedIssueResponse,
 )
 def get_issues(
-    current_user=Depends(get_current_user),
+    page: int = 1,
+    limit: int = 10,
+    current_user=Depends(
+        RoleChecker(
+            [
+                UserRole.ADMIN,
+                UserRole.MEMBER,
+                UserRole.VIEWER,
+            ]
+        )
+    ),
 ):
     """
-    Retrieve all issues.
+    Retrieve issues with pagination.
     """
 
-    return get_all_issues()
+    return get_all_issues(
+        current_user,
+        page,
+        limit,
+    )
 
 @router.get(
     "{issue_id}",

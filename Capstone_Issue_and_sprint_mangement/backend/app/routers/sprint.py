@@ -7,6 +7,7 @@ from app.schemas.sprint import (
     SprintResponse,
     UpdateSprintRequest,
     AddIssueRequest,
+    PaginatedSprintResponse,
     
 )
 from app.schemas.user import UserRole
@@ -50,28 +51,33 @@ def create_new_sprint(
         sprint,
         current_user,
     )
-
 @router.get(
     "",
-    response_model=List[SprintResponse],
+    response_model=PaginatedSprintResponse,
     status_code=status.HTTP_200_OK,
 )
 def get_sprints(
+    page: int = 1,
+    limit: int = 10,
     current_user=Depends(
         RoleChecker(
             [
                 UserRole.ADMIN,
                 UserRole.MEMBER,
-                UserRole.VIEWER
+                UserRole.VIEWER,
             ]
         )
     ),
-) -> List[SprintResponse]:
+):
     """
-    Get all sprints.
+    Retrieve paginated sprints.
     """
 
-    return get_all_sprints()
+    return get_all_sprints(
+        current_user,
+        page,
+        limit,
+    )
 
 @router.get(
     "/{sprint_id}",

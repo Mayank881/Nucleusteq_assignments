@@ -24,3 +24,10 @@ class ProjectResponse(BaseModel):
     members: List[str]
 
     model_config = ConfigDict(from_attributes=True)
+
+class PaginatedProjectResponse(BaseModel):
+    items: List[ProjectResponse]
+    page: int
+    limit: int
+    total: int
+    total_pages: int    

@@ -7,6 +7,7 @@ from app.schemas.project import (
     ProjectCreate,
     ProjectUpdate,
     ProjectResponse,
+    PaginatedProjectResponse,
 )
 from app.schemas.user import UserRole
 from app.services.project_service import (
@@ -90,7 +91,13 @@ def remove_project_member(
     "",
     response_model=List[ProjectResponse],
 )
+@router.get(
+    "",
+    response_model=PaginatedProjectResponse,
+)
 def get_projects(
+    page: int = 1,
+    limit: int = 10,
     current_user=Depends(
         RoleChecker(
             [
@@ -102,10 +109,15 @@ def get_projects(
     ),
 ):
     """
-    Retrieve all projects.
+    Retrieve projects with pagination.
     """
 
-    return get_all_projects()
+    return get_all_projects(
+        current_user,
+        page,
+        limit,
+    )
+
 
 @router.get(
     "/{project_id}",

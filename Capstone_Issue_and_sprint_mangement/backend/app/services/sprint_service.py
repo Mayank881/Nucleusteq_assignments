@@ -37,6 +37,7 @@ from app.constants.app_constants import (
 from app.services.project_service import get_project_by_id
 
 
+
 def create_sprint(
     sprint: CreateSprintRequest,
     current_user: dict,
@@ -96,17 +97,54 @@ def create_sprint(
         updated_at=sprint_data.updated_at,
     )
 
-def get_all_sprints() -> list[SprintResponse]:
+def get_all_sprints(
+    current_user: dict,
+    page: int = 1,
+    limit: int = 10,
+) -> dict:
     """
-    Get all sprints.
+    Retrieve paginated sprints.
     """
 
-    sprints = sprints_collection.find()
+    skip = (page - 1) * limit
 
-    sprint_list = []
+    role = current_user["role"].lower()
+
+    if role in ["admin", "viewer"]:
+        query = {}
+
+    else:
+        projects = list(
+            projects_collection.find(
+                {
+                    "members": str(current_user["_id"])
+                }
+            )
+        )
+
+        project_ids = [
+            str(project["_id"])
+            for project in projects
+        ]
+
+        query = {
+            "project_id": {
+                "$in": project_ids
+            }
+        }
+
+    total = sprints_collection.count_documents(query)
+
+    sprints = (
+        sprints_collection.find(query)
+        .skip(skip)
+        .limit(limit)
+    )
+
+    items = []
 
     for sprint in sprints:
-        sprint_list.append(
+        items.append(
             SprintResponse(
                 id=str(sprint["_id"]),
                 name=sprint["name"],
@@ -121,7 +159,19 @@ def get_all_sprints() -> list[SprintResponse]:
             )
         )
 
-    return sprint_list
+    total_pages = (
+        (total + limit - 1) // limit
+        if total > 0
+        else 1
+    )
+
+    return {
+        "items": items,
+        "page": page,
+        "limit": limit,
+        "total": total,
+        "total_pages": total_pages,
+    }
 
 def get_sprint_by_id(
     sprint_id: str,

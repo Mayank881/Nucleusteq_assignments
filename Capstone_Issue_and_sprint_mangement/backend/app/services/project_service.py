@@ -23,6 +23,7 @@ from app.constants.app_constants import (
     PROJECT_OWNER_CANNOT_BE_REMOVED,
 )
 
+
 def create_project(
     project: ProjectCreate,
     current_user: dict,
@@ -64,17 +65,38 @@ def create_project(
         members=[owner_id],
     )
 
-def get_all_projects() -> list[ProjectResponse]:
+def get_all_projects(
+    current_user: dict,
+    page: int = 1,
+    limit: int = 10,
+) -> dict:
     """
-    Retrieve all projects.
+    Retrieve paginated projects.
     """
 
-    projects = projects_collection.find()
+    skip = (page - 1) * limit
 
-    response = []
+    role = current_user["role"].lower()
+
+    query = {}
+
+    if role == "member":
+        query = {
+            "members": str(current_user["_id"])
+        }
+
+    total = projects_collection.count_documents(query)
+
+    projects = (
+        projects_collection.find(query)
+        .skip(skip)
+        .limit(limit)
+    )
+
+    items = []
 
     for project in projects:
-        response.append(
+        items.append(
             ProjectResponse(
                 id=str(project["_id"]),
                 name=project["name"],
@@ -84,7 +106,19 @@ def get_all_projects() -> list[ProjectResponse]:
             )
         )
 
-    return response
+    total_pages = (
+        (total + limit - 1) // limit
+        if total > 0
+        else 1
+    )
+
+    return {
+        "items": items,
+        "page": page,
+        "limit": limit,
+        "total": total,
+        "total_pages": total_pages,
+    }
 
 def get_project(
     project_id: str,
