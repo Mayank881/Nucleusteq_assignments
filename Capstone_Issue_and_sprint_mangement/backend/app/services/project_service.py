@@ -14,7 +14,6 @@ from app.schemas.project import (
 
 from app.constants.app_constants import (
     PROJECT_NOT_FOUND,
-<<<<<<< HEAD
     PROJECT_NAME_EXISTS,    
     USER_NOT_FOUND,
     MEMBER_ALREADY_EXISTS,
@@ -22,15 +21,6 @@ from app.constants.app_constants import (
     INVALID_PROJECT_ID,
     INVALID_USER_ID,
     PROJECT_OWNER_CANNOT_BE_REMOVED,
-=======
-    PROJECT_NAME_EXISTS,
-    USER_NOT_FOUND,
-    MEMBER_ALREADY_EXISTS,
-    MEMBER_NOT_FOUND,
-    PROJECT_OWNER_CANNOT_BE_REMOVED,
-    INVALID_PROJECT_ID,
-    INVALID_USER_ID,        
->>>>>>> origin/python/develop
 )
 
 

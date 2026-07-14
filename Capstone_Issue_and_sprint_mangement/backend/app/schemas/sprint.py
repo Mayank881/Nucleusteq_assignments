@@ -1,7 +1,17 @@
 from datetime import datetime
 from typing import List, Optional
+from enum import Enum
 
 from pydantic import BaseModel, Field
+
+class SprintStatus(str, Enum):
+    """
+    Sprint lifecycle states.
+    """
+
+    PLANNED = "PLANNED"
+    ACTIVE = "ACTIVE"
+    COMPLETED = "COMPLETED"
 
 
 class CreateSprintRequest(BaseModel):
@@ -64,7 +74,7 @@ class SprintResponse(BaseModel):
 
     project_id: str
 
-    status: str
+    status: SprintStatus
 
     issue_ids: List[str]
 
@@ -77,3 +87,10 @@ class SprintResponse(BaseModel):
     created_at: datetime
 
     updated_at: datetime
+
+class PaginatedSprintResponse(BaseModel):
+    items: List[SprintResponse]
+    page: int
+    limit: int
+    total: int
+    total_pages: int    

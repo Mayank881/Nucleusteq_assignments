@@ -6,6 +6,7 @@ import {
 } from "react-icons/md";
 
 import { NavLink } from "react-router-dom";
+import { MdPerson } from "react-icons/md";
 
 import "./Sidebar.css";
 
@@ -38,6 +39,11 @@ const Sidebar = () => {
         <NavLink to="/sprints">
           <MdViewKanban />
           <span>Sprints</span>
+        </NavLink>
+
+        <NavLink to="/profile">
+          <MdPerson />
+          <span>Profile</span>
         </NavLink>
 
       </nav>
