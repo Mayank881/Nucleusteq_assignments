@@ -26,7 +26,7 @@ def register_user(user: UserCreate) -> UserResponse:
         "name": user.name,
         "email": user.email,
         "hashed_password": hash_password(user.password),
-        "role": UserRole.MEMBER.value,
+        "role": UserRole.VIEWER.value,
         "created_at": datetime.utcnow(),
         "updated_at": datetime.utcnow(),
     }
@@ -37,5 +37,5 @@ def register_user(user: UserCreate) -> UserResponse:
         id=str(result.inserted_id),
         name=user.name,
         email=user.email,
-        role=UserRole.MEMBER
+        role=UserRole.VIEWER,  # Default role for new users
     )
