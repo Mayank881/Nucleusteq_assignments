@@ -24,6 +24,7 @@ from app.constants.app_constants import (
 )
 
 
+
 def create_project(
     project: ProjectCreate,
     current_user: dict,
@@ -65,38 +66,17 @@ def create_project(
         members=[owner_id],
     )
 
-def get_all_projects(
-    current_user: dict,
-    page: int = 1,
-    limit: int = 10,
-) -> dict:
+def get_all_projects() -> list[ProjectResponse]:
     """
-    Retrieve paginated projects.
+    Retrieve all projects.
     """
 
-    skip = (page - 1) * limit
+    projects = projects_collection.find()
 
-    role = current_user["role"].lower()
-
-    query = {}
-
-    if role == "member":
-        query = {
-            "members": str(current_user["_id"])
-        }
-
-    total = projects_collection.count_documents(query)
-
-    projects = (
-        projects_collection.find(query)
-        .skip(skip)
-        .limit(limit)
-    )
-
-    items = []
+    response = []
 
     for project in projects:
-        items.append(
+        response.append(
             ProjectResponse(
                 id=str(project["_id"]),
                 name=project["name"],
@@ -106,19 +86,7 @@ def get_all_projects(
             )
         )
 
-    total_pages = (
-        (total + limit - 1) // limit
-        if total > 0
-        else 1
-    )
-
-    return {
-        "items": items,
-        "page": page,
-        "limit": limit,
-        "total": total,
-        "total_pages": total_pages,
-    }
+    return response
 
 def get_project(
     project_id: str,
