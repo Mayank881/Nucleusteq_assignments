@@ -1,14 +1,17 @@
 import api from "./api";
 
 const issueService = {
-    async getAllIssues() {
-        const response = await api.get(
-            "/issues"
-        );
+    async getAllIssues(page = 1, limit = 10) {
+        const response = await api.get("/issues", {
+            params: {
+                page,
+                limit,
+            },
+        });
 
         return response.data;
     },
-
+    
     async getIssueById(issueId) {
         const response = await api.get(
             `/issues/${issueId}`

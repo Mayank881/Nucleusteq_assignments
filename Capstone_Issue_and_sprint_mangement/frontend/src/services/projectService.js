@@ -1,8 +1,14 @@
 import api from "./api";
 
 const projectService = {
-    async getAllProjects() {
-        const response = await api.get("/projects");
+    async getAllProjects(page = 1, limit = 10) {
+        const response = await api.get("/projects", {
+            params: {
+                page,
+                limit,
+            },
+        });
+
         return response.data;
     },
 

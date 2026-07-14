@@ -9,6 +9,7 @@ import "./Issues.css";
 
 import IssueForm from "../../components/issues/IssueForm";
 import IssueDetails from "../../components/issues/IssueDetails";
+import Pagination from "../../components/common/Pagination";
 
 import issueService from "../../services/issueService";
 import projectService from "../../services/projectService";
@@ -26,6 +27,10 @@ const Issues = () => {
     const [issues, setIssues] =
         useState([]);
 
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+
+    const PAGE_SIZE = 10;
     const [projects, setProjects] =
         useState([]);
 
@@ -61,14 +66,16 @@ const Issues = () => {
 
     const loadProjects = async () => {
         try {
-            const response =
-                await projectService.getAllProjects();
+            const response = await projectService.getAllProjects(
+                1,
+                1000
+            );
 
-            setProjects(response);
+            setProjects(response.items || []);
         } catch (error) {
             alert(
                 error?.response?.data?.detail ||
-                    "Unable to load projects."
+                "Unable to load projects."
             );
         }
     };
@@ -82,7 +89,7 @@ const Issues = () => {
         } catch (error) {
             alert(
                 error?.response?.data?.detail ||
-                    "Unable to load users."
+                "Unable to load users."
             );
         }
     };
@@ -92,13 +99,18 @@ const Issues = () => {
             setLoading(true);
 
             const response =
-                await issueService.getAllIssues();
+                await issueService.getAllIssues(
+                    currentPage,
+                    PAGE_SIZE
+                );
 
-            setIssues(response);
+            setIssues(response.items || []);
+            setCurrentPage(response.page);
+            setTotalPages(response.total_pages);
         } catch (error) {
             alert(
                 error?.response?.data?.detail ||
-                    "Unable to load issues."
+                "Unable to load issues."
             );
         } finally {
             setLoading(false);
@@ -108,8 +120,23 @@ const Issues = () => {
     useEffect(() => {
         loadProjects();
         loadUsers();
+    }, []);;
+
+    useEffect(() => {
         loadIssues();
-    }, []);
+    }, [currentPage]);
+
+    const handlePreviousPage = () => {
+        if (currentPage > 1) {
+            setCurrentPage((prev) => prev - 1);
+        }
+    };
+
+    const handleNextPage = () => {
+        if (currentPage < totalPages) {
+            setCurrentPage((prev) => prev + 1);
+        }
+    };
 
     const handleCreateIssue = async (
         formData
@@ -133,7 +160,7 @@ const Issues = () => {
         } catch (error) {
             alert(
                 error?.response?.data?.detail ||
-                    "Unable to create issue."
+                "Unable to create issue."
             );
         } finally {
             setSaving(false);
@@ -165,7 +192,7 @@ const Issues = () => {
                 if (
                     selectedIssue &&
                     selectedIssue.id ===
-                        issueId
+                    issueId
                 ) {
                     const updated =
                         await issueService.getIssueById(
@@ -179,7 +206,7 @@ const Issues = () => {
             } catch (error) {
                 alert(
                     error?.response?.data?.detail ||
-                        "Unable to update status."
+                    "Unable to update status."
                 );
             }
         };
@@ -231,7 +258,7 @@ const Issues = () => {
                 return null;
         }
     };
-        const filteredIssues = useMemo(() => {
+    const filteredIssues = useMemo(() => {
         return issues.filter((issue) => {
             const keyword =
                 searchTerm
@@ -250,19 +277,19 @@ const Issues = () => {
                 statusFilter === "ALL"
                     ? true
                     : issue.status ===
-                      statusFilter;
+                    statusFilter;
 
             const matchesProject =
                 projectFilter === "ALL"
                     ? true
                     : issue.project_id ===
-                      projectFilter;
+                    projectFilter;
 
             const matchesAssignee =
                 assigneeFilter === "ALL"
                     ? true
                     : issue.assignee_id ===
-                      assigneeFilter;
+                    assigneeFilter;
 
             return (
                 matchesSearch &&
@@ -298,7 +325,7 @@ const Issues = () => {
                 })
             );
         }, [users]);
-            return (
+    return (
         <main className="issues-page">
             <div className="issues-header">
                 <div>
@@ -422,7 +449,7 @@ const Issues = () => {
                     Loading Issues...
                 </div>
             ) : filteredIssues.length ===
-              0 ? (
+                0 ? (
                 <div className="empty-state">
                     No Issues Found
                 </div>
@@ -557,7 +584,14 @@ const Issues = () => {
 
                 </table>
             )}
-                        {showCreateModal && (
+
+            <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPrevious={handlePreviousPage}
+                onNext={handleNextPage}
+            />
+            {showCreateModal && (
                 <div className="modal-overlay">
                     <div className="modal">
 

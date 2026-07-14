@@ -15,9 +15,15 @@ import ProjectForm from "../../components/projects/ProjectForm";
 
 import projectService from "../../services/projectService";
 import userService from "../../services/userService";
+import Pagination from "../../components/common/Pagination";
 
 const Projects = () => {
     const [projects, setProjects] = useState([]);
+
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const [totalProjects, setTotalProjects] = useState(0);
+    const PAGE_SIZE = 10;
     const [users, setUsers] = useState([]);
 
     const [selectedProject, setSelectedProject] =
@@ -44,14 +50,24 @@ const Projects = () => {
     const [showDetailsModal, setShowDetailsModal] =
         useState(false);
 
-    const loadProjects = async () => {
+    const loadProjects = async (
+        page = currentPage
+    ) => {
         try {
             setLoading(true);
 
             const response =
-                await projectService.getAllProjects();
+                await projectService.getAllProjects(
+                    page,
+                    PAGE_SIZE
+                );
 
-            setProjects(response);
+
+            setProjects(response.items || []);
+            setCurrentPage(response.page);
+            setTotalPages(response.total_pages);
+            setTotalProjects(response.total);
+
         } catch (error) {
             alert(
                 error?.response?.data?.detail ||
@@ -77,7 +93,10 @@ const Projects = () => {
     };
 
     useEffect(() => {
-        loadProjects();
+        loadProjects(currentPage);
+    }, [currentPage]);
+
+    useEffect(() => {
         loadUsers();
     }, []);
 
@@ -107,11 +126,11 @@ const Projects = () => {
 
     const availableUsers = selectedProject
         ? users.filter(
-              (user) =>
-                  !selectedProject.members.includes(
-                      user.id
-                  )
-          )
+            (user) =>
+                !selectedProject.members.includes(
+                    user.id
+                )
+        )
         : [];
 
     const handleCreateProject = async (
@@ -126,7 +145,7 @@ const Projects = () => {
 
             setShowCreateModal(false);
 
-            await loadProjects();
+            await loadProjects(currentPage);
         } catch (error) {
             alert(
                 error?.response?.data?.detail ||
@@ -165,7 +184,7 @@ const Projects = () => {
                 projectId
             );
 
-            await loadProjects();
+            await loadProjects(currentPage);
         } catch (error) {
             alert(
                 error?.response?.data?.detail ||
@@ -192,7 +211,7 @@ const Projects = () => {
             setProjects((prev) =>
                 prev.map((project) =>
                     project.id ===
-                    updatedProject.id
+                        updatedProject.id
                         ? updatedProject
                         : project
                 )
@@ -231,7 +250,7 @@ const Projects = () => {
             setProjects((prev) =>
                 prev.map((project) =>
                     project.id ===
-                    updatedProject.id
+                        updatedProject.id
                         ? updatedProject
                         : project
                 )
@@ -244,8 +263,20 @@ const Projects = () => {
         }
     };
 
+    const handlePreviousPage = () => {
+        if (currentPage > 1) {
+            setCurrentPage((prev) => prev - 1);
+        }
+    };
+
+    const handleNextPage = () => {
+        if (currentPage < totalPages) {
+            setCurrentPage((prev) => prev + 1);
+        }
+    };
+
     return (
-                 <main className="projects-page">
+        <main className="projects-page">
             <div className="projects-header">
                 <div>
                     <h1>Projects</h1>
@@ -366,6 +397,13 @@ const Projects = () => {
                 </table>
             )}
 
+            <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPrevious={handlePreviousPage}
+                onNext={handleNextPage}
+            />
+
             {showCreateModal && (
                 <div className="modal-overlay">
                     <div className="modal">
@@ -447,16 +485,16 @@ const Projects = () => {
                                         null
                                     );
 
-                                    await loadProjects();
+                                    await loadProjects(currentPage);
                                 } catch (
-                                    error
+                                error
                                 ) {
                                     alert(
                                         error
                                             ?.response
                                             ?.data
                                             ?.detail ||
-                                            "Unable to update project."
+                                        "Unable to update project."
                                     );
                                 } finally {
                                     setSaving(
@@ -469,7 +507,7 @@ const Projects = () => {
                 </div>
             )}
 
-                    {showDetailsModal && selectedProject && (
+            {showDetailsModal && selectedProject && (
                 <div className="modal-overlay">
                     <div className="modal">
                         <div className="modal-header">
@@ -566,18 +604,18 @@ const Projects = () => {
 
                                                     {memberId !==
                                                         selectedProject.owner_id && (
-                                                        <button
-                                                            className="icon-btn delete-btn"
-                                                            onClick={() =>
-                                                                handleRemoveMember(
-                                                                    memberId
-                                                                )
-                                                            }
-                                                            title="Remove Member"
-                                                        >
-                                                            <FaUserMinus />
-                                                        </button>
-                                                    )}
+                                                            <button
+                                                                className="icon-btn delete-btn"
+                                                                onClick={() =>
+                                                                    handleRemoveMember(
+                                                                        memberId
+                                                                    )
+                                                                }
+                                                                title="Remove Member"
+                                                            >
+                                                                <FaUserMinus />
+                                                            </button>
+                                                        )}
                                                 </li>
                                             )
                                         )}
@@ -643,7 +681,7 @@ const Projects = () => {
                                     </span>
                                 </button>
                             </div>
-                       </div>
+                        </div>
                     </div>
                 </div>
             )}

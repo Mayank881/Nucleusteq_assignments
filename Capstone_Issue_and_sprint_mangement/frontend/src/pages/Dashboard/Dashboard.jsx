@@ -34,9 +34,9 @@ const Dashboard = () => {
                 sprintService.getAllSprints(),
             ]);
 
-            setProjects(projectsResponse);
-            setIssues(issuesResponse);
-            setSprints(sprintsResponse);
+            setProjects(projectsResponse.items || []);
+            setIssues(issuesResponse.items || []);
+            setSprints(sprintsResponse.items || []);
         } catch (error) {
             alert(
                 error?.response?.data?.detail ||
@@ -171,52 +171,52 @@ const Dashboard = () => {
                 </div>
 
             </div>
-                         <section className="dashboard-section">
-                            <div className="section-header">
-                                <h2>Recent Projects</h2>
+            <section className="dashboard-section">
+                <div className="section-header">
+                    <h2>Recent Projects</h2>
+                </div>
+
+                <div className="dashboard-card-list">
+                    {recentProjects.length === 0 ? (
+                        <div className="empty-state">
+                            No Projects Found
+                        </div>
+                    ) : (
+                        recentProjects.map((project) => (
+                            <div
+                                key={project.id}
+                                className="dashboard-item-card"
+                            >
+                                <div className="dashboard-item-top">
+                                    <h3>{project.name}</h3>
+                                </div>
+
+                                <p className="dashboard-description">
+                                    {project.description}
+                                </p>
+
+                                <div className="dashboard-meta">
+                                    <span>
+                                        <strong>Owner:</strong>{" "}
+                                        {project.owner_id}
+                                    </span>
+
+                                    <span>
+                                        <strong>Members:</strong>{" "}
+                                        {project.members.length}
+                                    </span>
+                                </div>
                             </div>
-                        
-                            <div className="dashboard-card-list">
-                                {recentProjects.length === 0 ? (
-                                    <div className="empty-state">
-                                        No Projects Found
-                                    </div>
-                                ) : (
-                                    recentProjects.map((project) => (
-                                        <div
-                                            key={project.id}
-                                            className="dashboard-item-card"
-                                        >
-                                            <div className="dashboard-item-top">
-                                                <h3>{project.name}</h3>
-                                            </div>
-                        
-                                            <p className="dashboard-description">
-                                                {project.description}
-                                            </p>
-                        
-                                            <div className="dashboard-meta">
-                                                <span>
-                                                    <strong>Owner:</strong>{" "}
-                                                    {project.owner_id}
-                                                </span>
-                        
-                                                <span>
-                                                    <strong>Members:</strong>{" "}
-                                                    {project.members.length}
-                                                </span>
-                                            </div>
-                                        </div>
-                                    ))
-                                )}
-                            </div>
-                        </section>
+                        ))
+                    )}
+                </div>
+            </section>
 
             <section className="dashboard-section">
                 <div className="section-header">
                     <h2>Recent Issues</h2>
                 </div>
-            
+
                 <div className="dashboard-card-list">
                     {recentIssues.length === 0 ? (
                         <div className="empty-state">
@@ -230,20 +230,20 @@ const Dashboard = () => {
                             >
                                 <div className="dashboard-item-top">
                                     <h3>{issue.title}</h3>
-            
+
                                     <span
                                         className={`badge ${issue.priority.toLowerCase()}`}
                                     >
                                         {issue.priority}
                                     </span>
                                 </div>
-            
+
                                 <div className="dashboard-meta">
                                     <span>
                                         <strong>Status:</strong>{" "}
                                         {issue.status}
                                     </span>
-            
+
                                     <span>
                                         <strong>Project:</strong>{" "}
                                         {issue.project_id}
@@ -259,7 +259,7 @@ const Dashboard = () => {
                 <div className="section-header">
                     <h2>Recent Sprints</h2>
                 </div>
-            
+
                 <div className="dashboard-card-list">
                     {recentSprints.length === 0 ? (
                         <div className="empty-state">
@@ -273,30 +273,30 @@ const Dashboard = () => {
                             >
                                 <div className="dashboard-item-top">
                                     <h3>{sprint.name}</h3>
-            
+
                                     <span
                                         className={`badge ${sprint.status.toLowerCase()}`}
                                     >
                                         {sprint.status}
                                     </span>
                                 </div>
-            
+
                                 <div className="dashboard-meta">
                                     <span>
                                         <strong>Start:</strong>{" "}
                                         {sprint.start_date
                                             ? new Date(
-                                                  sprint.start_date
-                                              ).toLocaleDateString()
+                                                sprint.start_date
+                                            ).toLocaleDateString()
                                             : "-"}
                                     </span>
-            
+
                                     <span>
                                         <strong>End:</strong>{" "}
                                         {sprint.end_date
                                             ? new Date(
-                                                  sprint.end_date
-                                              ).toLocaleDateString()
+                                                sprint.end_date
+                                            ).toLocaleDateString()
                                             : "-"}
                                     </span>
                                 </div>

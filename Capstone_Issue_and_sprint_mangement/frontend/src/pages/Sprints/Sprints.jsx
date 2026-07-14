@@ -15,10 +15,16 @@ import SprintForm from "../../components/sprints/SprintForm";
 import sprintService from "../../services/sprintService";
 import projectService from "../../services/projectService";
 import issueService from "../../services/issueService";
+import Pagination from "../../components/common/Pagination";
 
 const Sprints = () => {
     const [sprints, setSprints] =
         useState([]);
+
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+
+    const PAGE_SIZE = 10;
 
     const [projects, setProjects] =
         useState([]);
@@ -53,13 +59,16 @@ const Sprints = () => {
     const loadProjects = async () => {
         try {
             const response =
-                await projectService.getAllProjects();
+                await projectService.getAllProjects(
+                    1,
+                    1000
+                );
 
-            setProjects(response);
+            setProjects(response.items || []);
         } catch (error) {
             alert(
                 error?.response?.data?.detail ||
-                    "Unable to load projects."
+                "Unable to load projects."
             );
         }
     };
@@ -67,13 +76,16 @@ const Sprints = () => {
     const loadIssues = async () => {
         try {
             const response =
-                await issueService.getAllIssues();
+                await issueService.getAllIssues(
+                    1,
+                    1000
+                );
 
-            setIssues(response);
+            setIssues(response.items || []);
         } catch (error) {
             alert(
                 error?.response?.data?.detail ||
-                    "Unable to load issues."
+                "Unable to load issues."
             );
         }
     };
@@ -83,24 +95,45 @@ const Sprints = () => {
             setLoading(true);
 
             const response =
-                await sprintService.getAllSprints();
+                await sprintService.getAllSprints(
+                    currentPage,
+                    PAGE_SIZE
+                );
 
-            setSprints(response);
+            setSprints(response.items || []);
+            setCurrentPage(response.page);
+            setTotalPages(response.total_pages);
         } catch (error) {
             alert(
                 error?.response?.data?.detail ||
-                    "Unable to load sprints."
+                "Unable to load sprints."
             );
         } finally {
             setLoading(false);
         }
     };
-
     useEffect(() => {
         loadProjects();
-        loadSprints();
         loadIssues();
     }, []);
+
+    useEffect(() => {
+        loadSprints();
+    }, [currentPage]);
+
+    const handlePreviousPage = () => {
+        if (currentPage > 1) {
+            setCurrentPage((prev) => prev - 1);
+        }
+    };
+
+    const handleNextPage = () => {
+        if (currentPage < totalPages) {
+            setCurrentPage((prev) => prev + 1);
+        }
+    };
+
+
 
     const filteredSprints = useMemo(() => {
         const keyword =
@@ -149,7 +182,7 @@ const Sprints = () => {
             .toISOString()
             .slice(0, 16);
     };
-        const handleCreateSprint = async (
+    const handleCreateSprint = async (
         formData
     ) => {
         try {
@@ -170,7 +203,7 @@ const Sprints = () => {
         } catch (error) {
             alert(
                 error?.response?.data?.detail ||
-                    "Unable to create sprint."
+                "Unable to create sprint."
             );
         } finally {
             setSaving(false);
@@ -202,7 +235,7 @@ const Sprints = () => {
         } catch (error) {
             alert(
                 error?.response?.data?.detail ||
-                    "Unable to update sprint."
+                "Unable to update sprint."
             );
         } finally {
             setSaving(false);
@@ -227,7 +260,7 @@ const Sprints = () => {
             } catch (error) {
                 alert(
                     error?.response?.data?.detail ||
-                        "Unable to load sprint."
+                    "Unable to load sprint."
                 );
             }
         };
@@ -272,7 +305,7 @@ const Sprints = () => {
             } catch (error) {
                 alert(
                     error?.response?.data?.detail ||
-                        "Unable to start sprint."
+                    "Unable to start sprint."
                 );
             }
         };
@@ -297,7 +330,7 @@ const Sprints = () => {
             } catch (error) {
                 alert(
                     error?.response?.data?.detail ||
-                        "Unable to complete sprint."
+                    "Unable to complete sprint."
                 );
             }
         };
@@ -327,7 +360,7 @@ const Sprints = () => {
             } catch (error) {
                 alert(
                     error?.response?.data?.detail ||
-                        "Unable to add issue."
+                    "Unable to add issue."
                 );
             }
         };
@@ -349,33 +382,33 @@ const Sprints = () => {
             } catch (error) {
                 alert(
                     error?.response?.data?.detail ||
-                        "Unable to remove issue."
+                    "Unable to remove issue."
                 );
             }
         };
-    
+
     const availableIssues =
-    selectedSprint
-        ? issues.filter((issue) => {
+        selectedSprint
+            ? issues.filter((issue) => {
 
-              return (
+                return (
 
-                  issue.project_id ===
-                      selectedSprint.project_id &&
+                    issue.project_id ===
+                    selectedSprint.project_id &&
 
-                  !selectedSprint.issue_ids.includes(
-                      issue.id
-                  ) &&
+                    !selectedSprint.issue_ids.includes(
+                        issue.id
+                    ) &&
 
-                  issue.status !== "DONE"
+                    issue.status !== "DONE"
 
-              );
+                );
 
-          })
-        : [];
+            })
+            : [];
 
     return (
-            <main className="issues-page">
+        <main className="issues-page">
             <div className="issues-header">
                 <div>
                     <h1>Sprints</h1>
@@ -509,31 +542,31 @@ const Sprints = () => {
 
                                             {sprint.status ===
                                                 "PLANNED" && (
-                                                <button
-                                                    className="primary-btn small-btn"
-                                                    onClick={() =>
-                                                        handleStartSprint(
-                                                            sprint.id
-                                                        )
-                                                    }
-                                                >
-                                                    <FaPlay />
-                                                </button>
-                                            )}
+                                                    <button
+                                                        className="primary-btn small-btn"
+                                                        onClick={() =>
+                                                            handleStartSprint(
+                                                                sprint.id
+                                                            )
+                                                        }
+                                                    >
+                                                        <FaPlay />
+                                                    </button>
+                                                )}
 
                                             {sprint.status ===
                                                 "ACTIVE" && (
-                                                <button
-                                                    className="primary-btn small-btn"
-                                                    onClick={() =>
-                                                        handleCompleteSprint(
-                                                            sprint.id
-                                                        )
-                                                    }
-                                                >
-                                                    <FaCheck />
-                                                </button>
-                                            )}
+                                                    <button
+                                                        className="primary-btn small-btn"
+                                                        onClick={() =>
+                                                            handleCompleteSprint(
+                                                                sprint.id
+                                                            )
+                                                        }
+                                                    >
+                                                        <FaCheck />
+                                                    </button>
+                                                )}
                                         </td>
                                     </tr>
                                 );
@@ -542,6 +575,7 @@ const Sprints = () => {
                     </tbody>
                 </table>
             )}
+
 
             {showCreateModal && (
                 <div className="modal-overlay">
@@ -619,7 +653,7 @@ const Sprints = () => {
                         </div>
                     </div>
                 )}
-                            {showDetailsModal &&
+            {showDetailsModal &&
                 selectedSprint && (
                     <div className="modal-overlay">
                         <div className="modal large-modal">
@@ -646,24 +680,24 @@ const Sprints = () => {
                                 </button>
                             </div>
 
-                            <div className="project-details">
+                            <div className="sprint-details-grid">
 
-                                <div className="detail-item">
-                                    <span className="detail-label">
+                                <div className="sprint-detail-item">
+                                    <span className="sprint-detail-label">
                                         Sprint Name
                                     </span>
 
-                                    <span className="detail-value">
+                                    <span className="sprint-detail-value">
                                         {selectedSprint.name}
                                     </span>
                                 </div>
 
-                                <div className="detail-item">
-                                    <span className="detail-label">
+                                <div className="sprint-detail-item">
+                                    <span className="sprint-detail-label">
                                         Project
                                     </span>
 
-                                    <span className="detail-value">
+                                    <span className="sprint-detail-value">
                                         {projects.find(
                                             (
                                                 project
@@ -675,12 +709,12 @@ const Sprints = () => {
                                     </span>
                                 </div>
 
-                                <div className="detail-item">
-                                    <span className="detail-label">
+                                <div className="sprint-detail-item">
+                                    <span className="sprint-detail-label">
                                         Status
                                     </span>
 
-                                    <span className="detail-value">
+                                    <span className="sprint-detail-value">
                                         <span
                                             className={`status-badge status-${selectedSprint.status.toLowerCase()}`}
                                         >
@@ -691,36 +725,36 @@ const Sprints = () => {
                                     </span>
                                 </div>
 
-                                <div className="detail-item">
-                                    <span className="detail-label">
+                               <div className="sprint-detail-item">
+                                    <span className="sprint-detail-label">
                                         Start Date
                                     </span>
 
-                                    <span className="detail-value">
+                                    <span className="sprint-detail-value">
                                         {new Date(
                                             selectedSprint.start_date
                                         ).toLocaleString()}
                                     </span>
                                 </div>
 
-                                <div className="detail-item">
-                                    <span className="detail-label">
+                                <div className="sprint-detail-item">
+                                    <span className="sprint-detail-label">
                                         End Date
                                     </span>
 
-                                    <span className="detail-value">
+                                    <span className="sprint-detail-value">
                                         {new Date(
                                             selectedSprint.end_date
                                         ).toLocaleString()}
                                     </span>
                                 </div>
 
-                                <div className="detail-item">
-                                    <span className="detail-label">
+                                <div className="sprint-detail-item">
+                                    <span className="sprint-detail-label">
                                         Created By
                                     </span>
 
-                                    <span className="detail-value">
+                                    <span className="sprint-detail-value">
                                         {
                                             selectedSprint.created_by
                                         }
@@ -734,39 +768,39 @@ const Sprints = () => {
 
                                 {selectedSprint.status ===
                                     "PLANNED" && (
-                                    <button
-                                        className="primary-btn"
-                                        onClick={() =>
-                                            handleStartSprint(
-                                                selectedSprint.id
-                                            )
-                                        }
-                                    >
-                                        <FaPlay />
+                                        <button
+                                            className="primary-btn"
+                                            onClick={() =>
+                                                handleStartSprint(
+                                                    selectedSprint.id
+                                                )
+                                            }
+                                        >
+                                            <FaPlay />
 
-                                        <span>
-                                            Start Sprint
-                                        </span>
-                                    </button>
-                                )}
+                                            <span>
+                                                Start Sprint
+                                            </span>
+                                        </button>
+                                    )}
 
                                 {selectedSprint.status ===
                                     "ACTIVE" && (
-                                    <button
-                                        className="primary-btn"
-                                        onClick={() =>
-                                            handleCompleteSprint(
-                                                selectedSprint.id
-                                            )
-                                        }
-                                    >
-                                        <FaCheck />
+                                        <button
+                                            className="primary-btn"
+                                            onClick={() =>
+                                                handleCompleteSprint(
+                                                    selectedSprint.id
+                                                )
+                                            }
+                                        >
+                                            <FaCheck />
 
-                                        <span>
-                                            Complete Sprint
-                                        </span>
-                                    </button>
-                                )}
+                                            <span>
+                                                Complete Sprint
+                                            </span>
+                                        </button>
+                                    )}
 
                             </div>
 
@@ -775,7 +809,7 @@ const Sprints = () => {
                             <h3>Add Issue</h3>
 
                             <div className="toolbar">
-                            
+
                                 <select
                                     value={issueId}
                                     onChange={(e) =>
@@ -789,7 +823,7 @@ const Sprints = () => {
                                             ? "No Available Issues"
                                             : "Select Issue"}
                                     </option>
-                            
+
                                     {availableIssues.map(
                                         (issue) => (
                                             <option
@@ -801,7 +835,7 @@ const Sprints = () => {
                                         )
                                     )}
                                 </select>
-                            
+
                                 <button
                                     className="primary-btn"
                                     onClick={handleAddIssue}
@@ -809,7 +843,7 @@ const Sprints = () => {
                                 >
                                     Add Issue
                                 </button>
-                            
+
                             </div>
 
                             <hr />
@@ -821,7 +855,7 @@ const Sprints = () => {
                             {selectedSprint
                                 .issue_ids
                                 ?.length ===
-                            0 ? (
+                                0 ? (
                                 <div className="empty-state">
                                     No Issues
                                     Added
@@ -830,66 +864,66 @@ const Sprints = () => {
                                 <table className="issue-table">
 
                                     <thead>
-                                
+
                                         <tr>
-                                
+
                                             <th>Title</th>
-                                
+
                                             <th>Status</th>
-                                
+
                                             <th>Priority</th>
-                                
+
                                             <th>Action</th>
-                                
+
                                         </tr>
-                                
+
                                     </thead>
-                                
+
                                     <tbody>
-                                
+
                                         {selectedSprint.issue_ids.map(
                                             (issueId) => {
-                                
+
                                                 const issue =
                                                     issues.find(
                                                         (i) =>
                                                             i.id === issueId
                                                     );
-                                
+
                                                 if (!issue) {
                                                     return null;
                                                 }
-                                
+
                                                 return (
-                                
+
                                                     <tr key={issue.id}>
-                                
+
                                                         <td>
                                                             {issue.title}
                                                         </td>
-                                
+
                                                         <td>
-                                
+
                                                             <span
                                                                 className={`status-badge status-${issue.status.toLowerCase()}`}
                                                             >
                                                                 {issue.status}
                                                             </span>
-                                
+
                                                         </td>
-                                
+
                                                         <td>
-                                
+
                                                             <span
                                                                 className={`priority-badge priority-${issue.priority.toLowerCase()}`}
                                                             >
                                                                 {issue.priority}
                                                             </span>
-                                
+
                                                         </td>
-                                
+
                                                         <td>
-                                
+
                                                             <button
                                                                 className="primary-btn small-btn"
                                                                 onClick={() =>
@@ -900,20 +934,27 @@ const Sprints = () => {
                                                             >
                                                                 Remove
                                                             </button>
-                                
+
                                                         </td>
-                                
+
                                                     </tr>
-                                
+
                                                 );
-                                
+
                                             }
                                         )}
-                                
+
                                     </tbody>
 
-                            </table>
+                                </table>
+
                             )}
+                            <Pagination
+                                currentPage={currentPage}
+                                totalPages={totalPages}
+                                onPrevious={handlePreviousPage}
+                                onNext={handleNextPage}
+                            />
                         </div>
                     </div>
                 )}
