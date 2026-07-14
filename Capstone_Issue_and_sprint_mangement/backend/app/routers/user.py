@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, status
-from fastapi.security import OAuth2PasswordRequestForm 
+from fastapi.security import OAuth2PasswordRequestForm
 
 from app.auth.authentication import get_current_user
 
@@ -44,6 +44,7 @@ def login(login_data: OAuth2PasswordRequestForm = Depends()) -> Token:
     """
     return login_user(login_data)
 
+
 @router.get("/me")
 def get_profile(
     current_user=Depends(get_current_user),
@@ -58,14 +59,13 @@ def get_profile(
         "role": current_user["role"],
     }
 
+
 @router.get(
     "",
     response_model=list[UserResponse],
 )
 def get_users(
-    _=Depends(
-        get_current_user
-    ),
+    _=Depends(get_current_user),
 ):
     """
     Retrieve all users.
