@@ -1,7 +1,12 @@
+import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
+
+import projectService from "../../services/projectService";
 
 function IssueForm({
     projects = [],
+    users = [],
+    issues = [],
     defaultValues = {
         projectId: "",
         title: "",
@@ -18,12 +23,104 @@ function IssueForm({
     const {
         register,
         handleSubmit,
+        watch,
+        resetField,
         formState: { errors },
     } = useForm({
         defaultValues,
     });
 
-    return (
+    const selectedProject =
+        watch("projectId");
+
+    const [projectMembers, setProjectMembers] =
+        useState([]);
+
+    const filteredParentIssues =
+        useMemo(() => {
+
+            if (!selectedProject) {
+                return [];
+            }
+
+            return issues.filter(
+                (issue) =>
+                    issue.project_id ===
+                    selectedProject
+            );
+
+        }, [
+            issues,
+            selectedProject,
+        ]);
+
+    useEffect(() => {
+
+        const loadMembers =
+            async () => {
+
+                if (!selectedProject) {
+
+                    setProjectMembers([]);
+
+                    resetField(
+                        "assignee_id"
+                    );
+
+                    resetField(
+                        "parent_id"
+                    );
+
+                    return;
+                }
+
+                try {
+
+                    const project =
+                        await projectService.getProjectById(
+                            selectedProject
+                        );
+
+                    const members =
+                        users.filter(
+                            (user) =>
+                                project.members.includes(
+                                    user.id
+                                )
+                        );
+
+                    setProjectMembers(
+                        members
+                    );
+
+                    resetField(
+                        "assignee_id"
+                    );
+
+                    resetField(
+                        "parent_id"
+                    );
+
+                } catch (error) {
+
+                    console.error(
+                        error
+                    );
+
+                    setProjectMembers(
+                        []
+                    );
+                }
+            };
+
+        loadMembers();
+
+    }, [
+        selectedProject,
+        users,
+        resetField,
+    ]);
+        return (
         <form
             className="project-form"
             onSubmit={handleSubmit(onSubmit)}
@@ -33,7 +130,8 @@ function IssueForm({
 
                 <select
                     {...register("projectId", {
-                        required: "Project is required",
+                        required:
+                            "Project is required",
                     })}
                 >
                     <option value="">
@@ -64,7 +162,8 @@ function IssueForm({
                     type="text"
                     placeholder="Enter issue title"
                     {...register("title", {
-                        required: "Title is required",
+                        required:
+                            "Title is required",
                     })}
                 />
 
@@ -81,15 +180,21 @@ function IssueForm({
                 <textarea
                     rows="5"
                     placeholder="Enter issue description"
-                    {...register("description", {
-                        required:
-                            "Description is required",
-                    })}
+                    {...register(
+                        "description",
+                        {
+                            required:
+                                "Description is required",
+                        }
+                    )}
                 />
 
                 {errors.description && (
                     <p className="form-error">
-                        {errors.description.message}
+                        {
+                            errors.description
+                                .message
+                        }
                     </p>
                 )}
             </div>
@@ -135,28 +240,78 @@ function IssueForm({
             </div>
 
             <div className="form-group">
-                <label>Assignee ID (Optional)</label>
+                <label>Assignee</label>
 
-                <input
-                    type="text"
-                    placeholder="Enter Assignee ID"
-                    {...register("assignee_id")}
-                />
+                <select
+                    {...register(
+                        "assignee_id"
+                    )}
+                    disabled={
+                        !selectedProject
+                    }
+                >
+                    <option value="">
+                        Unassigned
+                    </option>
+
+                    {projectMembers.map(
+                        (member) => (
+                            <option
+                                key={
+                                    member.id
+                                }
+                                value={
+                                    member.id
+                                }
+                            >
+                                {
+                                    member.name
+                                }
+                            </option>
+                        )
+                    )}
+                </select>
             </div>
 
             <div className="form-group">
-                <label>Parent Issue ID (Optional)</label>
+                <label>
+                    Parent Issue
+                </label>
 
-                <input
-                    type="text"
-                    placeholder="Enter Parent Issue ID"
-                    {...register("parent_id")}
-                />
+                <select
+                    {...register(
+                        "parent_id"
+                    )}
+                    disabled={
+                        !selectedProject
+                    }
+                >
+                    <option value="">
+                        None
+                    </option>
+
+                    {filteredParentIssues.map(
+                        (issue) => (
+                            <option
+                                key={
+                                    issue.id
+                                }
+                                value={
+                                    issue.id
+                                }
+                            >
+                                {
+                                    issue.title
+                                }
+                            </option>
+                        )
+                    )}
+                </select>
             </div>
 
             <button
-                className="btn-primary"
                 type="submit"
+                className="btn-primary"
                 disabled={loading}
             >
                 {loading

@@ -8,9 +8,11 @@ import {
 import "./Issues.css";
 
 import IssueForm from "../../components/issues/IssueForm";
+import IssueDetails from "../../components/issues/IssueDetails";
 
 import issueService from "../../services/issueService";
 import projectService from "../../services/projectService";
+import userService from "../../services/userService";
 
 const STATUS_OPTIONS = [
     "ALL",
@@ -21,16 +23,28 @@ const STATUS_OPTIONS = [
 ];
 
 const Issues = () => {
-    const [issues, setIssues] = useState([]);
-    const [projects, setProjects] = useState([]);
+    const [issues, setIssues] =
+        useState([]);
 
-    const [selectedIssue, setSelectedIssue] =
-        useState(null);
+    const [projects, setProjects] =
+        useState([]);
+
+    const [users, setUsers] =
+        useState([]);
 
     const [loading, setLoading] =
         useState(true);
 
     const [saving, setSaving] =
+        useState(false);
+
+    const [selectedIssue, setSelectedIssue] =
+        useState(null);
+
+    const [showCreateModal, setShowCreateModal] =
+        useState(false);
+
+    const [showDetailsModal, setShowDetailsModal] =
         useState(false);
 
     const [searchTerm, setSearchTerm] =
@@ -39,11 +53,11 @@ const Issues = () => {
     const [statusFilter, setStatusFilter] =
         useState("ALL");
 
-    const [showCreateModal, setShowCreateModal] =
-        useState(false);
+    const [projectFilter, setProjectFilter] =
+        useState("ALL");
 
-    const [showDetailsModal, setShowDetailsModal] =
-        useState(false);
+    const [assigneeFilter, setAssigneeFilter] =
+        useState("ALL");
 
     const loadProjects = async () => {
         try {
@@ -54,7 +68,21 @@ const Issues = () => {
         } catch (error) {
             alert(
                 error?.response?.data?.detail ||
-                "Unable to load projects."
+                    "Unable to load projects."
+            );
+        }
+    };
+
+    const loadUsers = async () => {
+        try {
+            const response =
+                await userService.getAllUsers();
+
+            setUsers(response);
+        } catch (error) {
+            alert(
+                error?.response?.data?.detail ||
+                    "Unable to load users."
             );
         }
     };
@@ -70,7 +98,7 @@ const Issues = () => {
         } catch (error) {
             alert(
                 error?.response?.data?.detail ||
-                "Unable to load issues."
+                    "Unable to load issues."
             );
         } finally {
             setLoading(false);
@@ -79,38 +107,9 @@ const Issues = () => {
 
     useEffect(() => {
         loadProjects();
+        loadUsers();
         loadIssues();
     }, []);
-
-    const filteredIssues = useMemo(() => {
-        return issues.filter((issue) => {
-            const keyword =
-                searchTerm.toLowerCase();
-
-            const matchesSearch =
-                issue.title
-                    .toLowerCase()
-                    .includes(keyword) ||
-                issue.description
-                    .toLowerCase()
-                    .includes(keyword);
-
-            const matchesStatus =
-                statusFilter === "ALL"
-                    ? true
-                    : issue.status ===
-                    statusFilter;
-
-            return (
-                matchesSearch &&
-                matchesStatus
-            );
-        });
-    }, [
-        issues,
-        searchTerm,
-        statusFilter,
-    ]);
 
     const handleCreateIssue = async (
         formData
@@ -134,7 +133,7 @@ const Issues = () => {
         } catch (error) {
             alert(
                 error?.response?.data?.detail ||
-                "Unable to create issue."
+                    "Unable to create issue."
             );
         } finally {
             setSaving(false);
@@ -165,22 +164,55 @@ const Issues = () => {
 
                 if (
                     selectedIssue &&
-                    selectedIssue.id === issueId
+                    selectedIssue.id ===
+                        issueId
                 ) {
                     const updated =
                         await issueService.getIssueById(
                             issueId
                         );
 
-                    setSelectedIssue(updated);
+                    setSelectedIssue(
+                        updated
+                    );
                 }
             } catch (error) {
                 alert(
                     error?.response?.data?.detail ||
-                    "Unable to update status."
+                        "Unable to update status."
                 );
             }
         };
+
+    const getUserName = (
+        userId
+    ) => {
+        if (!userId) {
+            return "--";
+        }
+
+        const user = users.find(
+            (u) => u.id === userId
+        );
+
+        return user
+            ? user.name
+            : "--";
+    };
+
+    const getProjectName = (
+        projectId
+    ) => {
+        const project =
+            projects.find(
+                (p) =>
+                    p.id === projectId
+            );
+
+        return project
+            ? project.name
+            : "--";
+    };
 
     const getNextStatus = (
         status
@@ -199,32 +231,94 @@ const Issues = () => {
                 return null;
         }
     };
+        const filteredIssues = useMemo(() => {
+        return issues.filter((issue) => {
+            const keyword =
+                searchTerm
+                    .trim()
+                    .toLowerCase();
 
-    return (
+            const matchesSearch =
+                issue.title
+                    .toLowerCase()
+                    .includes(keyword) ||
+                issue.description
+                    .toLowerCase()
+                    .includes(keyword);
+
+            const matchesStatus =
+                statusFilter === "ALL"
+                    ? true
+                    : issue.status ===
+                      statusFilter;
+
+            const matchesProject =
+                projectFilter === "ALL"
+                    ? true
+                    : issue.project_id ===
+                      projectFilter;
+
+            const matchesAssignee =
+                assigneeFilter === "ALL"
+                    ? true
+                    : issue.assignee_id ===
+                      assigneeFilter;
+
+            return (
+                matchesSearch &&
+                matchesStatus &&
+                matchesProject &&
+                matchesAssignee
+            );
+        });
+    }, [
+        issues,
+        searchTerm,
+        statusFilter,
+        projectFilter,
+        assigneeFilter,
+    ]);
+
+    const projectOptions =
+        useMemo(() => {
+            return projects.map(
+                (project) => ({
+                    id: project.id,
+                    name: project.name,
+                })
+            );
+        }, [projects]);
+
+    const assigneeOptions =
+        useMemo(() => {
+            return users.map(
+                (user) => ({
+                    id: user.id,
+                    name: user.name,
+                })
+            );
+        }, [users]);
+            return (
         <main className="issues-page">
             <div className="issues-header">
                 <div>
                     <h1>Issues</h1>
 
                     <p>
-                        Track and manage
-                        project issues
+                        Track and manage project
+                        issues.
                     </p>
                 </div>
 
                 <button
                     className="primary-btn"
                     onClick={() =>
-                        setShowCreateModal(
-                            true
-                        )
+                        setShowCreateModal(true)
                     }
                 >
                     <FaPlus />
 
-                    <span>
-                        Create Issue
-                    </span>
+                    <span>Create Issue</span>
                 </button>
             </div>
 
@@ -236,7 +330,7 @@ const Issues = () => {
 
                     <input
                         type="text"
-                        placeholder="Search issue..."
+                        placeholder="Search issues..."
                         value={searchTerm}
                         onChange={(e) =>
                             setSearchTerm(
@@ -244,6 +338,7 @@ const Issues = () => {
                             )
                         }
                     />
+
                 </div>
 
                 <select
@@ -266,37 +361,100 @@ const Issues = () => {
                     )}
                 </select>
 
+                <select
+                    value={projectFilter}
+                    onChange={(e) =>
+                        setProjectFilter(
+                            e.target.value
+                        )
+                    }
+                >
+                    <option value="ALL">
+                        All Projects
+                    </option>
+
+                    {projectOptions.map(
+                        (project) => (
+                            <option
+                                key={project.id}
+                                value={
+                                    project.id
+                                }
+                            >
+                                {
+                                    project.name
+                                }
+                            </option>
+                        )
+                    )}
+                </select>
+
+                <select
+                    value={assigneeFilter}
+                    onChange={(e) =>
+                        setAssigneeFilter(
+                            e.target.value
+                        )
+                    }
+                >
+                    <option value="ALL">
+                        All Assignees
+                    </option>
+
+                    {assigneeOptions.map(
+                        (user) => (
+                            <option
+                                key={user.id}
+                                value={
+                                    user.id
+                                }
+                            >
+                                {user.name}
+                            </option>
+                        )
+                    )}
+                </select>
+
             </div>
-                        {loading ? (
+
+            {loading ? (
                 <div className="loading">
                     Loading Issues...
                 </div>
-            ) : filteredIssues.length === 0 ? (
+            ) : filteredIssues.length ===
+              0 ? (
                 <div className="empty-state">
                     No Issues Found
                 </div>
             ) : (
                 <table className="issue-table">
+
                     <thead>
+
                         <tr>
+
                             <th>Title</th>
+
                             <th>Project</th>
+
+                            <th>Type</th>
+
                             <th>Priority</th>
+
                             <th>Status</th>
+
                             <th>Assignee</th>
+
                             <th>Actions</th>
+
                         </tr>
+
                     </thead>
 
                     <tbody>
+
                         {filteredIssues.map(
                             (issue) => {
-                                const project =
-                                    projects.find(
-                                        (p) =>
-                                            p.id ===
-                                            issue.project_id
-                                    );
 
                                 const nextStatus =
                                     getNextStatus(
@@ -305,7 +463,9 @@ const Issues = () => {
 
                                 return (
                                     <tr
-                                        key={issue.id}
+                                        key={
+                                            issue.id
+                                        }
                                     >
                                         <td>
                                             {
@@ -314,12 +474,19 @@ const Issues = () => {
                                         </td>
 
                                         <td>
-                                            {project
-                                                ?.name ||
-                                                "N/A"}
+                                            {getProjectName(
+                                                issue.project_id
+                                            )}
                                         </td>
 
                                         <td>
+                                            {
+                                                issue.type
+                                            }
+                                        </td>
+
+                                        <td>
+
                                             <span
                                                 className={`priority-badge priority-${issue.priority.toLowerCase()}`}
                                             >
@@ -327,9 +494,11 @@ const Issues = () => {
                                                     issue.priority
                                                 }
                                             </span>
+
                                         </td>
 
                                         <td>
+
                                             <span
                                                 className={`status-badge status-${issue.status.toLowerCase()}`}
                                             >
@@ -337,11 +506,13 @@ const Issues = () => {
                                                     issue.status
                                                 }
                                             </span>
+
                                         </td>
 
                                         <td>
-                                            {issue.assignee_id ||
-                                                "--"}
+                                            {getUserName(
+                                                issue.assignee_id
+                                            )}
                                         </td>
 
                                         <td className="action-buttons">
@@ -374,49 +545,42 @@ const Issues = () => {
                                                     }
                                                 </button>
                                             )}
+
                                         </td>
+
                                     </tr>
                                 );
                             }
                         )}
+
                     </tbody>
+
                 </table>
             )}
-
-            {showCreateModal && (
+                        {showCreateModal && (
                 <div className="modal-overlay">
                     <div className="modal">
 
                         <div className="modal-header">
-
-                            <h2>
-                                Create Issue
-                            </h2>
+                            <h2>Create Issue</h2>
 
                             <button
                                 className="close-btn"
                                 onClick={() =>
-                                    setShowCreateModal(
-                                        false
-                                    )
+                                    setShowCreateModal(false)
                                 }
                             >
                                 ×
                             </button>
-
                         </div>
 
                         <IssueForm
-                            projects={
-                                projects
-                            }
+                            projects={projects}
+                            users={users}
+                            issues={issues}
                             submitButtonText="Create Issue"
-                            onSubmit={
-                                handleCreateIssue
-                            }
-                            loading={
-                                saving
-                            }
+                            onSubmit={handleCreateIssue}
+                            loading={saving}
                         />
 
                     </div>
@@ -425,173 +589,21 @@ const Issues = () => {
 
             {showDetailsModal &&
                 selectedIssue && (
-                    <div className="modal-overlay">
-
-                        <div className="modal">
-
-                            <div className="modal-header">
-
-                                <h2>
-                                    Issue Details
-                                </h2>
-
-                                <button
-                                    className="close-btn"
-                                    onClick={() => {
-                                        setShowDetailsModal(
-                                            false
-                                        );
-
-                                        setSelectedIssue(
-                                            null
-                                        );
-                                    }}
-                                >
-                                    ×
-                                </button>
-
-                            </div>
-
-                            <div className="issue-details">
-
-                                <div className="detail-item">
-                                    <span className="detail-label">
-                                        Title
-                                    </span>
-
-                                    <span className="detail-value">
-                                        {
-                                            selectedIssue.title
-                                        }
-                                    </span>
-                                </div>
-
-                                <div className="detail-item">
-                                    <span className="detail-label">
-                                        Description
-                                    </span>
-
-                                    <span className="detail-value">
-                                        {
-                                            selectedIssue.description
-                                        }
-                                    </span>
-                                </div>
-
-                                <div className="detail-item">
-                                    <span className="detail-label">
-                                        Project
-                                    </span>
-
-                                    <span className="detail-value">
-                                        {
-                                            projects.find(
-                                                (project) =>
-                                                    project.id ===
-                                                    selectedIssue.project_id
-                                            )?.name || "N/A"
-                                        }
-                                    </span>
-                                </div>
-
-                                <div className="detail-item">
-                                    <span className="detail-label">
-                                        Reporter
-                                    </span>
-
-                                    <span className="detail-value">
-                                        {
-                                            selectedIssue.reporter_id
-                                        }
-                                    </span>
-                                </div>
-
-                                <div className="detail-item">
-                                    <span className="detail-label">
-                                        Assignee
-                                    </span>
-
-                                    <span className="detail-value">
-                                        {selectedIssue.assignee_id ||
-                                            "--"}
-                                    </span>
-                                </div>
-
-                                <div className="detail-item">
-                                    <span className="detail-label">
-                                        Type
-                                    </span>
-
-                                    <span className="detail-value">
-                                        {
-                                            selectedIssue.type
-                                        }
-                                    </span>
-                                </div>
-
-                                <div className="detail-item">
-                                    <span className="detail-label">
-                                        Priority
-                                    </span>
-
-                                    <span className="detail-value">
-                                        {
-                                            selectedIssue.priority
-                                        }
-                                    </span>
-                                </div>
-
-                                <div className="detail-item">
-                                    <span className="detail-label">
-                                        Status
-                                    </span>
-
-                                    <span className="detail-value">
-                                        {
-                                            selectedIssue.status
-                                        }
-                                    </span>
-                                </div>
-
-                                <div className="detail-item">
-                                    <span className="detail-label">
-                                        Parent Issue
-                                    </span>
-
-                                    <span className="detail-value">
-                                        {selectedIssue.parent_id ||
-                                            "--"}
-                                    </span>
-                                </div>
-                                                            </div>
-
-                            <div className="modal-footer">
-                                {getNextStatus(
-                                    selectedIssue.status
-                                ) && (
-                                    <button
-                                        className="primary-btn"
-                                        onClick={() =>
-                                            handleStatusUpdate(
-                                                selectedIssue.id,
-                                                selectedIssue.project_id,
-                                                getNextStatus(
-                                                    selectedIssue.status
-                                                )
-                                            )
-                                        }
-                                    >
-                                        Move to{" "}
-                                        {getNextStatus(
-                                            selectedIssue.status
-                                        )}
-                                    </button>
-                                )}
-                            </div>
-
-                        </div>
-                    </div>
+                    <IssueDetails
+                        issue={selectedIssue}
+                        users={users}
+                        projects={projects}
+                        issues={issues}
+                        onClose={() => {
+                            setShowDetailsModal(false);
+                            setSelectedIssue(null);
+                        }}
+                        onStatusUpdate={
+                            handleStatusUpdate
+                        }
+                    />
                 )}
+
         </main>
     );
 };
