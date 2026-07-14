@@ -18,8 +18,7 @@ import Dashboard from "../pages/Dashboard/Dashboard";
 import Projects from "../pages/Projects/Projects";
 import Issues from "../pages/Issues/Issues";
 import Sprints from "../pages/Sprints/Sprints";
-
-import NotFound from "../pages/NotFound/NotFound";
+import Profile from "../pages/Profile/profile";
 
 function GuestRoute({ children }) {
     const { isAuthenticated } = useAuth();
@@ -97,13 +96,13 @@ function AppRoutes() {
                         element={<Sprints />}
                     />
 
+               
+
+                    <Route
+                        path="/profile"
+                        element={<Profile />}
+                    />
                 </Route>
-
-                <Route
-                    path="*"
-                    element={<NotFound />}
-                />
-
             </Routes>
         </BrowserRouter>
     );

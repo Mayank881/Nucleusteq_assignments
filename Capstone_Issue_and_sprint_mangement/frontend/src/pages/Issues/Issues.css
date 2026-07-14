@@ -7,6 +7,10 @@
     box-sizing: border-box;
 }
 
+/* ===========================
+   Header
+=========================== */
+
 .issues-header {
     display: flex;
     justify-content: space-between;
@@ -27,35 +31,67 @@
     font-size: 15px;
 }
 
+/* ===========================
+   Toolbar
+=========================== */
+
 .toolbar {
     display: flex;
-    justify-content: space-between;
     align-items: center;
     gap: 18px;
     flex-wrap: wrap;
 }
+
+.search-container {
+    position: relative;
+    flex: 1;
+    min-width: 260px;
+    max-width: 380px;
+}
+
+.search-container input {
+    width: 100%;
+    padding: 12px 14px 12px 52px;
+    
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    outline: none;
+    font-size: 14px;
+    box-sizing: border-box;
+    background: white;
+}
+
+.search-container input:focus {
+    border-color: #2563eb;
+}
+
+
 
 .toolbar select {
     min-width: 180px;
     padding: 12px;
     border: 1px solid #d1d5db;
     border-radius: 8px;
+    background: white;
     outline: none;
     font-size: 14px;
-    background: #ffffff;
 }
 
 .toolbar select:focus {
     border-color: #2563eb;
 }
 
+/* ===========================
+   Table
+=========================== */
+
 .issue-table {
     width: 100%;
     border-collapse: collapse;
-    background: #ffffff;
-    border-radius: 10px;
+    background: white;
+    border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
 }
 
 .issue-table thead {
@@ -75,143 +111,22 @@
 }
 
 .issue-table td {
-    font-size: 14px;
     color: #4b5563;
+    font-size: 14px;
     vertical-align: middle;
 }
 
-.priority-badge,
-.status-badge {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 95px;
-    padding: 6px 12px;
-    border-radius: 50px;
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.4px;
-    text-transform: uppercase;
-}
-
-/* Priority */
-
-.priority-low {
-    background: #dcfce7;
-    color: #15803d;
-}
-
-.priority-medium {
-    background: #fef3c7;
-    color: #b45309;
-}
-
-.priority-high {
-    background: #fee2e2;
-    color: #dc2626;
-}
-
-/* Status */
-
-.status-backlog {
-    background: #e0f2fe;
-    color: #0369a1;
-}
-
-.status-todo {
-    background: #ede9fe;
-    color: #6d28d9;
-}
-
-.status-in_progress {
-    background: #fef3c7;
-    color: #b45309;
-}
-
-.status-done {
-    background: #dcfce7;
-    color: #15803d;
-}
-
-.small-btn {
-    padding: 8px 14px;
-    font-size: 13px;
-    margin-left: 10px;
-}
-
-.issue-details {
-    display: flex;
-    flex-direction: column;
-    gap: 18px;
-}
-
-.modal-footer {
-    margin-top: 20px;
-    padding-top: 20px;
-    border-top: 1px solid #e5e7eb;
-    display: flex;
-    justify-content: flex-end;
-    flex-shrink: 0;
-}
-.modal {
-    width: 95%;
-    max-width: 760px;
-    max-height: 90vh;
-    background: #ffffff;
-    border-radius: 12px;
-    padding: 24px;
-    display: flex;
-    flex-direction: column;
-    overflow-y: auto;
-    animation: fadeIn 0.25s ease;
-}
-.issue-details-modal {
-    max-height: 90vh;
-    overflow-y: auto;
-}
-
-.issue-details-modal::-webkit-scrollbar {
-    width: 8px;
-}
-
-.issue-details-modal::-webkit-scrollbar-thumb {
-    background: #cbd5e1;
-    border-radius: 20px;
-}
-.project-form {
-    overflow-y: auto;
-    padding-right: 6px;
-    max-height: calc(90vh - 120px);
-}
-
-.project-form::-webkit-scrollbar {
-    width: 8px;
-}
-
-.project-form::-webkit-scrollbar-thumb {
-    background: #cbd5e1;
-    border-radius: 20px;
-}
-
-.project-form select {
-    padding: 12px;
-    border: 1px solid #d1d5db;
-    border-radius: 8px;
-    outline: none;
-    font-size: 14px;
-    background: #ffffff;
-}
-
-.project-form select:focus {
-    border-color: #2563eb;
-}
 .issue-table tbody tr {
-    transition: background-color 0.25s ease;
+    transition: background .2s ease;
 }
 
 .issue-table tbody tr:hover {
     background: #f9fafb;
 }
+
+/* ===========================
+   Action Buttons
+=========================== */
 
 .action-buttons {
     display: flex;
@@ -225,12 +140,12 @@
     height: 36px;
     border: none;
     border-radius: 8px;
-    cursor: pointer;
-    color: #ffffff;
+    color: white;
     display: flex;
     justify-content: center;
     align-items: center;
-    transition: 0.25s ease;
+    cursor: pointer;
+    transition: .2s;
 }
 
 .icon-btn:hover {
@@ -245,15 +160,106 @@
     background: #059669;
 }
 
-.loading,
-.empty-state {
-    background: #ffffff;
-    padding: 40px;
-    border-radius: 10px;
-    text-align: center;
-    color: #6b7280;
-    font-size: 18px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+.small-btn {
+    padding: 8px 14px;
+    font-size: 13px;
+}
+
+/* ===========================
+   Modal Overlay
+=========================== */
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+
+    background: rgba(0,0,0,.5);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    padding: 24px;
+
+    z-index: 9999;
+
+    overflow-y: auto;
+}
+
+/* ===========================
+   Modal
+=========================== */
+
+.modal {
+    width: 95%;
+    max-width: 760px;
+    max-height: 90vh;
+
+    background: #fff;
+    border-radius: 12px;
+
+    display: flex;
+    flex-direction: column;
+
+    overflow: hidden;
+}
+.modal-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px;
+}
+
+.modal-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 20px;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 24px;
+
+    border-bottom: 1px solid #e5e7eb;
+
+    flex-shrink: 0;
+}
+
+.modal-header h2 {
+    margin: 0;
+}
+
+.close-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 28px;
+}
+
+/* ========================= Issue Details ======================== */
+
+.issue-details-modal {
+    display: flex;
+    flex-direction: column;
+    max-height: 90vh;
+}
+.issue-details {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+.issue-details::-webkit-scrollbar {
+    width: 8px;
+}
+
+.issue-details::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 20px;
 }
 
 .detail-item {
@@ -261,36 +267,201 @@
     justify-content: space-between;
     align-items: flex-start;
     gap: 24px;
-    padding-bottom: 12px;
+    padding-bottom: 14px;
     border-bottom: 1px solid #e5e7eb;
 }
 
 .detail-label {
+    min-width: 150px;
     font-weight: 600;
     color: #374151;
-    min-width: 150px;
 }
 
 .detail-value {
     flex: 1;
+    text-align: right;
     color: #6b7280;
     word-break: break-word;
-    text-align: right;
 }
 
-.modal-header {
+/* ========================= Modal Footer ======================== */
+
+.modal-footer {
     flex-shrink: 0;
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 20px 24px;
+    border-top: 1px solid #e5e7eb;
+    background: #ffffff;
+}
+
+/* ========================= Comment Section ======================== */
+
+.comment-section {
+    flex-shrink: 0;
+    padding: 24px;
+    border-top: 1px solid #e5e7eb;
+    background: #ffffff;
+}
+
+.comment-section h3 {
+    margin: 0 0 18px;
+    color: #111827;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+/* ========================= Comment Form ======================== */
+
+.comment-form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 24px;
+}
+
+.comment-form textarea {
+    width: 100%;
+    min-height: 100px;
+    resize: vertical;
+    padding: 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    outline: none;
+    font-size: 14px;
+    box-sizing: border-box;
+    transition: border-color .2s ease;
+}
+
+.comment-form textarea:focus {
+    border-color: #2563eb;
+}
+
+/* ========================= Comment List ======================== */
+
+.comment-card {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 16px;
+    margin-bottom: 16px;
+}
+
+.comment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.comment-header strong {
+    color: #111827;
+}
+
+.comment-header small {
+    color: #6b7280;
+}
+
+.comment-card p {
+    margin: 10px 0;
+    color: #374151;
+    line-height: 1.6;
+}
+
+.comment-card textarea {
+    width: 100%;
+    min-height: 90px;
+    resize: vertical;
+    padding: 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    margin-top: 10px;
+    box-sizing: border-box;
+}
+
+.comment-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 14px;
+}
+
+.secondary-btn,
+.danger-btn {
+    padding: 10px 16px;
+    border: none;
+    border-radius: 8px;
+    color: #ffffff;
+    cursor: pointer;
+    transition: .2s ease;
+}
+
+.secondary-btn {
+    background: #6b7280;
+}
+
+.secondary-btn:hover {
+    background: #4b5563;
+}
+
+.danger-btn {
+    background: #dc2626;
+}
+
+.danger-btn:hover {
+    background: #b91c1c;
 }
 
 
-.primary-btn:disabled {
+/* ========================= States ======================== */
+
+.loading,
+.empty-state {
+    background: #ffffff;
+    padding: 40px;
+    border-radius: 12px;
+    text-align: center;
+    color: #6b7280;
+    font-size: 18px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+}
+
+/* ========================= Buttons ======================== */
+
+.primary-btn:disabled,
+.secondary-btn:disabled,
+.danger-btn:disabled {
     opacity: 0.6;
     cursor: not-allowed;
 }
 
-.primary-btn:disabled:hover {
-    background: #2563eb;
+.primary-btn:disabled:hover,
+.secondary-btn:disabled:hover,
+.danger-btn:disabled:hover {
+    transform: none;
 }
+
+/* ========================= Scrollbars ======================== */
+
+.project-form {
+    overflow-y: auto;
+    padding-right: 6px;
+    max-height: calc(90vh - 120px);
+}
+
+.project-form::-webkit-scrollbar,
+.issue-details::-webkit-scrollbar {
+    width: 8px;
+}
+
+.project-form::-webkit-scrollbar-thumb,
+.issue-details::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 20px;
+}
+
+/* ========================= Animation ======================== */
 
 @keyframes fadeIn {
     from {
@@ -304,6 +475,8 @@
     }
 }
 
+/* ========================= Tablet ======================== */
+
 @media (max-width: 992px) {
 
     .toolbar {
@@ -311,14 +484,21 @@
         align-items: stretch;
     }
 
-    .toolbar .search-container {
+    .search-container {
         max-width: 100%;
     }
 
     .toolbar select {
         width: 100%;
     }
+
+    .modal {
+        width: 95%;
+        max-width: 95%;
+    }
 }
+
+/* ========================= Mobile ======================== */
 
 @media (max-width: 768px) {
 
@@ -346,29 +526,53 @@
         gap: 8px;
     }
 
+    .detail-label {
+        min-width: auto;
+    }
+
     .detail-value {
         text-align: left;
     }
 
-    .modal {
-        width: 95%;
-        max-height: 95vh;
-        padding: 20px;
+    .modal-overlay {
+        padding: 12px;
+        align-items: flex-start;
     }
 
-    .project-form {
-        max-height: calc(95vh - 120px);
+    .modal {
+        width: 100%;
+        max-height: 95vh;
+    }
+
+    .modal-header,
+    .issue-details,
+    .comment-section,
+    .modal-footer {
+        padding: 16px;
     }
 
     .modal-footer {
         justify-content: center;
     }
 
+    .comment-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+    }
+
+    .comment-actions {
+        width: 100%;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+    }
+
     .small-btn {
-        margin-left: 0;
-        margin-top: 8px;
+        margin: 0;
     }
 }
+
+/* ========================= Small Mobile ======================== */
 
 @media (max-width: 576px) {
 
@@ -385,110 +589,18 @@
         padding: 5px 10px;
     }
 
-    .modal {
-        padding: 16px;
-    }
-
     .modal-header h2 {
         font-size: 20px;
     }
 
-    .detail-label {
-        min-width: auto;
+    .comment-form textarea,
+    .comment-card textarea {
+        min-height: 80px;
     }
-}
 
-.comment-section {
-    margin-top: 24px;
-}
-
-.comment-section h3 {
-    margin-bottom: 18px;
-    color: #1f2937;
-}
-
-.comment-form {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin-bottom: 24px;
-}
-
-.comment-form textarea {
-    width: 100%;
-    min-height: 90px;
-    resize: vertical;
-    padding: 12px;
-    border: 1px solid #d1d5db;
-    border-radius: 8px;
-    font-size: 14px;
-    outline: none;
-    box-sizing: border-box;
-}
-
-.comment-form textarea:focus {
-    border-color: #2563eb;
-}
-
-.comment-card {
-    background: #f9fafb;
-    border: 1px solid #e5e7eb;
-    border-radius: 10px;
-    padding: 16px;
-    margin-bottom: 16px;
-}
-
-.comment-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
-}
-
-.comment-header strong {
-    color: #111827;
-}
-
-.comment-header small {
-    color: #6b7280;
-}
-
-.comment-card p {
-    margin: 12px 0;
-    line-height: 1.6;
-}
-
-.comment-actions {
-    display: flex;
-    gap: 10px;
-    margin-top: 12px;
-}
-
-.search-container {
-    position: relative;
-    flex: 1;
-    max-width: 350px;
-}
-
-.search-container input {
-    width: 100%;
-    padding: 12px 14px 12px 42px;
-    border: 1px solid #d1d5db;
-    border-radius: 8px;
-    outline: none;
-    font-size: 14px;
-    box-sizing: border-box;
-}
-
-.search-container input:focus {
-    border-color: #2563eb;
-}
-
-.search-icon {
-    position: absolute;
-    top: 50%;
-    left: 14px;
-    transform: translateY(-50%);
-    color: #9ca3af;
-    pointer-events: none;
+    .secondary-btn,
+    .danger-btn,
+    .primary-btn {
+        width: 100%;
+    }
 }

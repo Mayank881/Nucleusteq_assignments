@@ -12,7 +12,9 @@ function IssueDetails({
     issues,
     onClose,
     onStatusUpdate,
-}) {
+})
+
+ {
     const [comments, setComments] =
         useState([]);
 
@@ -138,19 +140,21 @@ function IssueDetails({
         return null;
     }
         return (
-        <div className="modal-overlay">
-            <div className="modal issue-details-modal">
+    <div className="modal-overlay">
+        <div className="modal issue-details-modal">
 
-                <div className="modal-header">
-                    <h2>Issue Details</h2>
+            <div className="modal-header">
+                <h2>Issue Details</h2>
 
-                    <button
-                        className="close-btn"
-                        onClick={onClose}
-                    >
-                        ×
-                    </button>
-                </div>
+                <button
+                    className="close-btn"
+                    onClick={onClose}
+                >
+                    ×
+                </button>
+            </div>
+
+            <div className="modal-content">
 
                 <div className="issue-details">
 
@@ -180,9 +184,7 @@ function IssueDetails({
                         </span>
 
                         <span className="detail-value">
-                            {getProjectName(
-                                issue.project_id
-                            )}
+                            {getProjectName(issue.project_id)}
                         </span>
                     </div>
 
@@ -192,9 +194,7 @@ function IssueDetails({
                         </span>
 
                         <span className="detail-value">
-                            {getUserName(
-                                issue.reporter_id
-                            )}
+                            {getUserName(issue.reporter_id)}
                         </span>
                     </div>
 
@@ -204,9 +204,7 @@ function IssueDetails({
                         </span>
 
                         <span className="detail-value">
-                            {getUserName(
-                                issue.assignee_id
-                            )}
+                            {getUserName(issue.assignee_id)}
                         </span>
                     </div>
 
@@ -216,9 +214,7 @@ function IssueDetails({
                         </span>
 
                         <span className="detail-value">
-                            {getIssueTitle(
-                                issue.parent_id
-                            )}
+                            {getIssueTitle(issue.parent_id)}
                         </span>
                     </div>
 
@@ -258,25 +254,18 @@ function IssueDetails({
 
                 <div className="modal-footer">
 
-                    {getNextStatus(
-                        issue.status
-                    ) && (
+                    {getNextStatus(issue.status) && (
                         <button
                             className="primary-btn"
                             onClick={() =>
                                 onStatusUpdate(
                                     issue.id,
                                     issue.project_id,
-                                    getNextStatus(
-                                        issue.status
-                                    )
+                                    getNextStatus(issue.status)
                                 )
                             }
                         >
-                            Move to{" "}
-                            {getNextStatus(
-                                issue.status
-                            )}
+                            Move to {getNextStatus(issue.status)}
                         </button>
                     )}
 
@@ -294,8 +283,10 @@ function IssueDetails({
                 />
 
             </div>
+
         </div>
-    );
+    </div>
+);
 }
 
 export default IssueDetails;
