@@ -274,8 +274,7 @@ Airflow REST API, not the UI's Trigger DAG button.
   }
   ```
 
-Take a screenshot of both the request you sent and the response you
-received, and save it as described below.
+
 
 ---
 
