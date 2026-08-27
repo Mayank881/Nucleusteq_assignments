@@ -1,0 +1,74 @@
+.profile-page {
+    width: 100%;
+    padding: 24px;
+    box-sizing: border-box;
+}
+
+.profile-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 6px;
+}
+
+.profile-subtitle {
+    color: #6b7280;
+    margin-bottom: 32px;
+    font-size: 15px;
+}
+
+.profile-card {
+    max-width: 650px;
+    margin: 0 auto;
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 40px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+}
+
+.profile-avatar {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    background: #2563eb;
+    color: white;
+    font-size: 36px;
+    font-weight: 700;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto 30px;
+}
+
+.profile-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 0;
+    border-bottom: 1px solid #ececec;
+}
+
+.profile-row:last-child {
+    border-bottom: none;
+}
+
+.label {
+    font-weight: 600;
+    color: #6b7280;
+    font-size: 16px;
+}
+
+.value {
+    font-size: 16px;
+    font-weight: 600;
+    color: #111827;
+}
+
+.role {
+    background: #2563eb;
+    color: white;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 14px;
+}
