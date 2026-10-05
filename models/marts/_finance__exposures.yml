@@ -1,0 +1,19 @@
+version: 2
+
+
+exposures:
+  - name: executive_revenue_dashboard
+    type: dashboard
+    maturity: medium
+    description: >
+      Executive dashboard consuming daily revenue metrics for business
+      performance monitoring and decision-making.
+
+
+    depends_on:
+      - ref('fct_daily_revenue')
+
+
+    owner:
+      name: Mayank Kukraja
+      email: mayank@example.com

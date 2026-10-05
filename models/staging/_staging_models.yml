@@ -5,6 +5,7 @@ models:
 
 
   - name: stg_customers
+    description: "Cleaned customer data from the raw source."
     columns:
 
 
@@ -22,6 +23,7 @@ models:
 
 
   - name: stg_orders
+    description: "Cleaned order data from the raw source."
     columns:
 
 
@@ -58,6 +60,7 @@ models:
 
 
   - name: stg_payments
+    description: "Cleaned payment data from the raw source."
     columns:
 
 

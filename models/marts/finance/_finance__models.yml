@@ -5,17 +5,7 @@ models:
 
 
   - name: fct_daily_revenue
-    description: >
-      Incremental finance revenue model containing one row per order.
-      Revenue is derived from payment amounts stored in cents and converted
-      to US dollars. The model uses MERGE so existing orders can be updated
-      when late-arriving payment information changes their revenue.
-
-
-      MERGE was selected instead of APPEND because APPEND would create
-      duplicate rows when an existing order receives updated payment data.
-      INSERT_OVERWRITE is not appropriate because this model is not replacing
-      complete partitions; individual orders may need to be updated.
+    description: "{{ doc('fct_daily_revenue_grain') }}"
 
 
     columns:
@@ -92,3 +82,16 @@ models:
 
       - name: updated_at
         description: "Timestamp when the customer record was last updated."
+
+
+  - name: fct_payment_method_summary
+    description: >
+      Payment-method summary containing one row per order and dynamically
+      generated payment-method amount columns based on the configured
+      payment_methods project variable.
+    columns:
+      - name: order_id
+        description: "Unique identifier for the order."
+        tests:
+          - not_null
+          - unique

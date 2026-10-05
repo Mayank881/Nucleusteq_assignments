@@ -34,3 +34,6 @@ models:
 
     marts:
       +materialized: table
+      +post-hook:
+       - "{{ grant_read_access(this) }}"
+
