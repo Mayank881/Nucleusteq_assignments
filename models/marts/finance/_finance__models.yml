@@ -1,0 +1,37 @@
+version: 2
+
+
+models:
+
+
+  - name: fct_daily_revenue
+    description: >
+      Incremental finance revenue model containing one row per order.
+      Revenue is derived from payment amounts stored in cents and converted
+      to US dollars. The model uses MERGE so existing orders can be updated
+      when late-arriving payment information changes their revenue.
+
+
+      MERGE was selected instead of APPEND because APPEND would create
+      duplicate rows when an existing order receives updated payment data.
+      INSERT_OVERWRITE is not appropriate because this model is not replacing
+      complete partitions; individual orders may need to be updated.
+
+
+    columns:
+
+
+      - name: order_id
+        description: "Unique identifier for the order."
+
+
+      - name: customer_id
+        description: "Identifier of the customer who placed the order."
+
+
+      - name: revenue_date
+        description: "Calendar date of the order."
+
+
+      - name: revenue_usd
+        description: "Revenue amount in US dollars."
