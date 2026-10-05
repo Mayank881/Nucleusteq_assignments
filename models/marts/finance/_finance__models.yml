@@ -23,17 +23,72 @@ models:
 
       - name: order_id
         description: "Unique identifier for the order."
+        tests:
+          - not_null
+          - unique
 
 
       - name: customer_id
         description: "Identifier of the customer who placed the order."
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_customers')
+                field: customer_id
 
 
-      - name: revenue_date
-        description: "Calendar date of the order."
+      - name: order_date
+        description: "Date and time when the order was placed."
+        tests:
+          - not_null
+
+
+      - name: status
+        description: "Current status of the order."
 
 
       - name: revenue_usd
         description: "Revenue amount in US dollars."
         tests:
           - positive_value
+
+
+      - name: latest_payment_date
+        description: "Most recent successful payment date for the order."
+
+
+      - name: updated_at
+        description: "Timestamp when the order record was last updated."
+  
+
+  - name: dim_customers
+    description: "Customer dimension containing one row per customer."
+    columns:
+
+
+      - name: customer_id
+        description: "Unique identifier for the customer."
+        tests:
+          - not_null
+          - unique
+
+
+      - name: first_name
+        description: "Customer first name."
+
+
+      - name: last_name
+        description: "Customer last name."
+
+
+      - name: email
+        description: "Customer email address."
+
+
+      - name: signup_date
+        description: "Date when the customer signed up."
+
+
+      - name: updated_at
+        description: "Timestamp when the customer record was last updated."

@@ -5,6 +5,13 @@ config-version: 2
 
 profile: 'ecommerce_analytics'
 
+vars:
+  payment_methods:
+    - credit_card
+    - debit_card
+    - upi
+    
+
 
 model-paths: ["models"]
 analysis-paths: ["analyses"]

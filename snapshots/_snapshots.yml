@@ -1,0 +1,11 @@
+version: 2
+
+
+snapshots:
+  - name: snap_customers
+    description: >
+      Customer history captured using timestamp strategy because the
+      updated_at column provides a reliable timestamp for detecting
+      customer changes. Timestamp strategy is preferred over check strategy
+      because it avoids comparing every tracked column and captures changes
+      based on the source system's update timestamp.

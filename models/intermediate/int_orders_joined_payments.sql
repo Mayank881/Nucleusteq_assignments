@@ -41,7 +41,7 @@ joined as (
         o.order_date,
         o.status,
         o.updated_at,
-        coalesce(p.total_payment_cents, 0) / 100.0 as revenue_usd,
+        {{ cents_to_dollars('p.total_payment_cents') }} as revenue_usd,
         p.latest_payment_date
     from orders o
     left join payments p
