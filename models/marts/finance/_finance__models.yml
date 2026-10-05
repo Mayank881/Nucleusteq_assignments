@@ -35,3 +35,5 @@ models:
 
       - name: revenue_usd
         description: "Revenue amount in US dollars."
+        tests:
+          - positive_value
